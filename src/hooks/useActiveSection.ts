@@ -1,0 +1,28 @@
+import { useState, useEffect } from 'react';
+
+export function useActiveSection(sectionIds: string[]): string {
+  const [activeSection, setActiveSection] = useState<string>(sectionIds[0] || 'hero');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY + window.innerHeight * 0.35;
+      
+      for (let i = sectionIds.length - 1; i >= 0; i--) {
+        const section = document.getElementById(sectionIds[i]);
+        if (section) {
+          const top = section.offsetTop;
+          if (scrollPosition >= top) {
+            setActiveSection(sectionIds[i]);
+            break;
+          }
+        }
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [sectionIds]);
+
+  return activeSection;
+}
