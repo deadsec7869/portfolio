@@ -18,7 +18,7 @@ export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
-  const activeSection = useActiveSection(['hero', ...navItems.map((n) => n.id)]);
+  const activeSection = useActiveSection(['hero', ...navItems.map((n) => (n.id === 'capabilities' ? 'stack' : n.id))]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -35,7 +35,7 @@ export function Navbar() {
 
   const scrollTo = (id: string) => {
     spatialAudio.playClick();
-    const targetId = id === 'lab' ? 'experience' : id === 'capabilities' ? 'stack' : id;
+    const targetId = id === 'capabilities' ? 'stack' : id;
     const el = document.getElementById(targetId);
     if (el) {
       el.scrollIntoView({ behavior: 'smooth' });
@@ -77,7 +77,6 @@ export function Navbar() {
               {navItems.map((item) => {
                 const isItemActive =
                   activeSection === item.id ||
-                  (item.id === 'lab' && activeSection === 'experience') ||
                   (item.id === 'capabilities' && activeSection === 'stack');
 
                 return (

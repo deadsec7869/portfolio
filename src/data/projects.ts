@@ -1,4 +1,4 @@
-export type ProjectCategory = 'ALL' | 'AI' | 'WEB' | '3D' | 'TOOLS';
+export type ProjectCategory = 'ALL' | 'AI' | 'WEB' | '3D';
 
 export interface Project {
   id: string;
@@ -36,9 +36,9 @@ export const projects: Project[] = [
     id: 'ai-robot-command-center',
     projectNumber: '01',
     title: 'AI ROBOT COMMAND CENTER',
-    tagline: 'Autonomous Robotics Simulation & Intelligent Fleet Management',
-    shortDescription: 'Autonomous robotics simulation platform featuring real-time AGV telemetry, space-time conflict detection, and dynamic A* pathfinding across 2D industrial environments.',
-    longDescription: 'A software-based autonomous robotics simulation and fleet management system. Built with React 19, TypeScript, and Vite, the platform simulates real-time automated guided vehicles (AGVs) navigating dynamic industrial environments. Features heuristic A* pathfinding, space-time conflict detection, dynamic collision avoidance, and deterministic multi-factor fleet task allocation.',
+    tagline: 'Autonomous Robotics Simulation & Fleet Navigation',
+    shortDescription: 'An autonomous robotics simulation platform for dynamic warehouse environments. It computes collision-free trajectories using heuristic A* pathfinding and space-time conflict resolution, providing real-time AGV telemetry over a reactive interface.',
+    longDescription: 'A software-based robotics simulation and fleet management system built with React 19, TypeScript, and Vite. The platform models real-time automated guided vehicles (AGVs) navigating dynamic 2D warehouse environments. It implements heuristic A* pathfinding, space-time conflict detection, dynamic collision avoidance, and deterministic fleet task allocation without UI thread frame drops.',
     category: 'AI',
     year: '2026',
     technologies: [
@@ -47,44 +47,44 @@ export const projects: Project[] = [
       'Tailwind CSS',
       'Vite',
       'A* Pathfinding',
-      'Collision Avoidance',
+      'Conflict Detection',
       'Fleet Telemetry'
     ],
     image: '/projects/robot-command.png',
     github: 'https://github.com/deadsec7869/AI-Robot-Command-Center',
     demo: 'https://ai-robot-command-center.vercel.app',
     featured: true,
-    accentColor: '#5E5E5A',
+    accentColor: '#3F3F3C',
     metrics: [
-      { label: 'Primary Language', value: 'TypeScript' },
-      { label: 'Algorithm', value: 'A* Pathfinding' },
-      { label: 'UI Framework', value: 'React 19 + Vite' }
+      { label: 'Language', value: 'TypeScript' },
+      { label: 'Algorithm', value: 'A* Grid Search' },
+      { label: 'UI Architecture', value: 'React 19 + Vite' }
     ],
     features: [
-      'Interactive 2D industrial warehouse grid with dynamic obstacle configuration',
+      'Interactive 2D industrial warehouse grid with dynamic obstacle placement',
       'Heuristic A* pathfinding with real-time route calculation and obstacle rerouting',
       'Space-time conflict detection and dynamic collision avoidance for AGV units',
       'Deterministic multi-factor task allocation and live rover telemetry inspection'
     ],
     architecture: {
-      frontend: 'React 19 + TypeScript + Tailwind CSS 4.0 + Lucide Icons',
+      frontend: 'React 19 + TypeScript + Tailwind CSS + Lucide Icons',
       algorithms: 'Heuristic A* Grid Search with Conflict Resolution Matrix',
       rendering: 'Hardware-accelerated CSS Grid with Micro-Transitions',
       dataPipeline: 'Reactive State Architecture for Real-Time AGV Coordinates'
     },
     challenges: [
       'Computing collision-free trajectories for simulated AGVs while allowing dynamic obstacle placement without UI thread frame drops.',
-      'Structuring an authentic, high-contrast industrial aerospace cockpit interface responsive across varying viewport resolutions.'
+      'Structuring an authentic, high-contrast industrial cockpit interface responsive across varying viewport resolutions.'
     ],
-    result: 'Delivered an interactive autonomous robotics cockpit simulating real-time pathfinding and fleet telemetry with zero UI stutter.'
+    result: 'Delivered an interactive autonomous robotics cockpit simulating real-time pathfinding and fleet telemetry with smooth rendering.'
   },
   {
     id: 'aapesh',
     projectNumber: '02',
     title: 'AAPESH',
-    tagline: 'Desktop-First Spatial Music Workstation & 3D Environment',
-    shortDescription: 'Desktop-first web music workstation with a deep liquid-glass aesthetic, persistent 3D WebGL spatial backdrop, synchronized karaoke lyrics, 10-band equalizer, and YouTube Music streaming.',
-    longDescription: 'An open-source desktop web music streaming workstation combining a charcoal liquid-glass aesthetic with a persistent Three.js 3D spatial environment. Includes synchronized line-by-line karaoke lyrics, a 10-band pro graphic equalizer, dynamic album artwork color extraction, and high-fidelity YouTube Music streaming.',
+    tagline: 'Desktop-First Spatial Music Workstation',
+    shortDescription: 'A desktop web audio player built around spatial interaction and visual feedback. It integrates a 10-band graphic equalizer, real-time synchronized lyrics, dynamic artwork palette extraction, and streaming via YouTube Music.',
+    longDescription: 'An open-source desktop web music workstation developed with React, TypeScript, Three.js, and Web Audio API. The interface pairs a liquid-glass aesthetic with a persistent 3D spatial backdrop, featuring synchronized line-by-line karaoke lyrics, an interactive 10-band graphic equalizer with preset curves, dynamic theme adaptation, and high-fidelity YouTube Music streaming.',
     category: '3D',
     year: '2026',
     technologies: [
@@ -94,17 +94,17 @@ export const projects: Project[] = [
       'GSAP',
       'Motion',
       'Web Audio API',
-      'YTMusic API'
+      'YouTube Music API'
     ],
     image: '/projects/music-player.png',
     github: 'https://github.com/deadsec7869/AApesh',
     demo: '', // No live demo URL hosted yet; renders VIEW SOURCE only
     featured: true,
-    accentColor: '#5E5E5A',
+    accentColor: '#3F3F3C',
     metrics: [
-      { label: 'Primary Stack', value: 'React + Three.js' },
+      { label: '3D Graphics', value: 'Three.js' },
       { label: 'Animation Engine', value: 'GSAP + Motion' },
-      { label: 'Audio Engine', value: 'Web Audio API' }
+      { label: 'DSP Engine', value: 'Web Audio API' }
     ],
     features: [
       'Translucent spatial 3D backdrop with dynamic dual-radial aura glows mapped to song palettes',
@@ -127,9 +127,9 @@ export const projects: Project[] = [
     id: 'vtu-study-app',
     projectNumber: '03',
     title: 'VTU STUDY COMPANION',
-    tagline: 'AI-Assisted Academic Platform & Engineering Portal',
-    shortDescription: 'An academic study companion for VTU engineering students built with Next.js 16 and Google GenAI SDK, providing generative academic guidance and syllabus resources.',
-    longDescription: 'An AI-powered academic companion and curriculum portal built specifically for VTU engineering students. Powered by Next.js 16, React 19, TypeScript, Tailwind CSS, and the Google GenAI SDK (@google/genai), it provides intelligent study assistance, subject breakdown, and accessible academic reference materials.',
+    tagline: 'AI-Assisted Engineering Curriculum Companion',
+    shortDescription: 'An academic assistant portal for VTU engineering students built with Next.js 16 and Google GenAI SDK. It provides structured curriculum navigation, branch syllabus indexing, and generative concept explanations.',
+    longDescription: 'An AI-powered academic curriculum portal and study companion built with Next.js 16, React 19, TypeScript, and the Google GenAI SDK (@google/genai). The platform delivers structured semester-by-semester syllabus indexing, course module breakdowns, and streaming AI synthesis for complex engineering concepts.',
     category: 'WEB',
     year: '2026',
     technologies: [
@@ -144,7 +144,7 @@ export const projects: Project[] = [
     github: 'https://github.com/deadsec7869/vtu-study-app',
     demo: 'https://vtu-study-app-tau.vercel.app',
     featured: true,
-    accentColor: '#5E5E5A',
+    accentColor: '#3F3F3C',
     metrics: [
       { label: 'Framework', value: 'Next.js 16 App Router' },
       { label: 'AI SDK', value: 'Google GenAI SDK' },
@@ -157,13 +157,13 @@ export const projects: Project[] = [
       'Live deployment on Vercel with automated build workflows'
     ],
     architecture: {
-      frontend: 'Next.js 16 + React 19 + TypeScript + Tailwind CSS 4.0',
+      frontend: 'Next.js 16 + React 19 + TypeScript + Tailwind CSS',
       backend: 'Google GenAI SDK Integration (@google/genai)',
       dataPipeline: 'Edge-rendered static syllabus indexing and dynamic query synthesis'
     },
     challenges: [
       'Configuring real-time AI responses with minimal latency while preserving syllabus accuracy.',
-      'Building a clean responsive curriculum tree supporting multiple engineering engineering branches.'
+      'Building a clean responsive curriculum tree supporting multiple engineering branches.'
     ],
     result: 'Published an academic assistant platform deployed globally to assist VTU students with syllabus discovery and topic breakdown.'
   }
