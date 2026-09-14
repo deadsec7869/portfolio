@@ -2,6 +2,7 @@ import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { STUDIO_COLORS } from '../materials/materials';
 
 interface MusicDiscProps {
   accentColor?: string;
@@ -9,7 +10,7 @@ interface MusicDiscProps {
 }
 
 export function MusicDisc({
-  accentColor = '#008899',
+  accentColor = STUDIO_COLORS.grey,
   mousePosition,
 }: MusicDiscProps) {
   const groupRef = useRef<THREE.Group>(null);
@@ -58,63 +59,70 @@ export function MusicDisc({
       // 2. Animate 32 radial waveform bars
       barsRef.current.forEach((bar, i) => {
         if (!bar) return;
-        const freq =
-          0.2 +
-          Math.abs(Math.sin(time * 3.5 + i * 0.35)) * 0.9 +
-          Math.abs(Math.cos(time * 2.0 + i * 0.6)) * 0.4;
-        bar.scale.y = THREE.MathUtils.lerp(bar.scale.y, freq, delta * 12);
+        const wave = Math.sin(time * 4 + i * 0.4) * 0.5 + 0.5;
+        const targetScaleY = 0.3 + wave * 1.8;
+        bar.scale.y = THREE.MathUtils.lerp(bar.scale.y, targetScaleY, 0.2);
         bar.position.y = (bar.scale.y * 0.3) / 2;
       });
 
-      // 3. Pulse concentric frequency aura
+      // 3. Pulse outer ring
       if (ringAuraRef.current) {
-        const pulse = 1 + Math.sin(time * 2) * 0.05;
+        const pulse = 1 + Math.sin(time * 2.5) * 0.04;
         ringAuraRef.current.scale.set(pulse, pulse, pulse);
       }
     }
   });
 
   return (
-    <group ref={groupRef} position={[0, -0.1, 0]}>
-      {/* Central Rotating Music Workstation Disc */}
+    <group ref={groupRef} position={[0, -0.2, 0]}>
+      {/* Central Rotating Vinyl / Holographic Disc */}
       <group ref={discRef}>
-        {/* Outer Vinyl / Frosted Disc Body */}
-        <mesh position={[0, 0, 0]} castShadow>
-          <cylinderGeometry args={[1.05, 1.05, 0.04, 48]} />
+        {/* Outer Vinyl Rim */}
+        <mesh receiveShadow castShadow>
+          <cylinderGeometry args={[1.05, 1.05, 0.025, 48]} />
           <meshStandardMaterial
-            color="#1E293B"
-            metalness={0.9}
-            roughness={0.15}
-          />
-        </mesh>
-
-        {/* Vinyl Grooves Inlay */}
-        <mesh position={[0, 0.022, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[0.45, 0.95, 48]} />
-          <meshStandardMaterial
-            color="#0F172A"
-            roughness={0.5}
+            color={STUDIO_COLORS.greyDark}
+            roughness={0.25}
             metalness={0.7}
           />
         </mesh>
 
-        {/* Center Label Core */}
-        <mesh position={[0, 0.025, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-          <circleGeometry args={[0.38, 32]} />
+        {/* Vinyl Microgroove Concentric Rings */}
+        {[0.95, 0.85, 0.75, 0.65].map((r, i) => (
+          <mesh key={i} rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.014, 0]}>
+            <ringGeometry args={[r - 0.01, r, 48]} />
+            <meshBasicMaterial
+              color={STUDIO_COLORS.greyLight}
+              side={THREE.DoubleSide}
+              transparent
+              opacity={0.35}
+            />
+          </mesh>
+        ))}
+
+        {/* Center Label Area */}
+        <mesh position={[0, 0.016, 0]}>
+          <cylinderGeometry args={[0.38, 0.38, 0.02, 32]} />
           <meshStandardMaterial
-            color="#FAFAF8"
+            color={STUDIO_COLORS.offWhite}
             roughness={0.3}
-            metalness={0.2}
+            metalness={0.15}
           />
+        </mesh>
+
+        {/* Center Spindle Accent Ring */}
+        <mesh position={[0, 0.028, 0]}>
+          <cylinderGeometry args={[0.12, 0.12, 0.02, 24]} />
+          <meshStandardMaterial color={accentColor} roughness={0.2} metalness={0.6} />
         </mesh>
 
         {/* Spindle Hub */}
         <mesh position={[0, 0.05, 0]}>
           <cylinderGeometry args={[0.06, 0.06, 0.08, 24]} />
           <meshStandardMaterial
-            color="#E2E8F0"
-            metalness={0.95}
-            roughness={0.1}
+            color={STUDIO_COLORS.greyDark}
+            metalness={0.8}
+            roughness={0.2}
           />
         </mesh>
       </group>
@@ -133,9 +141,8 @@ export function MusicDisc({
             <boxGeometry args={[0.07, 0.3, 0.07]} />
             <meshStandardMaterial
               color={accentColor}
-              emissive={accentColor}
-              emissiveIntensity={0.55}
-              roughness={0.2}
+              roughness={0.25}
+              metalness={0.5}
             />
           </mesh>
         ))}
@@ -152,17 +159,17 @@ export function MusicDisc({
           color={accentColor}
           side={THREE.DoubleSide}
           transparent
-          opacity={0.4}
+          opacity={0.3}
         />
       </mesh>
 
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.02, 0]}>
         <ringGeometry args={[2.1, 2.14, 64]} />
         <meshBasicMaterial
-          color="#94A3B8"
+          color={STUDIO_COLORS.greyLight}
           side={THREE.DoubleSide}
           transparent
-          opacity={0.25}
+          opacity={0.2}
         />
       </mesh>
     </group>

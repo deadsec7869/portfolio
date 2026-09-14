@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { technologies } from '../data/technologies';
 import type { Technology } from '../data/technologies';
 import { useReducedMotion } from '../hooks/useReducedMotion';
+import { STUDIO_COLORS } from './materials/materials';
 
 interface OrbitNodeProps {
   tech: Technology;
@@ -64,10 +65,8 @@ function OrbitNode({
       <mesh scale={active ? 1.35 : 1}>
         <sphereGeometry args={[0.22, 16, 16]} />
         <meshStandardMaterial
-          color={tech.color}
-          emissive={tech.color}
-          emissiveIntensity={active ? 0.7 : 0.3}
-          roughness={0.2}
+          color={active ? STUDIO_COLORS.greyDark : STUDIO_COLORS.grey}
+          roughness={0.25}
           metalness={0.6}
         />
       </mesh>
@@ -77,7 +76,7 @@ function OrbitNode({
         <mesh rotation={[Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.28, 0.36, 32]} />
           <meshBasicMaterial
-            color={tech.color}
+            color={STUDIO_COLORS.grey}
             side={THREE.DoubleSide}
             transparent
             opacity={0.6}
@@ -85,15 +84,15 @@ function OrbitNode({
         </mesh>
       )}
 
-      {/* Text Label in Dark Typography */}
+      {/* Text Label */}
       <Text
         position={[0, 0.42, 0]}
         fontSize={0.24}
-        color={active ? '#008899' : '#111111'}
+        color={active ? STUDIO_COLORS.greyDark : STUDIO_COLORS.grey}
         anchorX="center"
         anchorY="middle"
         outlineWidth={0.015}
-        outlineColor="#FFFFFF"
+        outlineColor={STUDIO_COLORS.offWhite}
       >
         {tech.name}
       </Text>
@@ -101,126 +100,87 @@ function OrbitNode({
   );
 }
 
-function OrbitRingVisual({ radius, color }: { radius: number; color: string }) {
-  const lineGeometry = useMemo(() => {
-    const points = [];
-    const segments = 90;
-    for (let i = 0; i <= segments; i++) {
-      const theta = (i / segments) * Math.PI * 2;
-      points.push(new THREE.Vector3(Math.cos(theta) * radius, 0, Math.sin(theta) * radius));
-    }
-    return new THREE.BufferGeometry().setFromPoints(points);
-  }, [radius]);
-
-  return (
-    <primitive object={new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({
-      color,
-      transparent: true,
-      opacity: 0.28,
-      linewidth: 1
-    }))} />
-  );
+interface OrbitRingProps {
+  radius: number;
+  color?: string;
 }
 
-function CentralCore() {
-  const coreRef = useRef<THREE.Group>(null);
-
-  useFrame((state, delta) => {
-    if (coreRef.current) {
-      coreRef.current.rotation.y += delta * 0.3;
-      const time = state.clock.getElapsedTime();
-      const s = 1 + Math.sin(time * 1.5) * 0.04;
-      coreRef.current.scale.set(s, s, s);
+function OrbitRing({ radius, color = STUDIO_COLORS.border }: OrbitRingProps) {
+  const points = useMemo(() => {
+    const pts = [];
+    const segments = 64;
+    for (let i = 0; i <= segments; i++) {
+      const theta = (i / segments) * Math.PI * 2;
+      pts.push(new THREE.Vector3(Math.cos(theta) * radius, 0, Math.sin(theta) * radius));
     }
-  });
+    return pts;
+  }, [radius]);
+
+  const lineGeometry = useMemo(() => {
+    return new THREE.BufferGeometry().setFromPoints(points);
+  }, [points]);
 
   return (
-    <group ref={coreRef}>
-      {/* Central Titanium Frosted Core */}
-      <mesh>
-        <sphereGeometry args={[0.7, 32, 32]} />
-        <meshStandardMaterial
-          color="#EAEFF4"
-          roughness={0.15}
-          metalness={0.85}
-          emissive="#FFFFFF"
-          emissiveIntensity={0.2}
-        />
-      </mesh>
-
-      {/* Wireframe Holographic Core */}
-      <mesh>
-        <octahedronGeometry args={[0.95, 1]} />
-        <meshBasicMaterial
-          color="#008899"
-          wireframe
-          transparent
-          opacity={0.4}
-        />
-      </mesh>
-
-      {/* Central Text */}
-      <Text
-        position={[0, 0, 0.75]}
-        fontSize={0.32}
-        color="#111111"
-        fontWeight="bold"
-        anchorX="center"
-        anchorY="middle"
-        outlineWidth={0.02}
-        outlineColor="#FFFFFF"
-      >
-        TAMIM
-      </Text>
-    </group>
+    <primitive object={new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({ color, transparent: true, opacity: 0.35 }))} />
   );
 }
 
 interface TechnologyOrbitProps {
-  activeTech: Technology | null;
-  onSelectTech: (tech: Technology | null) => void;
+  selectedTech: Technology | null;
+  onSelectTech: (tech: Technology) => void;
+  onHoverTech: (tech: Technology | null) => void;
 }
 
-export function TechnologyOrbit({ activeTech, onSelectTech }: TechnologyOrbitProps) {
+export function TechnologyOrbit({
+  selectedTech,
+  onSelectTech,
+  onHoverTech
+}: TechnologyOrbitProps) {
   const prefersReducedMotion = useReducedMotion();
 
-  const rings = [
-    { ring: 1, radius: 2.3, color: '#008899' },
-    { ring: 2, radius: 3.8, color: '#94A3B8' },
-    { ring: 3, radius: 5.2, color: '#CBD5E1' }
+  const orbitConfigs = [
+    { ring: 1, radius: 2.3, color: STUDIO_COLORS.grey },
+    { ring: 2, radius: 3.5, color: STUDIO_COLORS.greyDark },
+    { ring: 3, radius: 4.6, color: STUDIO_COLORS.greyLight }
   ];
 
   return (
-    <div className="w-full h-full relative cursor-grab active:cursor-grabbing">
+    <div className="w-full h-full relative">
       <Canvas
-        camera={{ position: [0, 4.5, 7.5], fov: 48 }}
-        dpr={[1, 1.6]}
+        camera={{ position: [0, 4, 7], fov: 50 }}
         gl={{ antialias: true, alpha: true }}
       >
-        <ambientLight intensity={1.2} />
-        <directionalLight position={[10, 12, 6]} intensity={1.5} color="#FFFFFF" />
-        <pointLight position={[0, 0, 0]} intensity={1.5} color="#008899" distance={8} />
+        <ambientLight intensity={1.3} color="#FFFFFF" />
+        <directionalLight position={[5, 8, 5]} intensity={1.6} color="#FFFFFF" />
+        <directionalLight position={[-5, -4, -3]} intensity={0.5} color={STUDIO_COLORS.offWhiteElevated} />
 
-        {/* Orbit Ground Grid Lines */}
-        {rings.map((r) => (
-          <OrbitRingVisual key={r.ring} radius={r.radius} color={r.color} />
+        {/* Orbit Path Lines */}
+        {orbitConfigs.map((config) => (
+          <OrbitRing
+            key={config.ring}
+            radius={config.radius}
+            color={config.color}
+          />
         ))}
 
-        {/* Central TAMIM Node */}
-        <CentralCore />
+        {/* Distributed Nodes */}
+        {technologies.map((tech, idx) => {
+          const ringIndex = (idx % 3) + 1;
+          const config = orbitConfigs.find((c) => c.ring === ringIndex)!;
+          const countInRing = Math.ceil(technologies.length / 3);
+          const posInRing = Math.floor(idx / 3);
+          const angleOffset = (posInRing / countInRing) * Math.PI * 2;
+          const speed = prefersReducedMotion ? 0 : 0.6 / ringIndex;
 
-        {/* Orbiting Tech Nodes */}
-        {technologies.map((tech) => {
-          const ringConfig = rings.find((r) => r.ring === tech.orbitRing) || rings[0];
           return (
             <OrbitNode
               key={tech.id}
               tech={tech}
-              radius={ringConfig.radius}
-              speed={prefersReducedMotion ? 0 : tech.speedMultiplier}
-              angleOffset={tech.angleOffset}
-              isSelected={activeTech?.id === tech.id}
-              onHover={onSelectTech}
+              radius={config.radius}
+              speed={speed}
+              angleOffset={angleOffset}
+              isSelected={selectedTech?.id === tech.id}
+              onHover={onHoverTech}
               onClick={onSelectTech}
             />
           );

@@ -29,11 +29,11 @@ export function MobileMenu({
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="fixed inset-0 z-[100] bg-[#FAFAF8]/98 backdrop-blur-2xl flex flex-col justify-between p-8 md:hidden"
+          className="fixed inset-0 z-[100] bg-[#F4F1E8]/98 backdrop-blur-2xl flex flex-col justify-between p-8 md:hidden"
         >
           {/* Top Bar */}
           <div className="flex items-center justify-between">
-            <span className="font-mono-tech text-xs text-[#008899] uppercase tracking-widest">
+            <span className="font-mono-tech text-xs text-[#5E5E5A] uppercase tracking-widest">
               NAVIGATION // {socialData.name}
             </span>
             <button
@@ -41,7 +41,7 @@ export function MobileMenu({
                 spatialAudio.playClick();
                 onClose();
               }}
-              className="p-2 rounded-lg bg-black/5 border border-black/10 text-[#111111] hover:text-[#008899] cursor-pointer"
+              className="p-2 rounded-lg bg-[#ECE8DD] border border-[#5E5E5A]/25 text-[#3F3F3C] hover:text-[#5E5E5A] cursor-pointer"
               aria-label="Close navigation"
             >
               <X className="w-6 h-6" />
@@ -50,7 +50,7 @@ export function MobileMenu({
 
           {/* Navigation Links */}
           <nav className="flex flex-col gap-4 my-auto">
-            {navItems.map((item, idx) => {
+            {navItems.map((item) => {
               const isActive = activeSection === item.id;
               return (
                 <button
@@ -59,15 +59,12 @@ export function MobileMenu({
                     spatialAudio.playClick();
                     onSelectSection(item.id);
                   }}
-                  className="flex items-center justify-between text-left py-2 border-b border-black/5 group cursor-pointer"
+                  className="flex items-center justify-between text-left py-2.5 border-b border-[#5E5E5A]/15 group cursor-pointer"
                 >
-                  <div className="flex items-center gap-4">
-                    <span className="font-mono-tech text-xs text-slate-400">
-                      0{idx + 1}
-                    </span>
+                  <div className="flex items-center gap-3">
                     <span
-                      className={`font-display text-2xl font-bold tracking-tight uppercase ${
-                        isActive ? 'text-[#111111] font-black' : 'text-slate-600 group-hover:text-[#111111]'
+                      className={`font-display text-xl font-bold tracking-tight uppercase ${
+                        isActive ? 'text-[#3F3F3C] font-black' : 'text-[#5E5E5A] group-hover:text-[#3F3F3C]'
                       }`}
                     >
                       {item.label}
@@ -75,7 +72,7 @@ export function MobileMenu({
                   </div>
                   <ArrowRight
                     className={`w-5 h-5 transition-transform duration-200 ${
-                      isActive ? 'text-[#111111] translate-x-1' : 'text-slate-400 group-hover:translate-x-1'
+                      isActive ? 'text-[#3F3F3C] translate-x-1' : 'text-[#8A8983] group-hover:translate-x-1'
                     }`}
                   />
                 </button>
@@ -84,19 +81,19 @@ export function MobileMenu({
           </nav>
 
           {/* Footer Info */}
-          <div className="flex flex-col gap-3 pt-6 border-t border-black/10 text-xs font-mono-tech text-slate-500">
+          <div className="flex flex-col gap-3 pt-6 border-t border-[#5E5E5A]/20 text-xs font-mono-tech text-[#5E5E5A]">
             {socialData.availableForProjects && (
-              <div className="flex items-center gap-2 text-emerald-800">
-                <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
+              <div className="flex items-center gap-2 text-[#3F3F3C]">
+                <span className="w-2 h-2 rounded-full bg-[#5E5E5A] animate-pulse" />
                 <span>{socialData.availabilityStatus}</span>
               </div>
             )}
-            <div className="flex items-center gap-4 text-slate-700">
+            <div className="flex items-center gap-4 text-[#3F3F3C]">
               <a
                 href={socialData.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[#008899] transition-colors"
+                className="hover:text-[#5E5E5A] transition-colors uppercase"
               >
                 GitHub
               </a>
@@ -105,7 +102,7 @@ export function MobileMenu({
                   href={socialData.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-[#008899] transition-colors"
+                  className="hover:text-[#5E5E5A] transition-colors uppercase"
                 >
                   LinkedIn
                 </a>
@@ -113,7 +110,7 @@ export function MobileMenu({
               {hasEmail && (
                 <a
                   href={`mailto:${socialData.email}`}
-                  className="hover:text-[#008899] transition-colors"
+                  className="hover:text-[#5E5E5A] transition-colors uppercase"
                 >
                   Email
                 </a>

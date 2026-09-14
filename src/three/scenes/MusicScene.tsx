@@ -3,6 +3,7 @@ import { StudioLights } from '../lighting/StudioLights';
 import { CameraController } from '../controllers/CameraController';
 import { MusicDisc } from '../objects/MusicDisc';
 import { ParticleField } from '../objects/ParticleField';
+import { STUDIO_COLORS } from '../materials/materials';
 
 interface MusicSceneProps {
   mousePosition?: { normalizedX: number; normalizedY: number };
@@ -11,7 +12,7 @@ interface MusicSceneProps {
 
 export function MusicScene({
   mousePosition,
-  accentColor = '#008899',
+  accentColor = STUDIO_COLORS.grey,
 }: MusicSceneProps) {
   return (
     <div className="w-full h-full relative">
@@ -20,7 +21,7 @@ export function MusicScene({
         className="w-full h-full"
         pointerEvents="auto"
       >
-        <fog attach="fog" args={['#FAFAF8', 5, 14]} />
+        <fog attach="fog" args={[STUDIO_COLORS.offWhite, 5, 14]} />
 
         <StudioLights
           ambientIntensity={1.25}
@@ -37,10 +38,10 @@ export function MusicScene({
         <MusicDisc accentColor={accentColor} mousePosition={mousePosition} />
 
         <ParticleField
-          count={180}
+          count={150}
           color={accentColor}
-          size={0.02}
-          speed={0.03}
+          size={0.016}
+          speed={0.015}
           radius={8}
         />
       </ExperienceCanvas>

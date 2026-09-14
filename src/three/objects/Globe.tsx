@@ -1,8 +1,9 @@
 import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { STUDIO_COLORS } from '../materials/materials';
 
-// Procedural high-resolution canvas texture for Earth landmasses & precision grid
+// Procedural high-resolution canvas texture for technical two-tone Earth & coordinates
 function createGlobeTexture(): THREE.CanvasTexture {
   const canvas = document.createElement('canvas');
   canvas.width = 1024;
@@ -10,12 +11,12 @@ function createGlobeTexture(): THREE.CanvasTexture {
   const ctx = canvas.getContext('2d');
   if (!ctx) return new THREE.CanvasTexture(canvas);
 
-  // Ocean background (Deep slate navy / charcoal)
-  ctx.fillStyle = '#0F172A';
+  // Ocean background: Structural charcoal grey
+  ctx.fillStyle = '#3F3F3C';
   ctx.fillRect(0, 0, 1024, 512);
 
-  // Latitude & Longitude precision grid lines
-  ctx.strokeStyle = 'rgba(100, 116, 139, 0.4)';
+  // Latitude & Longitude thin technical coordinate lines
+  ctx.strokeStyle = 'rgba(244, 241, 232, 0.15)';
   ctx.lineWidth = 1;
 
   // Latitudes
@@ -34,8 +35,8 @@ function createGlobeTexture(): THREE.CanvasTexture {
     ctx.stroke();
   }
 
-  // Continental land shapes (Restrained, subtle slate landmasses)
-  ctx.fillStyle = '#334155';
+  // Continental land shapes (Off-white / grey tones)
+  ctx.fillStyle = '#5E5E5A';
 
   // North America
   ctx.beginPath();
@@ -67,8 +68,8 @@ function createGlobeTexture(): THREE.CanvasTexture {
   ctx.ellipse(840, 360, 55, 45, 0, 0, Math.PI * 2);
   ctx.fill();
 
-  // Telemetry city nodes (glowing cyan points)
-  ctx.fillStyle = '#38BDF8';
+  // Telemetry city nodes (off-white points)
+  ctx.fillStyle = '#F4F1E8';
   const cities = [
     [220, 150], [250, 170], [180, 140], // NA
     [320, 330], [290, 280],             // SA
@@ -80,7 +81,7 @@ function createGlobeTexture(): THREE.CanvasTexture {
 
   cities.forEach(([cx, cy]) => {
     ctx.beginPath();
-    ctx.arc(cx, cy, 2.5, 0, Math.PI * 2);
+    ctx.arc(cx, cy, 2.2, 0, Math.PI * 2);
     ctx.fill();
   });
 
@@ -101,99 +102,96 @@ export function Globe({
   cursorState = 'default',
   velXRef,
   velYRef,
-  scale = 1.0,
+  scale = 1,
 }: GlobeProps) {
-  const globeGroupRef = useRef<THREE.Group>(null);
-  const sphereRef = useRef<THREE.Mesh>(null);
-  const ringRef = useRef<THREE.Mesh>(null);
+  const meshRef = useRef<THREE.Mesh>(null);
   const atmosphereRef = useRef<THREE.Mesh>(null);
+  const ringRef = useRef<THREE.Mesh>(null);
+  const groupRef = useRef<THREE.Group>(null);
 
-  const earthTexture = useMemo(() => createGlobeTexture(), []);
+  const globeTexture = useMemo(() => createGlobeTexture(), []);
 
-  const rotVel = useRef(0.008);
-  const targetScale = useRef(scale);
-  const currentScale = useRef(scale);
+  // Spin rates and rotational states
+  const rotX = useRef(0.2);
+  const rotY = useRef(0);
 
   useFrame((_, delta) => {
-    if (!globeGroupRef.current) return;
+    const isHover = cursorState === 'hover' || cursorState === 'project';
 
-    // Velocity-driven rotation boost
-    const vx = velXRef ? velXRef.current : 0;
-    const vy = velYRef ? velYRef.current : 0;
-    const speed = Math.sqrt(vx * vx + vy * vy);
+    // Base constant spin
+    const baseSpeed = isHover ? 0.9 : 0.45;
+    rotY.current += delta * baseSpeed;
 
-    const targetRotSpeed = 0.008 + Math.min(speed * 0.00015, 0.04);
-    rotVel.current = THREE.MathUtils.lerp(rotVel.current, targetRotSpeed, delta * 8);
-
-    if (sphereRef.current) {
-      sphereRef.current.rotation.y += rotVel.current;
+    // Inertial velocity reaction from pointer movement
+    if (velXRef && velYRef) {
+      const vx = THREE.MathUtils.clamp(velXRef.current * 0.0003, -0.15, 0.15);
+      const vy = THREE.MathUtils.clamp(velYRef.current * 0.0003, -0.15, 0.15);
+      rotY.current += vx;
+      rotX.current = THREE.MathUtils.clamp(rotX.current - vy, -0.6, 0.6);
     }
 
-    // Dynamic scale based on cursor state
-    if (cursorState === 'project') {
-      targetScale.current = scale * 1.32;
-    } else if (cursorState === 'hover') {
-      targetScale.current = scale * 1.18;
-    } else {
-      targetScale.current = scale;
+    if (meshRef.current) {
+      meshRef.current.rotation.y = rotY.current;
+      meshRef.current.rotation.x = rotX.current;
     }
 
-    currentScale.current = THREE.MathUtils.lerp(currentScale.current, targetScale.current, delta * 12);
-    globeGroupRef.current.scale.set(currentScale.current, currentScale.current, currentScale.current);
+    if (atmosphereRef.current) {
+      atmosphereRef.current.rotation.y = rotY.current * 0.8;
+      atmosphereRef.current.rotation.z += delta * 0.2;
+    }
 
-    // Dynamic 3D tilt based on pointer velocity
-    const targetTiltX = THREE.MathUtils.clamp(-vy * 0.0008, -0.35, 0.35);
-    const targetTiltZ = THREE.MathUtils.clamp(-vx * 0.0008, -0.35, 0.35);
-    globeGroupRef.current.rotation.x = THREE.MathUtils.lerp(globeGroupRef.current.rotation.x, targetTiltX + 0.3, delta * 10);
-    globeGroupRef.current.rotation.z = THREE.MathUtils.lerp(globeGroupRef.current.rotation.z, targetTiltZ, delta * 10);
-
-    // Planetary ring animation
     if (ringRef.current) {
-      ringRef.current.rotation.z += delta * 0.5;
-      const targetRingOpacity = cursorState === 'project' ? 0.75 : cursorState === 'hover' ? 0.35 : 0.0;
-      (ringRef.current.material as THREE.MeshBasicMaterial).opacity = THREE.MathUtils.lerp(
-        (ringRef.current.material as THREE.MeshBasicMaterial).opacity,
-        targetRingOpacity,
-        delta * 10
+      ringRef.current.rotation.z += delta * 0.6;
+    }
+
+    if (groupRef.current) {
+      const targetScale = cursorState === 'project' ? 1.25 : isHover ? 1.15 : 1.0;
+      groupRef.current.scale.lerp(
+        new THREE.Vector3(targetScale * scale, targetScale * scale, targetScale * scale),
+        0.15
       );
     }
   });
 
+  const isHover = cursorState === 'hover' || cursorState === 'project';
+
   return (
-    <group ref={globeGroupRef}>
-      {/* 3D Earth Globe Sphere */}
-      <mesh ref={sphereRef}>
-        <sphereGeometry args={[1.0, 32, 32]} />
+    <group ref={groupRef}>
+      {/* Central Solid Globe Sphere */}
+      <mesh ref={meshRef} castShadow receiveShadow>
+        <sphereGeometry args={[0.78, 32, 32]} />
         <meshStandardMaterial
-          map={earthTexture}
-          roughness={0.65}
-          metalness={0.15}
-          color="#F8FAFC"
+          map={globeTexture}
+          roughness={0.3}
+          metalness={0.4}
+          emissive={isHover ? STUDIO_COLORS.grey : '#000000'}
+          emissiveIntensity={isHover ? 0.2 : 0}
         />
       </mesh>
 
-      {/* Atmospheric Rim Shell (Fresnel Rim Glow) */}
+      {/* Atmospheric Translucent Wireframe Geodesic Lattice */}
       <mesh ref={atmosphereRef}>
-        <sphereGeometry args={[1.04, 32, 32]} />
+        <sphereGeometry args={[0.88, 16, 16]} />
         <meshBasicMaterial
-          color="#38BDF8"
+          color={STUDIO_COLORS.grey}
+          wireframe
           transparent
-          opacity={0.18}
-          side={THREE.BackSide}
-          blending={THREE.AdditiveBlending}
+          opacity={isHover ? 0.35 : 0.18}
         />
       </mesh>
 
-      {/* Orbital Planetary Ring (Expands on Project Hover) */}
-      <mesh ref={ringRef} rotation={[Math.PI / 2.3, 0, 0]}>
-        <ringGeometry args={[1.35, 1.48, 48]} />
-        <meshBasicMaterial
-          color="#008899"
-          transparent
-          opacity={0}
-          side={THREE.DoubleSide}
-        />
-      </mesh>
+      {/* Equatorial Orbital Ring on Hover */}
+      {isHover && (
+        <mesh ref={ringRef} rotation={[Math.PI / 3, 0, 0]}>
+          <ringGeometry args={[1.05, 1.14, 36]} />
+          <meshBasicMaterial
+            color={STUDIO_COLORS.greyLight}
+            side={THREE.DoubleSide}
+            transparent
+            opacity={0.65}
+          />
+        </mesh>
+      )}
     </group>
   );
 }

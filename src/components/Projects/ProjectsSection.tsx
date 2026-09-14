@@ -5,6 +5,7 @@ import { ProjectCaseStudy } from './ProjectCaseStudy';
 import { projects, projectCategories } from '../../data/projects';
 import type { ProjectCategory, Project } from '../../data/projects';
 import { spatialAudio } from '../../lib/audio';
+import { SectionLabel } from '../UI/SectionLabel';
 
 export function ProjectsSection() {
   const [selectedCategory, setSelectedCategory] = useState<ProjectCategory>('ALL');
@@ -16,23 +17,24 @@ export function ProjectsSection() {
   }, [selectedCategory]);
 
   return (
-    <section id="work" className="relative w-full py-28 md:py-40 bg-transparent border-t border-black/[0.06]">
+    <section id="work" className="relative w-full py-28 md:py-40 bg-transparent border-t border-[#5E5E5A]/20">
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
         {/* Header Chapter & Filter Tabs */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
           <div>
-            <div className="flex items-center gap-3 text-xs font-mono-tech uppercase tracking-[0.25em] text-[#008899] mb-3">
-              <span>02 / SELECTED WORK</span>
-              <span className="w-8 h-[1px] bg-[#008899]/40" />
-              <span className="text-slate-500">FEATURED SYSTEMS</span>
-            </div>
-            <h2 className="text-4xl sm:text-6xl md:text-7xl font-display font-black text-[#111111] tracking-tight uppercase leading-[0.9]">
+            <SectionLabel
+              number="02"
+              label="SELECTED WORK"
+              tag="FEATURED SYSTEMS & ARCHITECTURES"
+              className="mb-3"
+            />
+            <h2 className="text-4xl sm:text-6xl md:text-7xl font-display font-black text-[#3F3F3C] tracking-tight uppercase leading-[0.9]">
               SELECTED WORK
             </h2>
           </div>
 
           {/* Minimal Filter Tabs */}
-          <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-full bg-white/70 backdrop-blur-md border border-black/[0.08] shadow-xs self-start md:self-end">
+          <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-full bg-[#ECE8DD]/80 backdrop-blur-md border border-[#5E5E5A]/20 shadow-xs self-start md:self-end">
             {projectCategories.map((category) => {
               const isActive = selectedCategory === category;
               return (
@@ -43,14 +45,14 @@ export function ProjectsSection() {
                     setSelectedCategory(category);
                   }}
                   className={`relative px-4 py-1.5 rounded-full text-xs font-mono-tech tracking-wider uppercase transition-colors cursor-pointer ${
-                    isActive ? 'text-white font-semibold' : 'text-slate-600 hover:text-[#111111]'
+                    isActive ? 'text-[#F4F1E8] font-semibold' : 'text-[#5E5E5A] hover:text-[#3F3F3C]'
                   }`}
                   data-cursor="FILTER"
                 >
                   {isActive && (
                     <motion.div
-                      layoutId="activeFilterPillLight"
-                      className="absolute inset-0 bg-[#111111] rounded-full shadow-sm"
+                      layoutId="activeFilterPill"
+                      className="absolute inset-0 bg-[#3F3F3C] rounded-full shadow-xs"
                       transition={{ type: 'spring', stiffness: 450, damping: 30 }}
                     />
                   )}
@@ -76,8 +78,8 @@ export function ProjectsSection() {
         </motion.div>
 
         {filteredProjects.length === 0 && (
-          <div className="py-24 text-center rounded-2xl bg-white/60 border border-black/[0.08]">
-            <p className="text-sm font-mono-tech text-slate-500 uppercase tracking-wider">
+          <div className="py-24 text-center rounded-2xl bg-[#ECE8DD]/50 border border-[#5E5E5A]/20">
+            <p className="text-sm font-mono-tech text-[#8A8983] uppercase tracking-wider">
               NO PROJECTS IN &ldquo;{selectedCategory}&rdquo; CATEGORY.
             </p>
           </div>

@@ -19,27 +19,25 @@ export function NeuralVisual() {
   ];
 
   return (
-    <div className="w-full bg-gradient-to-br from-[#120b1f] via-[#0b0714] to-[#040208] rounded-2xl p-6 md:p-8 flex flex-col justify-between border border-purple-500/30 shadow-2xl relative overflow-hidden group">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-purple-500/10 rounded-full blur-3xl pointer-events-none" />
-
+    <div className="w-full bg-[#ECE8DD]/80 rounded-2xl p-6 md:p-8 flex flex-col justify-between border border-[#5E5E5A]/20 shadow-sm relative overflow-hidden group">
       {/* Top Header */}
-      <div className="flex items-center justify-between z-10 border-b border-white/10 pb-4">
+      <div className="flex items-center justify-between z-10 border-b border-[#5E5E5A]/15 pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-purple-950/80 border border-purple-500/40 flex items-center justify-center text-purple-300">
+          <div className="w-10 h-10 rounded-lg bg-[#F4F1E8] border border-[#5E5E5A]/20 flex items-center justify-center text-[#3F3F3C]">
             <Network className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-display font-bold text-white tracking-wide">
+            <h4 className="text-sm font-display font-bold text-[#3F3F3C] tracking-wide">
               NEURAL MESH ENGINE // LATENT TOPOLOGY
             </h4>
-            <p className="text-[11px] font-mono-tech text-purple-400">
+            <p className="text-[11px] font-mono-tech text-[#5E5E5A]">
               SYNAPTIC FORWARD PROPAGATION &amp; WEIGHT FLOW
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-purple-950/40 border border-purple-500/30 text-[10px] font-mono-tech text-purple-300">
-          <Cpu className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#F4F1E8] border border-[#5E5E5A]/20 text-[10px] font-mono-tech text-[#3F3F3C]">
+          <Cpu className="w-3.5 h-3.5 text-[#5E5E5A]" />
           <span>GPU INSTANCED</span>
         </div>
       </div>
@@ -48,7 +46,7 @@ export function NeuralVisual() {
       <div className="my-8 z-10 flex items-center justify-between max-w-lg mx-auto w-full px-4">
         {layers.map((layer, lIdx) => (
           <div key={layer.name} className="flex flex-col items-center gap-3">
-            <span className="text-[10px] font-mono-tech text-slate-400">
+            <span className="text-[10px] font-mono-tech text-[#8A8983]">
               {layer.name}
             </span>
             <div className="flex flex-col gap-2.5">
@@ -59,8 +57,8 @@ export function NeuralVisual() {
                     key={nIdx}
                     className={`w-4 h-4 rounded-full transition-all duration-300 ${
                       isActive
-                        ? 'bg-purple-400 shadow-[0_0_12px_#A855F7] scale-110'
-                        : 'bg-purple-950 border border-purple-500/40'
+                        ? 'bg-[#3F3F3C] scale-110 shadow-sm'
+                        : 'bg-[#F4F1E8] border border-[#5E5E5A]/25'
                     }`}
                   />
                 );
@@ -71,9 +69,9 @@ export function NeuralVisual() {
       </div>
 
       {/* Bottom Telemetry Bar */}
-      <div className="z-10 text-xs font-mono-tech text-slate-400 flex items-center justify-between border-t border-white/5 pt-3">
+      <div className="z-10 text-xs font-mono-tech text-[#8A8983] flex items-center justify-between border-t border-[#5E5E5A]/15 pt-3">
         <span>ACTIVATION: LEAKY_RELU</span>
-        <span className="text-purple-400">1,200+ SYNAPTIC CONNECTIONS</span>
+        <span className="text-[#5E5E5A] font-semibold">1,200+ SYNAPTIC CONNECTIONS</span>
       </div>
     </div>
   );

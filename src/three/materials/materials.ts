@@ -1,51 +1,68 @@
 import * as THREE from 'three';
 
 /**
- * Editorial Light Studio Color Palette
+ * Light Translucent Studio 3D Color Palette
  */
 export const STUDIO_COLORS = {
-  bgMain: '#FAFAF8',
-  charcoal: '#111111',
-  slateDark: '#1E293B',
-  slateMuted: '#475569',
-  slateLight: '#94A3B8',
-  titanium: '#EAEFF4',
-  titaniumCore: '#F1F5F9',
-  cyanAccent: '#008899',
-  cyanGlow: '#00A0B0',
-  emeraldAccent: '#10B981',
-  amberAccent: '#F59E0B',
-  purpleAccent: '#8B5CF6',
+  bgMain: '#F4F1E8',
+  sphere: '#E7E4DC',
+  offWhite: '#E7E4DC',
+  offWhiteElevated: '#ECE8DD',
+  wireframe: '#8C8A84',
+  ringPrimary: '#696863',
+  ringSecondary: '#B5B2AA',
+  grey: '#74736E',
+  greyDark: '#3F3F3C',
+  greyLight: '#A5A39C',
+  greyMuted: '#A5A39C',
+  nodeDark: '#5E5D58',
+  nodeLight: '#F8F6F0',
+  cyan: '#19C9E8',
+  orange: '#F27A22',
+  greyText: '#74736E',
+  coreDark: '#3F3F3C',
+  border: 'rgba(63, 63, 60, 0.18)',
+  borderStrong: 'rgba(63, 63, 60, 0.35)',
+  accent: '#19C9E8',
+  accentSecondary: '#F27A22',
+  threeDark: '#3F3F3C',
+  threeLight: '#F4F1E8',
+  threeMedium: '#74736E',
   white: '#FFFFFF',
 };
 
 /**
- * Frosted Titanium Physical Material - High-end light studio metal
+ * Sculptural Off-White Physical Material for Central Sphere
  */
-export function createTitaniumMaterial(options: Partial<THREE.MeshStandardMaterialParameters> = {}): THREE.MeshStandardMaterial {
+export function createSculpturalMaterial(options: Partial<THREE.MeshStandardMaterialParameters> = {}): THREE.MeshStandardMaterial {
   return new THREE.MeshStandardMaterial({
-    color: options.color ?? STUDIO_COLORS.titanium,
-    roughness: options.roughness ?? 0.18,
-    metalness: options.metalness ?? 0.88,
-    emissive: options.emissive ?? '#FFFFFF',
-    emissiveIntensity: options.emissiveIntensity ?? 0.12,
+    color: options.color ?? STUDIO_COLORS.sphere,
+    roughness: options.roughness ?? 0.35,
+    metalness: options.metalness ?? 0.15,
     ...options,
   });
 }
 
 /**
- * Translucent Physical Glass / Acrylic Material
+ * Legacy alias for titanium material
+ */
+export function createTitaniumMaterial(options: Partial<THREE.MeshStandardMaterialParameters> = {}): THREE.MeshStandardMaterial {
+  return createSculpturalMaterial(options);
+}
+
+/**
+ * Translucent Physical Glass Material
  */
 export function createGlassMaterial(options: Partial<THREE.MeshPhysicalMaterialParameters> = {}): THREE.MeshPhysicalMaterial {
   return new THREE.MeshPhysicalMaterial({
-    color: options.color ?? '#FFFFFF',
+    color: options.color ?? STUDIO_COLORS.sphere,
     transparent: true,
-    opacity: options.opacity ?? 0.7,
-    roughness: options.roughness ?? 0.12,
-    metalness: options.metalness ?? 0.1,
-    transmission: options.transmission ?? 0.75,
+    opacity: options.opacity ?? 0.45,
+    roughness: options.roughness ?? 0.15,
+    metalness: options.metalness ?? 0.05,
+    transmission: options.transmission ?? 0.88,
     ior: options.ior ?? 1.45,
-    reflectivity: options.reflectivity ?? 0.6,
+    reflectivity: options.reflectivity ?? 0.5,
     clearcoat: options.clearcoat ?? 1.0,
     clearcoatRoughness: options.clearcoatRoughness ?? 0.1,
     ...options,
@@ -53,21 +70,28 @@ export function createGlassMaterial(options: Partial<THREE.MeshPhysicalMaterialP
 }
 
 /**
- * Brushed Slate Physical Material - Precision structural elements
+ * Charcoal / Structural Ring Material
  */
-export function createBrushedSlateMaterial(options: Partial<THREE.MeshStandardMaterialParameters> = {}): THREE.MeshStandardMaterial {
+export function createRingMaterial(options: Partial<THREE.MeshStandardMaterialParameters> = {}): THREE.MeshStandardMaterial {
   return new THREE.MeshStandardMaterial({
-    color: options.color ?? STUDIO_COLORS.slateDark,
-    roughness: options.roughness ?? 0.25,
-    metalness: options.metalness ?? 0.78,
+    color: options.color ?? STUDIO_COLORS.ringPrimary,
+    roughness: options.roughness ?? 0.28,
+    metalness: options.metalness ?? 0.5,
     ...options,
   });
 }
 
 /**
- * Precision Geometric Wireframe Material
+ * Legacy alias for charcoal material
  */
-export function createWireframeMaterial(color: string = STUDIO_COLORS.slateMuted, opacity = 0.35): THREE.MeshBasicMaterial {
+export function createCharcoalMaterial(options: Partial<THREE.MeshStandardMaterialParameters> = {}): THREE.MeshStandardMaterial {
+  return createRingMaterial(options);
+}
+
+/**
+ * Precision Technical Wireframe Material
+ */
+export function createWireframeMaterial(color: string = STUDIO_COLORS.wireframe, opacity = 0.4): THREE.MeshBasicMaterial {
   return new THREE.MeshBasicMaterial({
     color,
     wireframe: true,

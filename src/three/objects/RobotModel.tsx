@@ -2,12 +2,13 @@ import { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { STUDIO_COLORS } from '../materials/materials';
 
 interface RobotModelProps {
   accentColor?: string;
 }
 
-export function RobotModel({ accentColor = '#10B981' }: RobotModelProps) {
+export function RobotModel({ accentColor = STUDIO_COLORS.grey }: RobotModelProps) {
   const robotGroupRef = useRef<THREE.Group>(null);
   const lidarTurretRef = useRef<THREE.Mesh>(null);
   const radarRingRef = useRef<THREE.Mesh>(null);
@@ -49,112 +50,86 @@ export function RobotModel({ accentColor = '#10B981' }: RobotModelProps) {
 
     // 1. Move robot along trajectory
     if (robotGroupRef.current) {
-      const loopTime = 10; // 10 seconds per loop
+      const loopTime = 10;
       const t = (time % loopTime) / loopTime;
       const pos = curve.getPointAt(t);
       const tangent = curve.getTangentAt(t);
 
       robotGroupRef.current.position.copy(pos);
       
-      // Orient robot along path tangent
       const lookTarget = pos.clone().add(tangent);
       robotGroupRef.current.lookAt(lookTarget);
-
-      // Subtle chassis suspension bounce
-      robotGroupRef.current.position.y += Math.sin(time * 8) * 0.015;
     }
 
-    // 2. Rotate LiDAR Sensor Turret
+    // 2. Spin LiDAR turret continuously
     if (lidarTurretRef.current) {
-      lidarTurretRef.current.rotation.y += delta * 6.0;
+      lidarTurretRef.current.rotation.y += delta * 6.5;
     }
 
-    // 3. Expand Radar Wave Pulse
+    // 3. Expand and fade radar scan wave
     if (radarRingRef.current) {
-      const radarScale = (time % 2.5) / 2.5;
-      radarRingRef.current.scale.set(1 + radarScale * 2.5, 1 + radarScale * 2.5, 1);
-      (radarRingRef.current.material as THREE.MeshBasicMaterial).opacity = (1 - radarScale) * 0.6;
+      const radarScale = 1 + (time * 1.6 % 2.5);
+      radarRingRef.current.scale.set(radarScale, radarScale, radarScale);
+      const material = radarRingRef.current.material as THREE.MeshBasicMaterial;
+      if (material) {
+        material.opacity = Math.max(0, 0.6 - (radarScale / 3.5) * 0.6);
+      }
     }
 
-    // 4. Moving Laser Pulse Point
+    // 4. Pulse current target point
     if (pulsePointRef.current) {
-      const pulseT = ((time * 1.5) % 1);
-      const p = curve.getPointAt(pulseT);
-      pulsePointRef.current.position.copy(p);
+      const scale = 1 + Math.sin(time * 5) * 0.25;
+      pulsePointRef.current.scale.set(scale, scale, scale);
     }
   });
 
   return (
-    <group position={[0, -0.4, 0]}>
-      {/* 3D Telemetry Grid Ground */}
+    <group position={[0, -0.6, 0]}>
+      {/* 3D Coordinate Grid Plane Floor */}
       <gridHelper
-        args={[6, 12, '#334155', '#E2E8F0']}
+        args={[6, 24, STUDIO_COLORS.grey, STUDIO_COLORS.border]}
         position={[0, 0, 0]}
       />
 
-      {/* Grid Floor Plate */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]}>
-        <planeGeometry args={[6, 6]} />
-        <meshStandardMaterial
-          color="#F8FAFC"
-          roughness={0.8}
-          metalness={0.1}
-        />
-      </mesh>
-
-      {/* Trajectory Laser Path */}
-      <primitive
-        object={
-          new THREE.Line(
-            lineGeometry,
-            new THREE.LineBasicMaterial({
-              color: accentColor,
-              linewidth: 2,
-              transparent: true,
-              opacity: 0.85,
-            })
-          )
-        }
-      />
-
-      {/* Moving Laser Pulse Marker */}
-      <mesh ref={pulsePointRef}>
-        <sphereGeometry args={[0.04, 12, 12]} />
-        <meshBasicMaterial color="#FFFFFF" />
-      </mesh>
+      {/* Trajectory Guide Polyline */}
+      <primitive object={new THREE.Line(
+        lineGeometry,
+        new THREE.LineBasicMaterial({
+          color: accentColor,
+          linewidth: 2,
+          transparent: true,
+          opacity: 0.75,
+        })
+      )} />
 
       {/* Waypoint Markers */}
       {waypoints.map((wp, idx) => (
-        <group key={idx} position={[wp.x, wp.y, wp.z]}>
-          <mesh position={[0, 0.1, 0]}>
-            <cylinderGeometry args={[0.08, 0.08, 0.2, 16]} />
+        <group key={idx} position={wp}>
+          <mesh position={[0, 0.05, 0]}>
+            <cylinderGeometry args={[0.08, 0.08, 0.02, 16]} />
             <meshStandardMaterial
-              color={idx === 0 ? '#10B981' : idx === waypoints.length - 1 ? '#F59E0B' : '#64748B'}
-              emissive={idx === 0 ? '#10B981' : idx === waypoints.length - 1 ? '#F59E0B' : '#64748B'}
-              emissiveIntensity={0.6}
+              color={idx === waypoints.length - 1 ? accentColor : STUDIO_COLORS.greyDark}
+              metalness={0.7}
+              roughness={0.3}
             />
           </mesh>
-          {/* Waypoint Ground Halo */}
-          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
-            <ringGeometry args={[0.12, 0.16, 24]} />
-            <meshBasicMaterial
-              color={idx === 0 ? '#10B981' : idx === waypoints.length - 1 ? '#F59E0B' : '#94A3B8'}
-              side={THREE.DoubleSide}
-              transparent
-              opacity={0.6}
-            />
-          </mesh>
+          {idx === waypoints.length - 1 && (
+            <mesh ref={pulsePointRef} position={[0, 0.12, 0]}>
+              <sphereGeometry args={[0.05, 12, 12]} />
+              <meshBasicMaterial color={accentColor} />
+            </mesh>
+          )}
         </group>
       ))}
 
-      {/* Obstacle Storage Blocks */}
+      {/* Obstacles in the Spatial Grid */}
       {obstacles.map((obs, idx) => (
         <mesh key={idx} position={obs.pos}>
           <boxGeometry args={obs.size} />
           <meshStandardMaterial
-            color="#E2E8F0"
-            roughness={0.4}
-            metalness={0.3}
+            color={STUDIO_COLORS.offWhiteElevated}
+            roughness={0.3}
+            metalness={0.2}
           />
         </mesh>
       ))}
@@ -165,9 +140,9 @@ export function RobotModel({ accentColor = '#10B981' }: RobotModelProps) {
         <mesh position={[0, 0.12, 0]} castShadow>
           <boxGeometry args={[0.36, 0.14, 0.48]} />
           <meshStandardMaterial
-            color="#1E293B"
-            roughness={0.2}
-            metalness={0.8}
+            color={STUDIO_COLORS.greyDark}
+            roughness={0.25}
+            metalness={0.7}
           />
         </mesh>
 
@@ -175,9 +150,9 @@ export function RobotModel({ accentColor = '#10B981' }: RobotModelProps) {
         <mesh position={[0, 0.22, -0.04]}>
           <boxGeometry args={[0.28, 0.06, 0.32]} />
           <meshStandardMaterial
-            color="#0F172A"
+            color={STUDIO_COLORS.grey}
             roughness={0.3}
-            metalness={0.9}
+            metalness={0.65}
           />
         </mesh>
 
@@ -186,9 +161,9 @@ export function RobotModel({ accentColor = '#10B981' }: RobotModelProps) {
           <mesh ref={lidarTurretRef}>
             <cylinderGeometry args={[0.06, 0.06, 0.08, 16]} />
             <meshStandardMaterial
-              color="#334155"
-              metalness={0.9}
-              roughness={0.1}
+              color={STUDIO_COLORS.greyDark}
+              metalness={0.8}
+              roughness={0.2}
             />
           </mesh>
           {/* LiDAR Laser Emitter Point */}
@@ -201,11 +176,11 @@ export function RobotModel({ accentColor = '#10B981' }: RobotModelProps) {
         {/* Rover Headlight Beams */}
         <mesh position={[0.1, 0.12, 0.24]} rotation={[Math.PI / 2, 0, 0]}>
           <circleGeometry args={[0.03, 12]} />
-          <meshBasicMaterial color="#38BDF8" />
+          <meshBasicMaterial color={STUDIO_COLORS.offWhite} />
         </mesh>
         <mesh position={[-0.1, 0.12, 0.24]} rotation={[Math.PI / 2, 0, 0]}>
           <circleGeometry args={[0.03, 12]} />
-          <meshBasicMaterial color="#38BDF8" />
+          <meshBasicMaterial color={STUDIO_COLORS.offWhite} />
         </mesh>
 
         {/* Status Indicator LED */}
@@ -223,7 +198,7 @@ export function RobotModel({ accentColor = '#10B981' }: RobotModelProps) {
               rotation={[0, 0, Math.PI / 2]}
             >
               <cylinderGeometry args={[0.06, 0.06, 0.05, 16]} />
-              <meshStandardMaterial color="#020617" roughness={0.7} />
+              <meshStandardMaterial color={STUDIO_COLORS.greyDark} roughness={0.6} />
             </mesh>
           ))
         )}
@@ -239,7 +214,7 @@ export function RobotModel({ accentColor = '#10B981' }: RobotModelProps) {
             color={accentColor}
             side={THREE.DoubleSide}
             transparent
-            opacity={0.5}
+            opacity={0.4}
           />
         </mesh>
       </group>

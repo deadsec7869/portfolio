@@ -3,6 +3,7 @@ import { StudioLights } from '../lighting/StudioLights';
 import { CameraController } from '../controllers/CameraController';
 import { ContactSculpture } from '../objects/ContactSculpture';
 import { ParticleField } from '../objects/ParticleField';
+import { STUDIO_COLORS } from '../materials/materials';
 
 interface ContactSceneProps {
   mousePosition?: { normalizedX: number; normalizedY: number };
@@ -11,7 +12,7 @@ interface ContactSceneProps {
 
 export function ContactScene({
   mousePosition,
-  accentColor = '#008899',
+  accentColor = STUDIO_COLORS.grey,
 }: ContactSceneProps) {
   return (
     <div className="w-full h-full relative pointer-events-none select-none">
@@ -20,7 +21,7 @@ export function ContactScene({
         className="w-full h-full"
         pointerEvents="none"
       >
-        <fog attach="fog" args={['#FAFAF8', 4, 15]} />
+        <fog attach="fog" args={[STUDIO_COLORS.offWhite, 4, 15]} />
 
         <StudioLights
           ambientIntensity={1.2}
@@ -37,10 +38,10 @@ export function ContactScene({
         <ContactSculpture mousePosition={mousePosition} accentColor={accentColor} />
 
         <ParticleField
-          count={120}
+          count={100}
           color={accentColor}
-          size={0.018}
-          speed={0.015}
+          size={0.014}
+          speed={0.012}
           radius={10}
         />
       </ExperienceCanvas>

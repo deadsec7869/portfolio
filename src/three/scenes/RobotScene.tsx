@@ -2,6 +2,7 @@ import { ExperienceCanvas } from '../Canvas/ExperienceCanvas';
 import { StudioLights } from '../lighting/StudioLights';
 import { CameraController } from '../controllers/CameraController';
 import { RobotModel } from '../objects/RobotModel';
+import { STUDIO_COLORS } from '../materials/materials';
 
 interface RobotSceneProps {
   mousePosition?: { normalizedX: number; normalizedY: number };
@@ -10,7 +11,7 @@ interface RobotSceneProps {
 
 export function RobotScene({
   mousePosition,
-  accentColor = '#10B981',
+  accentColor = STUDIO_COLORS.grey,
 }: RobotSceneProps) {
   return (
     <div className="w-full h-full relative">
@@ -19,7 +20,7 @@ export function RobotScene({
         className="w-full h-full"
         pointerEvents="auto"
       >
-        <fog attach="fog" args={['#FAFAF8', 5, 16]} />
+        <fog attach="fog" args={[STUDIO_COLORS.offWhite, 5, 16]} />
 
         <StudioLights
           ambientIntensity={1.2}

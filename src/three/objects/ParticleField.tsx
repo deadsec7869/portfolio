@@ -3,6 +3,8 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
 
+import { STUDIO_COLORS } from '../materials/materials';
+
 interface ParticleFieldProps {
   count?: number;
   color?: string;
@@ -19,7 +21,7 @@ function pseudoRandom(seed: number): number {
 
 export function ParticleField({
   count = 450,
-  color = '#008899',
+  color = STUDIO_COLORS.accent,
   size = 0.024,
   speed = 0.025,
   radius = 16,

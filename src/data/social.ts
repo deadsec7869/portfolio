@@ -13,9 +13,9 @@ export interface SocialData {
 }
 
 export const socialData: SocialData = {
-  name: 'TAMIM',
+  name: 'MUHAMMED TAMIM BAIG',
   role: 'Engineering Student · Developer · Builder',
-  shortBio: 'Engineering student building AI systems, software applications, interactive web experiences, developer tools, and automation.',
+  shortBio: 'Engineering student at Visvesvaraya Institute Of Advanced Technology exploring the intersection of machine intelligence, robust backend infrastructure, and computational craft.',
   statement: 'I BUILD DIGITAL EXPERIENCES, AI SYSTEMS, AND SOFTWARE THAT FEEL ALIVE.',
   
   // Real GitHub Profile

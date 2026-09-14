@@ -100,7 +100,7 @@ export function GlobeCursor() {
       {/* Precision Tiny Pointer Dot */}
       <div
         ref={dotRef}
-        className="fixed top-0 left-0 w-1.5 h-1.5 bg-[#111111] rounded-full pointer-events-none z-[99999] -translate-x-1/2 -translate-y-1/2 opacity-70"
+        className="fixed top-0 left-0 w-1.5 h-1.5 bg-[#3F3F3C] rounded-full pointer-events-none z-[99999] -translate-x-1/2 -translate-y-1/2 opacity-75"
         style={{ transform: 'translate3d(-100px, -100px, 0)' }}
       />
 
@@ -130,7 +130,7 @@ export function GlobeCursor() {
         >
           <ambientLight intensity={1.4} color="#FFFFFF" />
           <directionalLight position={[3, 4, 3]} intensity={2.0} color="#FFFFFF" />
-          <directionalLight position={[-3, -2, 1]} intensity={0.8} color="#94A3B8" />
+          <directionalLight position={[-3, -2, 1]} intensity={0.8} color="#ECE8DD" />
 
           <Globe
             cursorState={cursorState}

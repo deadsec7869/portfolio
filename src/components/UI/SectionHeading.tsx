@@ -1,4 +1,5 @@
 import { motion } from 'framer-motion';
+import { SectionLabel } from './SectionLabel';
 
 interface SectionHeadingProps {
   number: string; // e.g. "01", "02"
@@ -13,50 +14,38 @@ export function SectionHeading({
   title,
   subtitle,
   tag,
-  align = 'left'
+  align = 'left',
 }: SectionHeadingProps) {
   return (
     <div className={`mb-12 md:mb-16 ${align === 'center' ? 'text-center' : 'text-left'}`}>
-      {/* Top Index & Tag */}
-      <motion.div
+      {/* Reusable Metadata Section Label */}
+      <SectionLabel
+        number={number}
+        label={title}
+        tag={tag}
+        align={align}
+        className="mb-4"
+      />
+
+      {/* Large Editorial Display Heading */}
+      <motion.h2
         initial={{ opacity: 0, y: 15 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, margin: '-50px' }}
-        transition={{ duration: 0.5 }}
-        className={`flex items-center gap-3 text-xs font-mono-tech uppercase tracking-[0.2em] text-cyan-400 mb-3 ${
-          align === 'center' ? 'justify-center' : 'justify-start'
-        }`}
-      >
-        <span className="px-2 py-0.5 rounded bg-cyan-950/60 border border-cyan-500/30 text-cyan-300 font-semibold">
-          {number}
-        </span>
-        {tag && (
-          <>
-            <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-            <span className="text-slate-400">{tag}</span>
-          </>
-        )}
-      </motion.div>
-
-      {/* Main Editorial Heading */}
-      <motion.h2
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, margin: '-50px' }}
         transition={{ duration: 0.6, delay: 0.1 }}
-        className="text-3xl md:text-5xl lg:text-6xl font-display font-black tracking-tight text-white uppercase"
+        className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-black tracking-tight text-[#111111] uppercase leading-[0.92]"
       >
         {title}
       </motion.h2>
 
-      {/* Subtitle / Descriptive Text */}
+      {/* Medium Readable Body Description */}
       {subtitle && (
         <motion.p
           initial={{ opacity: 0, y: 15 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-50px' }}
           transition={{ duration: 0.5, delay: 0.2 }}
-          className="mt-4 text-base md:text-lg text-slate-400 max-w-2xl font-sans-clean leading-relaxed"
+          className="mt-4 text-base md:text-lg text-[#555550] max-w-2xl font-sans-clean leading-relaxed font-light"
         >
           {subtitle}
         </motion.p>

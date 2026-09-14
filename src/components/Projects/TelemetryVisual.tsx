@@ -24,50 +24,48 @@ export function TelemetryVisual() {
   }, []);
 
   return (
-    <div className="w-full bg-gradient-to-br from-[#1c1206] via-[#100b04] to-[#060401] rounded-2xl p-6 md:p-8 flex flex-col justify-between border border-amber-500/30 shadow-2xl relative overflow-hidden group">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
-
+    <div className="w-full bg-[#ECE8DD]/80 rounded-2xl p-6 md:p-8 flex flex-col justify-between border border-[#5E5E5A]/20 shadow-sm relative overflow-hidden group">
       {/* Top Header */}
-      <div className="flex items-center justify-between z-10 border-b border-white/10 pb-4">
+      <div className="flex items-center justify-between z-10 border-b border-[#5E5E5A]/15 pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-amber-950/80 border border-amber-500/40 flex items-center justify-center text-amber-300">
+          <div className="w-10 h-10 rounded-lg bg-[#F4F1E8] border border-[#5E5E5A]/20 flex items-center justify-center text-[#3F3F3C]">
             <Terminal className="w-5 h-5" />
           </div>
           <div>
-            <h4 className="text-sm font-display font-bold text-white tracking-wide">
+            <h4 className="text-sm font-display font-bold text-[#3F3F3C] tracking-wide">
               DISTRIBUTED TELEMETRY STREAM // LIVE
             </h4>
-            <p className="text-[11px] font-mono-tech text-amber-400">
+            <p className="text-[11px] font-mono-tech text-[#5E5E5A]">
               HIGH-THROUGHPUT WEBSOCKET INGEST &amp; ANOMALY ROUTER
             </p>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-amber-950/40 border border-amber-500/30 text-[10px] font-mono-tech text-amber-300">
-          <Zap className="w-3.5 h-3.5" />
+        <div className="flex items-center gap-2 px-2.5 py-1 rounded-full bg-[#F4F1E8] border border-[#5E5E5A]/20 text-[10px] font-mono-tech text-[#3F3F3C]">
+          <Zap className="w-3.5 h-3.5 text-[#5E5E5A]" />
           <span>50k MSG/S</span>
         </div>
       </div>
 
       {/* Terminal Stream Box */}
-      <div className="my-6 z-10 p-4 rounded-xl bg-black/80 border border-white/10 font-mono-tech text-xs space-y-2">
-        <div className="flex items-center justify-between text-slate-500 border-b border-white/5 pb-2 text-[10px]">
+      <div className="my-6 z-10 p-4 rounded-xl bg-[#F4F1E8] border border-[#5E5E5A]/20 font-mono-tech text-xs space-y-2 shadow-inner">
+        <div className="flex items-center justify-between text-[#8A8983] border-b border-[#5E5E5A]/15 pb-2 text-[10px]">
           <span>STREAM://INGEST_STATION</span>
-          <span className="flex items-center gap-1 text-emerald-400">
+          <span className="flex items-center gap-1 text-[#5E5E5A] font-semibold">
             <Activity className="w-3 h-3 animate-pulse" /> LIVE STREAM
           </span>
         </div>
         {logs.map((log, i) => (
-          <p key={i} className="text-amber-200/90 font-mono text-[11px] leading-relaxed">
-            <span className="text-amber-400">$</span> {log}
+          <p key={i} className="text-[#3F3F3C] font-mono text-[11px] leading-relaxed">
+            <span className="text-[#5E5E5A] font-bold">$</span> {log}
           </p>
         ))}
       </div>
 
       {/* Bottom Telemetry Bar */}
-      <div className="z-10 text-xs font-mono-tech text-slate-400 flex items-center justify-between border-t border-white/5 pt-3">
+      <div className="z-10 text-xs font-mono-tech text-[#8A8983] flex items-center justify-between border-t border-[#5E5E5A]/15 pt-3">
         <span>BUFFER: 0 DROPPED FRAMES</span>
-        <span className="text-amber-400">P99 LATENCY: 1.8ms</span>
+        <span className="text-[#5E5E5A] font-semibold">P99 LATENCY: 1.8ms</span>
       </div>
     </div>
   );

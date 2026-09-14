@@ -1,0 +1,43 @@
+:root {
+  /* Light Translucent Computational Studio Palette */
+  --color-bg: #F4F1E8;
+  --color-fg: #3F3F3C;
+  --color-grey: #74736E;
+  --color-grey-dark: #3F3F3C;
+  --color-grey-light: #A5A39C;
+  --color-border: #D1CEC5;
+  --color-cyan: #19C9E8;
+  --color-orange: #F27A22;
+
+  /* Semantic Aliases */
+  --background: #F4F1E8;
+  --foreground: #3F3F3C;
+  --foreground-secondary: #74736E;
+  --foreground-muted: #A5A39C;
+
+  /* Surfaces & Translucent Layers */
+  --surface: #F4F1E8;
+  --surface-translucent: rgba(255, 255, 255, 0.28);
+  --surface-card: rgba(255, 255, 255, 0.42);
+  --surface-elevated: #ECE8DD;
+  --surface-hover: rgba(255, 255, 255, 0.6);
+
+  /* Hairline Borders */
+  --border: rgba(63, 63, 60, 0.18);
+  --border-subtle: rgba(63, 63, 60, 0.08);
+  --border-strong: rgba(63, 63, 60, 0.35);
+
+  /* Accents (92% Monochrome, 6% Cyan, 2% Orange) */
+  --accent: #19C9E8;
+  --accent-secondary: #F27A22;
+
+  /* 3D Materials Studio Palette */
+  --three-sphere: #E7E4DC;
+  --three-wireframe: #8C8A84;
+  --three-ring-primary: #696863;
+  --three-ring-secondary: #B5B2AA;
+  --three-node: #5E5D58;
+  --three-node-light: #F8F6F0;
+  --three-cyan: #19C9E8;
+  --three-orange: #F27A22;
+}

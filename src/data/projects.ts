@@ -54,7 +54,7 @@ export const projects: Project[] = [
     github: 'https://github.com/deadsec7869/AI-Robot-Command-Center',
     demo: 'https://ai-robot-command-center.vercel.app',
     featured: true,
-    accentColor: '#10B981',
+    accentColor: '#5E5E5A',
     metrics: [
       { label: 'Primary Language', value: 'TypeScript' },
       { label: 'Algorithm', value: 'A* Pathfinding' },
@@ -100,7 +100,7 @@ export const projects: Project[] = [
     github: 'https://github.com/deadsec7869/AApesh',
     demo: '', // No live demo URL hosted yet; renders VIEW SOURCE only
     featured: true,
-    accentColor: '#00F0FF',
+    accentColor: '#5E5E5A',
     metrics: [
       { label: 'Primary Stack', value: 'React + Three.js' },
       { label: 'Animation Engine', value: 'GSAP + Motion' },
@@ -144,7 +144,7 @@ export const projects: Project[] = [
     github: 'https://github.com/deadsec7869/vtu-study-app',
     demo: 'https://vtu-study-app-tau.vercel.app',
     featured: true,
-    accentColor: '#8B5CF6',
+    accentColor: '#5E5E5A',
     metrics: [
       { label: 'Framework', value: 'Next.js 16 App Router' },
       { label: 'AI SDK', value: 'Google GenAI SDK' },
@@ -158,20 +158,15 @@ export const projects: Project[] = [
     ],
     architecture: {
       frontend: 'Next.js 16 + React 19 + TypeScript + Tailwind CSS 4.0',
-      dataPipeline: 'Google GenAI API (@google/genai) integration with server-side streaming'
+      backend: 'Google GenAI SDK Integration (@google/genai)',
+      dataPipeline: 'Edge-rendered static syllabus indexing and dynamic query synthesis'
     },
     challenges: [
-      'Optimizing GenAI prompt schemas to generate accurate, syllabus-aligned engineering summaries.',
-      'Designing a clean, lightweight mobile-friendly interface for fast academic reference.'
+      'Configuring real-time AI responses with minimal latency while preserving syllabus accuracy.',
+      'Building a clean responsive curriculum tree supporting multiple engineering engineering branches.'
     ],
-    result: 'Deployed a live academic platform on Vercel helping engineering students quickly review complex coursework with AI assistance.'
+    result: 'Published an academic assistant platform deployed globally to assist VTU students with syllabus discovery and topic breakdown.'
   }
 ];
 
-export const projectCategories: ProjectCategory[] = [
-  'ALL',
-  'AI',
-  'WEB',
-  '3D',
-  'TOOLS'
-];
+export const projectCategories: ProjectCategory[] = ['ALL', 'AI', 'WEB', '3D'];

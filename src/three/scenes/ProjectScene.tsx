@@ -4,6 +4,7 @@ import { ExperienceCanvas } from '../Canvas/ExperienceCanvas';
 import { StudioLights } from '../lighting/StudioLights';
 import { CameraController } from '../controllers/CameraController';
 import { FloatingGeometry } from '../objects/FloatingGeometry';
+import { STUDIO_COLORS } from '../materials/materials';
 
 interface ProjectSceneProps {
   type?: 'robot' | 'music' | 'neural' | 'telemetry' | 'web' | 'default' | string;
@@ -15,10 +16,9 @@ interface ProjectSceneProps {
 export function ProjectScene({
   type,
   projectId,
-  accentColor = '#008899',
+  accentColor = STUDIO_COLORS.grey,
   mousePosition,
 }: ProjectSceneProps) {
-  // Check either by type or specific project ID
   const isRobot =
     type === 'robot' ||
     type === 'AI' ||
@@ -37,7 +37,6 @@ export function ProjectScene({
     return <MusicScene mousePosition={mousePosition} accentColor={accentColor} />;
   }
 
-  // Default Editorial 3D Core Polyhedron Scene
   return (
     <div className="w-full h-full relative">
       <ExperienceCanvas
@@ -45,7 +44,7 @@ export function ProjectScene({
         className="w-full h-full"
         pointerEvents="auto"
       >
-        <fog attach="fog" args={['#FAFAF8', 4, 15]} />
+        <fog attach="fog" args={[STUDIO_COLORS.offWhite, 4, 15]} />
 
         <StudioLights
           ambientIntensity={1.2}

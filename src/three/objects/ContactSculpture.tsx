@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useReducedMotion } from '../../hooks/useReducedMotion';
+import { STUDIO_COLORS } from '../materials/materials';
 
 interface ContactSculptureProps {
   mousePosition?: { normalizedX: number; normalizedY: number };
@@ -10,7 +11,7 @@ interface ContactSculptureProps {
 
 export function ContactSculpture({
   mousePosition,
-  accentColor = '#008899',
+  accentColor = STUDIO_COLORS.grey,
 }: ContactSculptureProps) {
   const groupRef = useRef<THREE.Group>(null);
   const ring1Ref = useRef<THREE.Mesh>(null);
@@ -54,35 +55,35 @@ export function ContactSculpture({
 
   return (
     <group ref={groupRef} position={[0, 0, 0]}>
-      {/* Central Frosted Titanium Compass Node */}
+      {/* Central Warm Frosted Off-White Octahedron Core */}
       <mesh ref={coreRef}>
         <octahedronGeometry args={[0.7, 0]} />
         <meshStandardMaterial
-          color="#EAEFF4"
-          roughness={0.2}
-          metalness={0.8}
+          color={STUDIO_COLORS.offWhite}
+          roughness={0.25}
+          metalness={0.25}
           emissive="#FFFFFF"
-          emissiveIntensity={0.2}
+          emissiveIntensity={0.06}
         />
       </mesh>
 
-      {/* Primary Gyroscope Ring */}
+      {/* Primary Structural Orbital Ring */}
       <mesh ref={ring1Ref} rotation={[Math.PI / 4, 0, 0]}>
-        <torusGeometry args={[1.3, 0.012, 16, 80]} />
-        <meshStandardMaterial
-          color="#334155"
-          metalness={0.8}
-          roughness={0.2}
-        />
-      </mesh>
-
-      {/* Secondary Cyan Coordinate Ring */}
-      <mesh ref={ring2Ref} rotation={[-Math.PI / 3, Math.PI / 4, 0]}>
-        <torusGeometry args={[1.65, 0.008, 16, 80]} />
+        <torusGeometry args={[1.35, 0.009, 16, 80]} />
         <meshBasicMaterial
           color={accentColor}
           transparent
-          opacity={0.45}
+          opacity={0.65}
+        />
+      </mesh>
+
+      {/* Secondary Structural Gyro Ring */}
+      <mesh ref={ring2Ref} rotation={[-Math.PI / 3, Math.PI / 6, 0]}>
+        <torusGeometry args={[1.65, 0.006, 16, 80]} />
+        <meshBasicMaterial
+          color={STUDIO_COLORS.greyLight}
+          transparent
+          opacity={0.35}
         />
       </mesh>
     </group>

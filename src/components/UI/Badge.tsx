@@ -3,7 +3,7 @@ import { cn } from '../../lib/utils';
 
 interface BadgeProps {
   children: ReactNode;
-  variant?: 'default' | 'cyan' | 'emerald' | 'purple' | 'amber' | 'outline';
+  variant?: 'default' | 'accent' | 'muted' | 'outline' | 'status' | 'cyan' | 'emerald' | 'purple' | 'amber';
   className?: string;
   dot?: boolean;
 }
@@ -15,27 +15,33 @@ export function Badge({
   dot = false
 }: BadgeProps) {
   const variantStyles = {
-    default: 'bg-black/5 text-slate-700 border-black/10',
-    cyan: 'bg-black/5 text-[#111111] border-black/15',
-    emerald: 'bg-emerald-50 text-emerald-800 border-emerald-200',
-    purple: 'bg-purple-50 text-purple-800 border-purple-200',
-    amber: 'bg-amber-50 text-amber-800 border-amber-200',
-    outline: 'bg-transparent text-slate-700 border-black/15'
+    default: 'bg-[#ECE8DD] text-[#3F3F3C] border-[#5E5E5A]/25',
+    accent: 'bg-[#5E5E5A] text-[#F4F1E8] border-[#5E5E5A]',
+    muted: 'bg-[#ECE8DD]/50 text-[#8A8983] border-[#5E5E5A]/15',
+    outline: 'bg-transparent text-[#5E5E5A] border-[#5E5E5A]/30',
+    status: 'bg-[#ECE8DD] text-[#3F3F3C] border-[#5E5E5A]/30 font-semibold',
+    cyan: 'bg-[#ECE8DD] text-[#3F3F3C] border-[#5E5E5A]/25',
+    emerald: 'bg-[#ECE8DD] text-[#3F3F3C] border-[#5E5E5A]/25',
+    purple: 'bg-[#ECE8DD] text-[#3F3F3C] border-[#5E5E5A]/25',
+    amber: 'bg-[#ECE8DD] text-[#3F3F3C] border-[#5E5E5A]/25',
   };
 
   const dotColors = {
-    default: 'bg-slate-500',
-    cyan: 'bg-[#111111]',
-    emerald: 'bg-emerald-600',
-    purple: 'bg-purple-600',
-    amber: 'bg-amber-600',
-    outline: 'bg-slate-500'
+    default: 'bg-[#5E5E5A]',
+    accent: 'bg-[#F4F1E8]',
+    muted: 'bg-[#8A8983]',
+    outline: 'bg-[#8A8983]',
+    status: 'bg-[#5E5E5A]',
+    cyan: 'bg-[#5E5E5A]',
+    emerald: 'bg-[#5E5E5A]',
+    purple: 'bg-[#5E5E5A]',
+    amber: 'bg-[#5E5E5A]',
   };
 
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md text-xs font-mono-tech uppercase tracking-wider border transition-colors',
+        'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-mono-tech uppercase tracking-wider border transition-colors',
         variantStyles[variant],
         className
       )}
