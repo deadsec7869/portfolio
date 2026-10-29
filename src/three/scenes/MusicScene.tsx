@@ -21,7 +21,7 @@ export function MusicScene({
         className="w-full h-full"
         pointerEvents="auto"
       >
-        <fog attach="fog" args={[STUDIO_COLORS.offWhite, 5, 14]} />
+        <fog attach="fog" args={[STUDIO_COLORS.bgMain, 5, 14]} />
 
         <StudioLights
           ambientIntensity={1.25}

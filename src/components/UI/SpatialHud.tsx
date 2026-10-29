@@ -59,26 +59,26 @@ export function SpatialHud({ activeSection }: SpatialHudProps) {
         >
           <div className="max-w-7xl mx-auto flex items-center justify-between pointer-events-auto">
             {/* Left: Altitude & Active Chapter */}
-            <div className="flex items-center gap-3 bg-white/60 backdrop-blur-xl px-4 py-2 rounded-full border border-[#3F3F3C]/18 shadow-md text-[11px] font-mono-tech">
-              <span className="text-[#3F3F3C] font-bold">
+            <div className="flex items-center gap-3 bg-[#1e1e2a]/90 backdrop-blur-xl px-4 py-2 rounded-full border border-[#70707d]/25 shadow-none text-[11px] font-mono-tech">
+              <span className="text-[#ededf3] font-[480]">
                 ALT.{String(altitude).padStart(4, '0')}M
               </span>
-              <span className="w-1 h-3 bg-[#3F3F3C]/20" />
-              <span className="text-[#74736E] uppercase font-medium">
+              <span className="w-1 h-3 bg-[#70707d]/30" />
+              <span className="text-[#c3c3cc] uppercase font-medium">
                 {sectionMap[activeSection] || '00 // INDEX'}
               </span>
             </div>
 
             {/* Center: Scrollytelling Progress Bar */}
-            <div className="hidden md:flex items-center gap-3 bg-white/60 backdrop-blur-xl px-5 py-2.5 rounded-full border border-[#3F3F3C]/18 shadow-md">
-              <span className="text-[10px] font-mono-tech text-[#A5A39C] uppercase tracking-wider">PROGRESS</span>
-              <div className="w-32 h-[3px] bg-[#3F3F3C]/15 rounded-full overflow-hidden">
+            <div className="hidden md:flex items-center gap-3 bg-[#1e1e2a]/90 backdrop-blur-xl px-5 py-2.5 rounded-full border border-[#70707d]/25 shadow-none">
+              <span className="text-[10px] font-mono-tech text-[#c3c3cc] uppercase tracking-wider">PROGRESS</span>
+              <div className="w-32 h-[3px] bg-[#272735] rounded-full overflow-hidden">
                 <div
-                  className="h-full bg-[#3F3F3C] transition-all duration-150"
+                  className="h-full bg-[#5266eb] transition-all duration-150"
                   style={{ width: `${Math.round(scrollProgress * 100)}%` }}
                 />
               </div>
-              <span className="text-[10px] font-mono-tech text-[#3F3F3C] font-bold min-w-[3ch]">
+              <span className="text-[10px] font-mono-tech text-[#ededf3] font-[480] min-w-[3ch]">
                 {Math.round(scrollProgress * 100)}%
               </span>
             </div>
@@ -87,21 +87,21 @@ export function SpatialHud({ activeSection }: SpatialHudProps) {
             <div className="flex items-center gap-2">
               <button
                 onClick={handleAudioToggle}
-                className="xl:hidden flex items-center gap-1.5 bg-white/60 backdrop-blur-xl p-2.5 rounded-full border border-[#3F3F3C]/18 text-[#74736E] hover:text-[#3F3F3C] transition-colors cursor-pointer shadow-sm"
+                className="xl:hidden flex items-center gap-1.5 bg-[#1e1e2a]/90 backdrop-blur-xl p-2.5 rounded-full border border-[#70707d]/25 text-[#c3c3cc] hover:text-[#ededf3] transition-colors cursor-pointer shadow-none"
                 aria-label="Toggle Audio"
               >
-                {isMuted ? <VolumeX className="w-4 h-4 text-[#A5A39C]" /> : <Volume2 className="w-4 h-4 text-[#19C9E8]" />}
+                {isMuted ? <VolumeX className="w-4 h-4 text-[#70707d]" /> : <Volume2 className="w-4 h-4 text-[#5266eb]" />}
               </button>
 
               <button
                 onClick={scrollToTop}
                 onMouseEnter={() => spatialAudio.playHover()}
-                className="flex items-center gap-1.5 bg-white/60 backdrop-blur-xl px-3.5 py-2.5 rounded-full border border-[#3F3F3C]/18 hover:border-[#3F3F3C]/40 text-[#74736E] hover:text-[#3F3F3C] transition-all cursor-pointer group text-xs font-mono-tech shadow-md"
+                className="flex items-center gap-1.5 bg-[#1e1e2a]/90 backdrop-blur-xl px-3.5 py-2.5 rounded-full border border-[#70707d]/25 hover:border-[#ededf3]/40 text-[#c3c3cc] hover:text-[#ededf3] transition-all cursor-pointer group text-xs font-mono-tech shadow-none"
                 data-cursor="TOP"
                 title="Return to Altitude Origin"
               >
-                <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform text-[#3F3F3C]" />
-                <span className="hidden sm:inline text-[11px] font-semibold">TOP</span>
+                <ArrowUp className="w-3.5 h-3.5 group-hover:-translate-y-0.5 transition-transform text-[#ededf3]" />
+                <span className="hidden sm:inline text-[11px] font-[480]">TOP</span>
               </button>
             </div>
           </div>

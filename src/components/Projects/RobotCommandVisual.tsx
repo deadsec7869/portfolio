@@ -107,18 +107,18 @@ export function RobotCommandVisual() {
   };
 
   return (
-    <div className="w-full bg-[#ECE8DD]/80 rounded-2xl p-6 md:p-8 flex flex-col justify-between border border-[#5E5E5A]/20 shadow-sm relative overflow-hidden group">
+    <div className="w-full bg-[#1e1e2a] rounded-[12px] p-6 md:p-8 flex flex-col justify-between border-0 shadow-none relative overflow-hidden group text-[#ededf3]">
       {/* Top Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 z-10 border-b border-[#5E5E5A]/15 pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 z-10 border-b border-[#70707d]/20 pb-4">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-lg bg-[#F4F1E8] border border-[#5E5E5A]/20 flex items-center justify-center text-[#3F3F3C]">
-            <Bot className="w-5 h-5" />
+          <div className="w-10 h-10 rounded-lg bg-[#272735] border border-[#70707d]/20 flex items-center justify-center text-[#ededf3]">
+            <Bot className="w-5 h-5 text-[#5266eb]" />
           </div>
           <div>
-            <h4 className="text-sm font-display font-bold text-[#3F3F3C] tracking-wide">
+            <h4 className="text-sm font-display font-[480] text-[#ededf3] tracking-wide">
               AI ROBOT COMMAND CENTER // UNIT-07
             </h4>
-            <p className="text-[11px] font-mono-tech text-[#5E5E5A]">
+            <p className="text-[11px] font-mono-tech text-[#c3c3cc]">
               A* HEURISTIC PATHFINDING &amp; WAYPOINT TELEMETRY
             </p>
           </div>
@@ -127,15 +127,15 @@ export function RobotCommandVisual() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsSimulating(!isSimulating)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F4F1E8] hover:bg-[#ECE8DD] border border-[#5E5E5A]/20 text-[11px] font-mono-tech text-[#5E5E5A] hover:text-[#3F3F3C] transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#272735] hover:bg-[#323244] border border-[#70707d]/25 text-[11px] font-mono-tech text-[#ededf3] transition-colors cursor-pointer"
           >
-            {isSimulating ? <RotateCcw className="w-3.5 h-3.5 text-[#5E5E5A]" /> : <Play className="w-3.5 h-3.5 text-[#5E5E5A]" />}
+            {isSimulating ? <RotateCcw className="w-3.5 h-3.5 text-[#5266eb]" /> : <Play className="w-3.5 h-3.5 text-[#ededf3]" />}
             <span>{isSimulating ? 'PAUSE ROVER' : 'RUN SIM'}</span>
           </button>
 
           <button
             onClick={resetGrid}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#F4F1E8] hover:bg-[#ECE8DD] border border-[#5E5E5A]/20 text-[11px] font-mono-tech text-[#3F3F3C] transition-colors cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#272735] hover:bg-[#323244] border border-[#70707d]/25 text-[11px] font-mono-tech text-[#ededf3] transition-colors cursor-pointer"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             <span>RESET MAP</span>
@@ -147,7 +147,7 @@ export function RobotCommandVisual() {
       <div className="my-6 z-10 grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
         {/* Interactive 8x8 Grid */}
         <div className="md:col-span-7 flex flex-col items-center">
-          <div className="grid grid-cols-8 gap-1.5 p-3 rounded-xl bg-[#F4F1E8] border border-[#5E5E5A]/20 shadow-inner">
+          <div className="grid grid-cols-8 gap-1.5 p-3 rounded-[12px] bg-[#171721] border border-[#70707d]/20 shadow-none">
             {Array.from({ length: GRID_SIZE }).map((_, r) =>
               Array.from({ length: GRID_SIZE }).map((_, c) => {
                 const isStart = r === startPos.r && c === startPos.c;
@@ -166,16 +166,16 @@ export function RobotCommandVisual() {
                     }}
                     className={`w-7 h-7 sm:w-8 sm:h-8 rounded flex items-center justify-center text-[10px] font-mono-tech transition-all cursor-pointer ${
                       isRoverHere
-                        ? 'bg-[#3F3F3C] text-[#F4F1E8] font-extrabold shadow-md scale-105 z-10'
+                        ? 'bg-[#5266eb] text-[#ffffff] font-extrabold shadow-none scale-105 z-10'
                         : isStart
-                        ? 'bg-[#3F3F3C] text-[#F4F1E8] font-bold'
+                        ? 'bg-[#272735] text-[#ededf3] font-bold'
                         : isTarget
-                        ? 'bg-[#5E5E5A] text-[#F4F1E8] font-bold shadow-sm'
+                        ? 'bg-[#5266eb]/30 border border-[#5266eb] text-[#ffffff] font-bold'
                         : isObstacle
-                        ? 'bg-[#ECE8DD] border border-[#5E5E5A]/30 text-[#8A8983]'
+                        ? 'bg-[#272735] border border-[#70707d]/30 text-[#70707d]'
                         : isPath
-                        ? 'bg-[#5E5E5A]/20 border border-[#5E5E5A]/40 text-[#3F3F3C]'
-                        : 'bg-[#F4F1E8] hover:bg-[#ECE8DD] border border-[#5E5E5A]/15'
+                        ? 'bg-[#5266eb]/15 border border-[#5266eb]/30 text-[#ededf3]'
+                        : 'bg-[#171721] hover:bg-[#272735] border border-[#70707d]/15 text-[#70707d]'
                     }`}
                     title={
                       isRoverHere
@@ -195,43 +195,43 @@ export function RobotCommandVisual() {
               })
             )}
           </div>
-          <span className="text-[10px] font-mono-tech text-[#8A8983] mt-2">
+          <span className="text-[10px] font-mono-tech text-[#70707d] mt-2">
             CLICK TO TOGGLE WALLS &middot; RIGHT-CLICK TO RELOCATE TARGET
           </span>
         </div>
 
         {/* Live Metrics Cockpit */}
         <div className="md:col-span-5 flex flex-col gap-3">
-          <div className="p-4 rounded-xl bg-[#F4F1E8] border border-[#5E5E5A]/20 font-mono-tech text-xs space-y-2 shadow-sm">
-            <div className="flex justify-between text-[#8A8983]">
+          <div className="p-4 rounded-[12px] bg-[#171721] border border-[#70707d]/20 font-mono-tech text-xs space-y-2 shadow-none text-[#ededf3]">
+            <div className="flex justify-between text-[#c3c3cc]">
               <span>ROVER COORD:</span>
-              <span className="text-[#3F3F3C] font-bold">[{currentRobotPos.r}, {currentRobotPos.c}]</span>
+              <span className="text-[#ededf3] font-[480]">[{currentRobotPos.r}, {currentRobotPos.c}]</span>
             </div>
-            <div className="flex justify-between text-[#8A8983]">
+            <div className="flex justify-between text-[#c3c3cc]">
               <span>PATH NODES:</span>
-              <span className="text-[#5E5E5A] font-bold">{path.length} NODES</span>
+              <span className="text-[#5266eb] font-[480]">{path.length} NODES</span>
             </div>
-            <div className="flex justify-between text-[#8A8983]">
+            <div className="flex justify-between text-[#c3c3cc]">
               <span>A* LATENCY:</span>
-              <span className="text-[#3F3F3C]">&lt; 1.8ms</span>
+              <span className="text-[#ededf3]">&lt; 1.8ms</span>
             </div>
-            <div className="flex justify-between text-[#8A8983]">
+            <div className="flex justify-between text-[#c3c3cc]">
               <span>ALGORITHM:</span>
-              <span className="text-[#5E5E5A]">MANHATTAN HEURISTIC</span>
+              <span className="text-[#ededf3]">MANHATTAN HEURISTIC</span>
             </div>
           </div>
 
-          <div className="p-3 rounded-lg bg-[#ECE8DD] border border-[#5E5E5A]/20 text-[11px] font-mono-tech text-[#3F3F3C] flex items-center gap-2">
-            <Navigation className="w-4 h-4 shrink-0 text-[#5E5E5A] animate-pulse" />
+          <div className="p-3.5 rounded-[12px] bg-[#272735] border border-[#70707d]/20 text-[11px] font-mono-tech text-[#ededf3] flex items-center gap-2">
+            <Navigation className="w-4 h-4 shrink-0 text-[#5266eb] animate-pulse" />
             <span>WAYPOINT TARGET LOCK: ({targetPos.r}, {targetPos.c})</span>
           </div>
         </div>
       </div>
 
       {/* Bottom Telemetry Bar */}
-      <div className="z-10 text-xs font-mono-tech text-[#8A8983] flex items-center justify-between border-t border-[#5E5E5A]/15 pt-3">
+      <div className="z-10 text-xs font-mono-tech text-[#70707d] flex items-center justify-between border-t border-[#70707d]/20 pt-3">
         <span>GRID SYSTEM: 64 ACTIVE MATRIX SECTORS</span>
-        <span className="text-[#5E5E5A] font-semibold">STATUS: PATH LOCKED</span>
+        <span className="text-[#ededf3] font-[480]">STATUS: PATH LOCKED</span>
       </div>
     </div>
   );

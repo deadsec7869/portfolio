@@ -44,22 +44,22 @@ export function MagneticButton({
   };
 
   const sizeStyles = {
-    sm: 'px-3.5 py-1.5 text-xs',
-    md: 'px-5 py-2.5 text-xs',
-    lg: 'px-7 py-3.5 text-sm'
+    sm: 'px-4 py-2 text-xs rounded-[32px]',
+    md: 'px-6 py-2.5 text-xs rounded-[32px]',
+    lg: 'px-8 py-3.5 text-sm rounded-[32px]'
   };
 
   const variantStyles = {
     primary:
-      'bg-[#3F3F3C] text-[#F4F1E8] hover:bg-[#5E5E5A] border border-[#3F3F3C] shadow-sm',
+      'bg-[#5266eb] text-[#ffffff] hover:bg-[#4355db] border-0 shadow-none font-[400]',
     secondary:
-      'bg-[#ECE8DD] text-[#3F3F3C] hover:bg-[#F4F1E8] border border-[#5E5E5A]/25 shadow-xs',
+      'bg-[#272735] text-[#ededf3] hover:bg-[#323244] border-0 shadow-none font-[400]',
     outline:
-      'bg-transparent text-[#3F3F3C] border border-[#5E5E5A]/25 hover:border-[#5E5E5A] hover:text-[#5E5E5A]',
+      'bg-transparent text-[#ededf3] border border-[#ededf3] hover:bg-white/5 rounded-[40px] font-[400]',
     ghost:
-      'bg-transparent text-[#5E5E5A] hover:text-[#3F3F3C] border border-transparent',
+      'bg-transparent text-[#c3c3cc] hover:text-[#ededf3] hover:bg-white/5 border border-transparent rounded-[40px]',
     editorial:
-      'bg-transparent text-[#3F3F3C] hover:text-[#5E5E5A] border-b border-[#5E5E5A]/30 hover:border-[#5E5E5A] rounded-none px-0 py-1'
+      'bg-transparent text-[#ededf3] hover:text-white border-b border-[#70707d]/40 hover:border-[#ededf3] rounded-none px-0 py-1'
   };
 
   const content = (

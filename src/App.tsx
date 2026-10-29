@@ -28,7 +28,7 @@ export function App() {
   ]);
 
   return (
-    <div className="relative min-h-screen bg-[#F4F1E8] text-[#3F3F3C] selection:bg-[#19C9E8]/20 selection:text-[#3F3F3C]">
+    <div className="relative min-h-screen bg-[#171721] text-[#ededf3] selection:bg-[#5266eb]/30 selection:text-white">
       {/* Screen Loader Transition */}
       <LoadingScreen onComplete={() => {}} />
 

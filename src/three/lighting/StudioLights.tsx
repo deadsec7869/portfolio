@@ -37,16 +37,16 @@ export const StudioLights = memo(function StudioLights({
       {/* Specular Rim Light from Behind */}
       <directionalLight
         position={[4, -8, -6]}
-        intensity={directionalIntensity * 0.45}
-        color={STUDIO_COLORS.offWhiteElevated}
+        intensity={directionalIntensity * 0.55}
+        color="#ededf3"
       />
 
       {/* Focal Point Fill for Foreground Depth */}
       {enablePointLight && (
         <pointLight
           position={[0, -2, 4]}
-          intensity={0.4}
-          color={STUDIO_COLORS.offWhiteElevated}
+          intensity={0.5}
+          color="#5266eb"
           distance={12}
         />
       )}

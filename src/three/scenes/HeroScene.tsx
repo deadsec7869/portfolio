@@ -24,8 +24,8 @@ export function HeroScene({ mousePosition }: HeroSceneProps) {
       className="w-full h-full"
       pointerEvents="none"
     >
-      {/* Light Translucent Studio Atmospheric Fog */}
-      <fog attach="fog" args={['#F4F1E8', 12, 30]} />
+      {/* Mercury Alpine Dark Atmospheric Fog */}
+      <fog attach="fog" args={['#171721', 12, 30]} />
 
       {/* Soft Computational Studio Lighting */}
       <StudioLights
@@ -36,7 +36,7 @@ export function HeroScene({ mousePosition }: HeroSceneProps) {
 
       {/* Soft directional studio fill lights */}
       <pointLight position={[4, 3, 3]} intensity={0.6} color="#FFFFFF" distance={10} />
-      <pointLight position={[-4, -3, 2]} intensity={0.4} color="#E7E4DC" distance={9} />
+      <pointLight position={[-4, -3, 2]} intensity={0.4} color="#272735" distance={9} />
 
       {/* Smooth Damped Camera Controller with Scroll Depth */}
       <CameraController
@@ -55,16 +55,16 @@ export function HeroScene({ mousePosition }: HeroSceneProps) {
       {/* Subtle Ambient Dust Motes */}
       <ParticleField
         count={starCount}
-        color="#A5A39C"
+        color="#70707d"
         size={quality === 'LOW' ? 0.012 : 0.008}
         speed={0.0015}
         radius={16}
       />
 
-      {/* Sparse Subtle Cyan Motes */}
+      {/* Sparse Subtle Cobalt Motes */}
       <ParticleField
         count={cyanDustCount}
-        color="#19C9E8"
+        color="#5266eb"
         size={quality === 'LOW' ? 0.014 : 0.009}
         speed={0.003}
         radius={10}

@@ -20,7 +20,7 @@ export function RobotScene({
         className="w-full h-full"
         pointerEvents="auto"
       >
-        <fog attach="fog" args={[STUDIO_COLORS.offWhite, 5, 16]} />
+        <fog attach="fog" args={[STUDIO_COLORS.bgMain, 5, 16]} />
 
         <StudioLights
           ambientIntensity={1.2}

@@ -26,16 +26,16 @@ export function SectionLabel({
       } ${className}`}
     >
       {/* Number and Section Title */}
-      <span className="text-[#5E5E5A] font-bold">
+      <span className="text-[#ededf3] font-[480]">
         {number} / {label}
       </span>
 
       {/* Thin Technical Separator Line */}
-      <span className="w-6 h-[1px] bg-[#5E5E5A]/30" />
+      <span className="w-6 h-[1px] bg-[#70707d]/40" />
 
       {/* Metadata Description */}
       {tag && (
-        <span className="text-[#8A8983] font-normal tracking-widest hidden sm:inline">
+        <span className="text-[#c3c3cc] font-normal tracking-widest hidden sm:inline">
           {tag}
         </span>
       )}

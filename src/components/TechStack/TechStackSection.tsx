@@ -50,7 +50,7 @@ export function TechStackSection() {
   return (
     <section
       id="stack"
-      className="relative w-full py-28 md:py-36 bg-transparent border-t border-[#3F3F3C]/15 overflow-hidden"
+      className="relative w-full py-28 md:py-36 bg-transparent border-t border-[#70707d]/20 overflow-hidden text-[#ededf3]"
     >
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
         {/* Header Chapter */}
@@ -62,33 +62,33 @@ export function TechStackSection() {
               tag="TECHNICAL SPECTRUM / INTERACTIVE KNOWLEDGE GRAPH"
               className="mb-3"
             />
-            <h2 className="text-4xl sm:text-6xl md:text-7xl font-display font-black text-[#3F3F3C] tracking-tight uppercase leading-[0.9]">
+            <h2 className="text-4xl sm:text-6xl md:text-7xl font-display font-[480] text-[#ededf3] tracking-[0.01em] uppercase leading-[0.95]">
               CAPABILITIES &amp; <br />
-              <span className="text-[#74736E]">SYSTEM GRAPH</span>
+              <span className="text-[#c3c3cc]">SYSTEM GRAPH</span>
             </h2>
           </div>
 
           {/* System Telemetry Status Indicator */}
-          <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-white/40 backdrop-blur-md border border-[#3F3F3C]/15 text-xs font-mono-tech self-start md:self-end">
-            <span className="flex items-center gap-1.5 text-[#3F3F3C] font-bold">
-              <span className="w-2 h-2 rounded-full bg-[#19C9E8] animate-pulse" />
+          <div className="flex items-center gap-3 px-4 py-2 rounded-full bg-[#272735] border border-[#70707d]/20 text-xs font-mono-tech self-start md:self-end">
+            <span className="flex items-center gap-1.5 text-[#ededf3] font-[480]">
+              <span className="w-2 h-2 rounded-full bg-[#5266eb] animate-pulse" />
               SYSTEM GRAPH
             </span>
-            <span className="text-[#A5A39C]">&middot;</span>
-            <span className="text-[#74736E]">ONLINE // 18 ACTIVE NODES</span>
+            <span className="text-[#70707d]">&middot;</span>
+            <span className="text-[#c3c3cc]">ONLINE // 18 ACTIVE NODES</span>
           </div>
         </div>
 
         {/* Editorial Subtitle */}
         <div className="mb-10 max-w-3xl">
-          <p className="text-sm sm:text-base text-[#74736E] font-sans-clean font-light leading-relaxed">
+          <p className="text-sm sm:text-base text-[#c3c3cc] font-sans-clean font-[400] leading-relaxed">
             An interactive 3D knowledge graph modeling engineering competencies, domain specializations,
             algorithmic workflows, and production systems across verified repositories.
           </p>
         </div>
 
         {/* Domain Category Filter Tabs */}
-        <div className="flex flex-wrap gap-1.5 p-1.5 rounded-2xl bg-white/40 backdrop-blur-md border border-[#3F3F3C]/15 mb-6 w-fit">
+        <div className="flex flex-wrap gap-1.5 p-1.5 rounded-full bg-[#1e1e2a] border border-[#70707d]/20 mb-6 w-fit shadow-none">
           {categories.map((cat) => (
             <button
               key={cat.value}
@@ -100,10 +100,10 @@ export function TechStackSection() {
                   if (firstOfCat) setSelectedNode(firstOfCat);
                 }
               }}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-mono-tech tracking-wider uppercase transition-all cursor-pointer ${
+              className={`px-4 py-1.5 rounded-full text-xs font-mono-tech tracking-wider uppercase transition-all cursor-pointer ${
                 activeCategory === cat.value
-                  ? 'bg-[#3F3F3C] text-[#F4F1E8] font-bold shadow-xs'
-                  : 'text-[#74736E] hover:text-[#3F3F3C] hover:bg-white/60'
+                  ? 'bg-[#5266eb] text-[#ffffff] font-[480] shadow-none'
+                  : 'text-[#c3c3cc] hover:text-[#ededf3]'
               }`}
             >
               {cat.label}
@@ -113,28 +113,28 @@ export function TechStackSection() {
 
         {/* Main 3D Constellation Stage + Real-time Inspector */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start mb-16">
-          {/* 3D WebGL Canvas Stage */}
-          <div className="lg:col-span-8 h-[520px] sm:h-[600px] rounded-3xl bg-[#ECE8DD]/40 backdrop-blur-md border border-[#3F3F3C]/15 shadow-xs relative overflow-hidden flex flex-col justify-between">
+          {/* 3D WebGL Canvas Stage (Mercury Level 1 Graphite Card) */}
+          <div className="lg:col-span-8 h-[520px] sm:h-[600px] rounded-[12px] bg-[#1e1e2a] border-0 shadow-none relative overflow-hidden flex flex-col justify-between">
             {/* Top Toolbar overlay */}
             <div className="p-4 sm:p-6 z-10 flex flex-wrap items-center justify-between gap-3 pointer-events-none">
-              <div className="flex items-center gap-2 text-[11px] font-mono-tech text-[#74736E] bg-white/70 px-3 py-1.5 rounded-xl border border-[#3F3F3C]/15 shadow-xs">
-                <span className="text-[#3F3F3C] font-bold">NODE INSPECT:</span>
-                <span className="font-semibold text-[#19C9E8]">{selectedNode.label}</span>
+              <div className="flex items-center gap-2 text-[11px] font-mono-tech text-[#c3c3cc] bg-[#272735] px-3.5 py-1.5 rounded-full border border-[#70707d]/20 shadow-none">
+                <span className="text-[#ededf3] font-[480]">NODE INSPECT:</span>
+                <span className="font-[480] text-[#5266eb]">{selectedNode.label}</span>
               </div>
 
               <div className="flex items-center gap-2 pointer-events-auto">
                 <button
                   onClick={() => setIsPaused(!isPaused)}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/60 hover:bg-white border border-[#3F3F3C]/18 text-[11px] font-mono-tech text-[#74736E] hover:text-[#3F3F3C] transition-all cursor-pointer shadow-xs"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#272735] hover:bg-[#323244] border border-[#70707d]/25 text-[11px] font-mono-tech text-[#c3c3cc] hover:text-[#ededf3] transition-all cursor-pointer shadow-none"
                   title="Toggle Orbit Drift"
                 >
-                  {isPaused ? <Play className="w-3.5 h-3.5 text-[#19C9E8]" /> : <Pause className="w-3.5 h-3.5 text-[#74736E]" />}
+                  {isPaused ? <Play className="w-3.5 h-3.5 text-[#5266eb]" /> : <Pause className="w-3.5 h-3.5 text-[#c3c3cc]" />}
                   <span>{isPaused ? 'RESUME' : 'PAUSE'}</span>
                 </button>
 
                 <button
                   onClick={handleReset}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/60 hover:bg-white border border-[#3F3F3C]/18 text-[11px] font-mono-tech text-[#74736E] hover:text-[#3F3F3C] transition-all cursor-pointer shadow-xs"
+                  className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#272735] hover:bg-[#323244] border border-[#70707d]/25 text-[11px] font-mono-tech text-[#c3c3cc] hover:text-[#ededf3] transition-all cursor-pointer shadow-none"
                   title="Reset to Central Root"
                 >
                   <RotateCcw className="w-3.5 h-3.5" />
@@ -161,9 +161,9 @@ export function TechStackSection() {
             </div>
 
             {/* Bottom Interaction Guide Footer */}
-            <div className="p-4 sm:p-6 z-10 flex flex-wrap items-center justify-between text-[10px] font-mono-tech text-[#A5A39C] pointer-events-none bg-gradient-to-t from-[#ECE8DD]/90 via-[#ECE8DD]/40 to-transparent">
+            <div className="p-4 sm:p-6 z-10 flex flex-wrap items-center justify-between text-[10px] font-mono-tech text-[#70707d] pointer-events-none bg-gradient-to-t from-[#1e1e2a] via-[#1e1e2a]/40 to-transparent">
               <span className="flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#19C9E8]" />
+                <span className="w-1.5 h-1.5 rounded-full bg-[#5266eb]" />
                 DRAG TO ROTATE &middot; SCROLL TO EXPLORE &middot; SELECT A NODE TO INSPECT
               </span>
               <span className="hidden sm:inline">COORDINATES // [X, Y, Z] GRAPH SPACE</span>
@@ -179,54 +179,54 @@ export function TechStackSection() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -15 }}
                 transition={{ duration: 0.25 }}
-                className="p-6 md:p-8 rounded-3xl bg-[#ECE8DD]/80 border border-[#3F3F3C]/20 backdrop-blur-xl shadow-xs flex flex-col gap-5 corner-mark"
+                className="p-6 md:p-8 rounded-[12px] bg-[#1e1e2a] border-0 shadow-none flex flex-col gap-5"
               >
                 {/* Node Header */}
                 <div className="flex items-center justify-between">
                   <Badge variant="status" dot>
                     {selectedNode.category.toUpperCase()}
                   </Badge>
-                  <span className="text-[11px] font-mono-tech text-[#A5A39C] font-medium">
+                  <span className="text-[11px] font-mono-tech text-[#c3c3cc] font-[480]">
                     {selectedNode.tag || (selectedNode.type === 'domain' ? 'MAJOR DOMAIN' : 'TECHNOLOGY NODE')}
                   </span>
                 </div>
 
                 <div>
-                  <h3 className="text-2xl sm:text-3xl font-display font-black text-[#3F3F3C] uppercase tracking-tight">
+                  <h3 className="text-2xl sm:text-3xl font-display font-[480] text-[#ededf3] uppercase tracking-[0.01em]">
                     {selectedNode.label}
                   </h3>
                   {selectedNode.role && (
-                    <p className="text-xs font-mono-tech text-[#74736E] mt-1 font-semibold">
+                    <p className="text-xs font-mono-tech text-[#c3c3cc] mt-1 font-[480]">
                       {selectedNode.role}
                     </p>
                   )}
                 </div>
 
                 {/* Description */}
-                <p className="text-xs sm:text-sm font-sans-clean text-[#74736E] leading-relaxed font-light">
+                <p className="text-xs sm:text-sm font-sans-clean text-[#c3c3cc] leading-relaxed font-[400]">
                   {selectedNode.description}
                 </p>
 
                 {/* Verified Project Citations */}
                 {selectedNode.usedInProjects.length > 0 && (
-                  <div className="pt-4 border-t border-[#3F3F3C]/12">
-                    <span className="text-[10px] font-mono-tech text-[#A5A39C] uppercase tracking-wider block mb-2.5 font-medium">
+                  <div className="pt-4 border-t border-[#70707d]/20">
+                    <span className="text-[10px] font-mono-tech text-[#c3c3cc] uppercase tracking-wider block mb-2.5 font-[480]">
                       USED IN VERIFIED WORK
                     </span>
                     <div className="space-y-2">
                       {selectedNode.usedInProjects.map((proj) => (
                         <div
                           key={proj.name}
-                          className="flex items-center justify-between p-2.5 rounded-xl bg-white/70 border border-[#3F3F3C]/15 text-xs font-mono-tech text-[#3F3F3C]"
+                          className="flex items-center justify-between p-3 rounded-[12px] bg-[#272735] border border-[#70707d]/20 text-xs font-mono-tech text-[#ededf3]"
                         >
-                          <span className="font-semibold truncate">{proj.name}</span>
+                          <span className="font-[480] truncate">{proj.name}</span>
                           <div className="flex items-center gap-2 shrink-0">
                             {proj.url && (
                               <a
                                 href={proj.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 rounded text-[#74736E] hover:text-[#3F3F3C] transition-colors"
+                                className="p-1 rounded text-[#c3c3cc] hover:text-[#5266eb] transition-colors"
                                 title="Live Demo"
                               >
                                 <Globe className="w-3.5 h-3.5" />
@@ -237,7 +237,7 @@ export function TechStackSection() {
                                 href={proj.github}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="p-1 rounded text-[#74736E] hover:text-[#3F3F3C] transition-colors"
+                                className="p-1 rounded text-[#c3c3cc] hover:text-[#5266eb] transition-colors"
                                 title="GitHub Repository"
                               >
                                 <GithubIcon className="w-3.5 h-3.5" />
@@ -251,8 +251,8 @@ export function TechStackSection() {
                 )}
 
                 {/* Connected Capability Relational Links */}
-                <div className="pt-4 border-t border-[#3F3F3C]/12">
-                  <span className="text-[10px] font-mono-tech text-[#A5A39C] uppercase tracking-wider block mb-2 font-medium">
+                <div className="pt-4 border-t border-[#70707d]/20">
+                  <span className="text-[10px] font-mono-tech text-[#c3c3cc] uppercase tracking-wider block mb-2 font-[480]">
                     CONNECTED CAPABILITIES
                   </span>
                   <div className="flex flex-wrap gap-1.5">
@@ -263,7 +263,7 @@ export function TechStackSection() {
                         <button
                           key={connId}
                           onClick={() => handleSelectNode(connNode)}
-                          className="px-2.5 py-1 rounded-lg bg-white/50 hover:bg-[#3F3F3C] text-[#74736E] hover:text-[#F4F1E8] border border-[#3F3F3C]/15 text-[11px] font-mono-tech transition-all cursor-pointer flex items-center gap-1 group"
+                          className="px-3 py-1.5 rounded-[32px] bg-[#272735] hover:bg-[#323244] text-[#ededf3] border border-[#70707d]/20 text-[11px] font-mono-tech transition-all cursor-pointer flex items-center gap-1 group shadow-none"
                         >
                           <span>{connNode.label}</span>
                           <ArrowUpRight className="w-3 h-3 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
@@ -275,9 +275,9 @@ export function TechStackSection() {
               </motion.div>
             </AnimatePresence>
 
-            {/* Quick Access Node Index */}
-            <div className="p-5 rounded-3xl bg-[#ECE8DD]/60 border border-[#3F3F3C]/15 shadow-xs">
-              <span className="text-[10px] font-mono-tech text-[#A5A39C] uppercase tracking-wider block mb-3 font-medium">
+            {/* Quick Access Node Index (Mercury Graphite Card) */}
+            <div className="p-6 rounded-[12px] bg-[#1e1e2a] border-0 shadow-none">
+              <span className="text-[10px] font-mono-tech text-[#c3c3cc] uppercase tracking-wider block mb-3 font-[480]">
                 QUICK NODE SELECTOR ({filteredNodes.length})
               </span>
               <div className="flex flex-wrap gap-1.5">
@@ -287,15 +287,15 @@ export function TechStackSection() {
                     <button
                       key={node.id}
                       onClick={() => handleSelectNode(node)}
-                      className={`px-2.5 py-1 rounded-lg text-xs font-mono-tech transition-all flex items-center gap-1.5 cursor-pointer ${
+                      className={`px-3 py-1.5 rounded-[32px] text-xs font-mono-tech transition-all flex items-center gap-1.5 cursor-pointer shadow-none ${
                         isSelected
-                          ? 'bg-[#3F3F3C] text-[#F4F1E8] shadow-xs font-bold'
-                          : 'bg-white/50 text-[#74736E] hover:text-[#3F3F3C] border border-[#3F3F3C]/15'
+                          ? 'bg-[#5266eb] text-white font-[480]'
+                          : 'bg-[#272735] text-[#ededf3] hover:bg-[#323244] border border-[#70707d]/20'
                       }`}
                     >
                       <span
                         className="w-1.5 h-1.5 rounded-full"
-                        style={{ backgroundColor: isSelected ? '#19C9E8' : '#74736E' }}
+                        style={{ backgroundColor: isSelected ? '#ffffff' : '#5266eb' }}
                       />
                       <span>{node.label}</span>
                     </button>
@@ -307,17 +307,17 @@ export function TechStackSection() {
         </div>
 
         {/* Accessible Semantic DOM Representation / Fallback Spectrum */}
-        <div className="p-8 rounded-3xl bg-white/40 border border-[#3F3F3C]/15 backdrop-blur-sm">
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#3F3F3C]/12">
+        <div className="p-8 rounded-[12px] bg-[#1e1e2a] border-0 shadow-none">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#70707d]/20">
             <div>
-              <span className="text-[10px] font-mono-tech text-[#74736E] uppercase tracking-[0.22em] font-semibold block mb-1">
+              <span className="text-[10px] font-mono-tech text-[#c3c3cc] uppercase tracking-[0.22em] font-[480] block mb-1">
                 SYSTEM SPECTRUM // ACCESSIBLE INDEX
               </span>
-              <h4 className="text-xl font-display font-bold text-[#3F3F3C] uppercase tracking-tight">
+              <h4 className="text-xl font-display font-[480] text-[#ededf3] uppercase tracking-[0.01em]">
                 COMPREHENSIVE CAPABILITIES BREAKDOWN
               </h4>
             </div>
-            <Cpu className="w-5 h-5 text-[#A5A39C]" />
+            <Cpu className="w-5 h-5 text-[#5266eb]" />
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -329,33 +329,33 @@ export function TechStackSection() {
               return (
                 <div
                   key={domain.id}
-                  className="p-5 rounded-2xl bg-[#ECE8DD]/60 border border-[#3F3F3C]/15 flex flex-col justify-between"
+                  className="p-6 rounded-[12px] bg-[#272735] border border-[#70707d]/20 flex flex-col justify-between shadow-none"
                 >
                   <div>
                     <div className="flex items-center justify-between mb-2">
-                      <span className="text-[10px] font-mono-tech text-[#A5A39C] font-bold">
+                      <span className="text-[10px] font-mono-tech text-[#c3c3cc] font-[480]">
                         {domain.tag}
                       </span>
-                      <span className="text-[10px] font-mono-tech text-[#3F3F3C] bg-white/60 px-2 py-0.5 rounded border border-[#3F3F3C]/15 font-semibold">
+                      <span className="text-[10px] font-mono-tech text-[#ededf3] bg-[#171721] px-2.5 py-0.5 rounded-full border border-[#70707d]/20 font-[480]">
                         {domain.category.toUpperCase()}
                       </span>
                     </div>
 
-                    <h5 className="text-base font-display font-bold text-[#3F3F3C] uppercase mb-2">
+                    <h5 className="text-base font-display font-[480] text-[#ededf3] uppercase mb-2">
                       {domain.label}
                     </h5>
 
-                    <p className="text-xs font-sans-clean text-[#74736E] leading-relaxed mb-4">
+                    <p className="text-xs font-sans-clean text-[#c3c3cc] leading-relaxed mb-4 font-[400]">
                       {domain.description}
                     </p>
                   </div>
 
-                  <div className="pt-3 border-t border-[#3F3F3C]/12 flex flex-wrap gap-1">
+                  <div className="pt-3 border-t border-[#70707d]/20 flex flex-wrap gap-1.5">
                     {childTechs.map((tech) => (
                       <span
                         key={tech.id}
                         onClick={() => handleSelectNode(tech)}
-                        className="px-2 py-0.5 rounded bg-white/50 border border-[#3F3F3C]/15 text-[10px] font-mono-tech text-[#74736E] hover:border-[#3F3F3C] hover:text-[#3F3F3C] transition-colors cursor-pointer"
+                        className="px-2.5 py-1 rounded-[40px] bg-[#171721] border border-[#70707d]/20 text-[10px] font-mono-tech text-[#ededf3] hover:border-[#5266eb] hover:text-[#5266eb] transition-colors cursor-pointer"
                       >
                         {tech.label}
                       </span>

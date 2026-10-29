@@ -17,7 +17,7 @@ export function ProjectsSection() {
   }, [selectedCategory]);
 
   return (
-    <section id="work" className="relative w-full py-28 md:py-40 bg-transparent border-t border-[#5E5E5A]/20">
+    <section id="work" className="relative w-full py-28 md:py-40 bg-transparent border-t border-[#70707d]/20 text-[#ededf3]">
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
         {/* Header Chapter & Filter Tabs */}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-8">
@@ -28,13 +28,13 @@ export function ProjectsSection() {
               tag="FEATURED SYSTEMS & ARCHITECTURES"
               className="mb-3"
             />
-            <h2 className="text-4xl sm:text-6xl md:text-7xl font-display font-black text-[#3F3F3C] tracking-tight uppercase leading-[0.9]">
+            <h2 className="text-4xl sm:text-6xl md:text-7xl font-display font-[480] text-[#ededf3] tracking-[0.01em] uppercase leading-[0.95]">
               SELECTED WORK
             </h2>
           </div>
 
-          {/* Minimal Filter Tabs */}
-          <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-full bg-[#ECE8DD]/80 backdrop-blur-md border border-[#5E5E5A]/20 shadow-xs self-start md:self-end">
+          {/* Minimal Filter Tabs (Mercury Obsidian/Graphite Pill) */}
+          <div className="flex flex-wrap items-center gap-1.5 p-1.5 rounded-full bg-[#1e1e2a] border border-[#70707d]/20 shadow-none self-start md:self-end">
             {projectCategories.map((category) => {
               const isActive = selectedCategory === category;
               return (
@@ -45,14 +45,14 @@ export function ProjectsSection() {
                     setSelectedCategory(category);
                   }}
                   className={`relative px-4 py-1.5 rounded-full text-xs font-mono-tech tracking-wider uppercase transition-colors cursor-pointer ${
-                    isActive ? 'text-[#F4F1E8] font-semibold' : 'text-[#5E5E5A] hover:text-[#3F3F3C]'
+                    isActive ? 'text-[#ffffff] font-[480]' : 'text-[#c3c3cc] hover:text-[#ededf3]'
                   }`}
                   data-cursor="FILTER"
                 >
                   {isActive && (
                     <motion.div
                       layoutId="activeFilterPill"
-                      className="absolute inset-0 bg-[#3F3F3C] rounded-full shadow-xs"
+                      className="absolute inset-0 bg-[#5266eb] rounded-full shadow-none"
                       transition={{ type: 'spring', stiffness: 450, damping: 30 }}
                     />
                   )}
@@ -78,8 +78,8 @@ export function ProjectsSection() {
         </motion.div>
 
         {filteredProjects.length === 0 && (
-          <div className="py-24 text-center rounded-2xl bg-[#ECE8DD]/50 border border-[#5E5E5A]/20">
-            <p className="text-sm font-mono-tech text-[#8A8983] uppercase tracking-wider">
+          <div className="py-24 text-center rounded-[12px] bg-[#1e1e2a] border-0">
+            <p className="text-sm font-mono-tech text-[#c3c3cc] uppercase tracking-wider font-[480]">
               NO PROJECTS IN &ldquo;{selectedCategory}&rdquo; CATEGORY.
             </p>
           </div>

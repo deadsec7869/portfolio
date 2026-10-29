@@ -39,7 +39,7 @@ export function AboutSection() {
   ];
 
   return (
-    <section id="about" className="relative w-full py-28 md:py-36 bg-transparent border-t border-[#3F3F3C]/15">
+    <section id="about" className="relative w-full py-28 md:py-36 bg-transparent border-t border-[#70707d]/20 text-[#ededf3]">
       <div className="relative z-10 max-w-7xl mx-auto px-6 md:px-12">
         {/* Section Label System */}
         <SectionLabel
@@ -57,9 +57,9 @@ export function AboutSection() {
           transition={{ duration: 0.8 }}
           className="mb-14 md:mb-20"
         >
-          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-black text-[#3F3F3C] tracking-tight leading-[0.9] uppercase max-w-5xl">
+          <h2 className="text-4xl sm:text-6xl md:text-7xl lg:text-8xl font-display font-[480] text-[#ededf3] tracking-[0.01em] leading-[0.95] uppercase max-w-5xl">
             I BUILD SOFTWARE, <br />
-            <span className="text-[#74736E]">
+            <span className="text-[#c3c3cc]">
               AI SYSTEMS,
             </span> <br />
             AND INTERACTIVE DIGITAL EXPERIENCES.
@@ -74,18 +74,18 @@ export function AboutSection() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="lg:col-span-7 space-y-6 text-base sm:text-lg text-[#74736E] font-sans-clean font-light leading-relaxed"
+            className="lg:col-span-7 space-y-6 text-base sm:text-lg text-[#c3c3cc] font-sans-clean font-[400] leading-relaxed"
           >
-            <p className="text-[#3F3F3C] font-normal text-lg sm:text-xl leading-snug">
+            <p className="text-[#ededf3] font-[480] text-lg sm:text-xl leading-snug">
               &ldquo;I&apos;m an engineering student and developer building software applications, autonomous AI simulations, interactive 3D web environments, and tools.&rdquo;
             </p>
-            <p className="text-[#74736E] text-sm sm:text-base leading-relaxed">
+            <p className="text-[#c3c3cc] text-sm sm:text-base leading-relaxed">
               Every project is constructed with strict TypeScript standards, modular component architectures, and algorithmic rigor—focusing on software that feels tactile, responsive, and purposeful.
             </p>
 
             {/* WHAT I BUILD Interactive Tabs */}
             <div className="pt-6">
-              <span className="text-[11px] font-mono-tech uppercase tracking-[0.2em] text-[#74736E] block mb-3 font-semibold">
+              <span className="text-[11px] font-mono-tech uppercase tracking-[0.2em] text-[#c3c3cc] block mb-3 font-[480]">
                 CORE DISCIPLINES //
               </span>
 
@@ -101,17 +101,17 @@ export function AboutSection() {
                         setActiveTab(item.id);
                       }}
                       data-cursor="INSPECT"
-                      className={`p-4 rounded-2xl text-left transition-all border cursor-pointer ${
+                      className={`p-5 rounded-[12px] text-left transition-all border-0 shadow-none cursor-pointer ${
                         isSelected
-                          ? 'bg-[#ECE8DD] border-[#3F3F3C] shadow-xs'
-                          : 'bg-[#ECE8DD]/40 border-[#3F3F3C]/15 hover:bg-[#ECE8DD]/70 hover:border-[#3F3F3C]/30'
+                          ? 'bg-[#272735] text-[#ededf3]'
+                          : 'bg-[#1e1e2a] text-[#c3c3cc] hover:bg-[#232332]'
                       }`}
                     >
-                      <Icon className={`w-4 h-4 mb-2.5 ${isSelected ? 'text-[#3F3F3C]' : 'text-[#74736E]'}`} />
-                      <h4 className="text-xs font-display font-bold text-[#3F3F3C] mb-1">
+                      <Icon className={`w-4 h-4 mb-2.5 ${isSelected ? 'text-[#5266eb]' : 'text-[#70707d]'}`} />
+                      <h4 className="text-xs font-display font-[480] text-[#ededf3] mb-1">
                         {item.title}
                       </h4>
-                      <p className="text-[11px] font-sans-clean text-[#74736E] leading-relaxed">
+                      <p className="text-[11px] font-sans-clean text-[#c3c3cc] leading-relaxed">
                         {item.description}
                       </p>
                     </button>
@@ -120,32 +120,32 @@ export function AboutSection() {
               </div>
 
               {/* Live Status Indicator */}
-              <div className="mt-4 p-3.5 rounded-2xl bg-white/60 backdrop-blur-md border border-[#3F3F3C]/15 flex items-center justify-between font-mono-tech text-xs shadow-xs">
+              <div className="mt-4 p-4 rounded-[12px] bg-[#1e1e2a] border border-[#70707d]/20 flex items-center justify-between font-mono-tech text-xs shadow-none">
                 {activeTab === 'ai' && (
-                  <div className="flex items-center gap-2 text-[#3F3F3C] w-full justify-between">
+                  <div className="flex items-center gap-2 text-[#ededf3] w-full justify-between">
                     <span className="flex items-center gap-2">
-                      <Activity className="w-4 h-4 text-[#19C9E8] animate-pulse" />
+                      <Activity className="w-4 h-4 text-[#5266eb] animate-pulse" />
                       HEURISTIC VECTOR: A* PATHFINDING &middot; CONFLICT DETECTION
                     </span>
-                    <span className="text-[#A5A39C] text-[10px]">AI ROBOTICS</span>
+                    <span className="text-[#70707d] text-[10px]">AI ROBOTICS</span>
                   </div>
                 )}
                 {activeTab === 'software' && (
-                  <div className="flex items-center gap-2 text-[#3F3F3C] w-full justify-between">
+                  <div className="flex items-center gap-2 text-[#ededf3] w-full justify-between">
                     <span className="flex items-center gap-2">
-                      <BookOpen className="w-4 h-4 text-[#19C9E8]" />
+                      <BookOpen className="w-4 h-4 text-[#5266eb]" />
                       ACADEMIC PORTAL: NEXT.JS 16 &middot; GOOGLE GENAI
                     </span>
-                    <span className="text-[#A5A39C] text-[10px]">VTU PLATFORM</span>
+                    <span className="text-[#70707d] text-[10px]">VTU PLATFORM</span>
                   </div>
                 )}
                 {activeTab === 'creative' && (
-                  <div className="flex items-center gap-2 text-[#3F3F3C] w-full justify-between">
+                  <div className="flex items-center gap-2 text-[#ededf3] w-full justify-between">
                     <span className="flex items-center gap-2">
-                      <Disc3 className="w-4 h-4 text-[#19C9E8] animate-spin-slow" />
+                      <Disc3 className="w-4 h-4 text-[#5266eb] animate-spin-slow" />
                       SPATIAL 3D: THREE.JS &middot; WEB AUDIO API &middot; GSAP
                     </span>
-                    <span className="text-[#A5A39C] text-[10px]">AAPESH WORKSTATION</span>
+                    <span className="text-[#70707d] text-[10px]">AAPESH WORKSTATION</span>
                   </div>
                 )}
               </div>
@@ -153,27 +153,27 @@ export function AboutSection() {
           </motion.div>
 
           {/* Right: Authentic GitHub Stat Overview */}
-          <div className="lg:col-span-5 flex flex-col gap-3">
-            <div className="p-6 rounded-3xl bg-[#ECE8DD]/60 border border-[#3F3F3C]/15 flex flex-col gap-1 shadow-xs">
-              <span className="text-[10px] font-mono-tech text-[#A5A39C] uppercase tracking-widest">
+          <div className="lg:col-span-5 flex flex-col gap-4">
+            <div className="p-6 rounded-[12px] bg-[#1e1e2a] border-0 flex flex-col gap-1 shadow-none">
+              <span className="text-[10px] font-mono-tech text-[#c3c3cc] uppercase tracking-widest">
                 VERIFIED GITHUB REPOSITORIES
               </span>
-              <span className="text-4xl sm:text-5xl font-display font-black text-[#3F3F3C]">
+              <span className="text-4xl sm:text-5xl font-display font-[480] text-[#ededf3]">
                 {githubUser ? githubUser.public_repos : '3'}
               </span>
-              <span className="text-xs font-mono-tech text-[#74736E] mt-1 font-semibold">
+              <span className="text-xs font-mono-tech text-[#70707d] mt-1 font-[480]">
                 @deadsec7869 &middot; Open Source
               </span>
             </div>
 
-            <div className="p-6 rounded-3xl bg-[#ECE8DD]/60 border border-[#3F3F3C]/15 flex flex-col gap-1 shadow-xs">
-              <span className="text-[10px] font-mono-tech text-[#A5A39C] uppercase tracking-widest">
+            <div className="p-6 rounded-[12px] bg-[#1e1e2a] border-0 flex flex-col gap-1 shadow-none">
+              <span className="text-[10px] font-mono-tech text-[#c3c3cc] uppercase tracking-widest">
                 PRIMARY STACK
               </span>
-              <span className="text-2xl sm:text-3xl font-display font-bold text-[#3F3F3C]">
+              <span className="text-2xl sm:text-3xl font-display font-[480] text-[#ededf3]">
                 REACT 19 &middot; NEXT.JS 16
               </span>
-              <span className="text-xs font-mono-tech text-[#74736E] mt-1">
+              <span className="text-xs font-mono-tech text-[#70707d] mt-1">
                 TypeScript &middot; Three.js &middot; Vite &middot; Tailwind CSS
               </span>
             </div>

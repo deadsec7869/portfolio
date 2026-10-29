@@ -49,45 +49,45 @@ export function LoadingScreen({ onComplete }: LoadingScreenProps) {
     <AnimatePresence>
       {!isFinished && (
         <motion.div
-          className="fixed inset-0 z-[99999] bg-[#F4F1E8] flex flex-col items-center justify-center p-6 select-none"
+          className="fixed inset-0 z-[99999] bg-[#171721] flex flex-col items-center justify-center p-6 select-none"
           initial={{ opacity: 1 }}
           exit={{ opacity: 0, scale: 1.01 }}
           transition={{ duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
         >
           {/* Subtle Ambient Radial Glow */}
-          <div className="absolute w-[450px] h-[450px] bg-[#5E5E5A]/5 rounded-full blur-[120px] pointer-events-none" />
+          <div className="absolute w-[450px] h-[450px] bg-[#5266eb]/10 rounded-full blur-[140px] pointer-events-none" />
 
           <div className="w-full max-w-sm relative z-10 flex flex-col items-center">
             {/* Top Telemetry Tag */}
-            <div className="flex items-center justify-between w-full text-[10px] font-mono-tech text-[#8A8983] mb-6 uppercase tracking-widest">
-              <span className="flex items-center gap-2 text-[#5E5E5A]">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#5E5E5A] animate-ping" />
+            <div className="flex items-center justify-between w-full text-[10px] font-mono-tech text-[#c3c3cc] mb-6 uppercase tracking-widest">
+              <span className="flex items-center gap-2 text-[#ededf3]">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#5266eb] animate-ping" />
                 SYSTEM INITIALIZING
               </span>
               <span>INDEX // 2026</span>
             </div>
 
             {/* Central Typography Logo */}
-            <h1 className="text-4xl md:text-5xl font-display font-black tracking-tight text-[#3F3F3C] mb-2 uppercase">
+            <h1 className="text-4xl md:text-5xl font-display font-[480] tracking-[0.015em] text-[#ededf3] mb-2 uppercase">
               {socialData.name}
             </h1>
-            <p className="text-[11px] font-mono-tech text-[#5E5E5A] tracking-[0.25em] uppercase mb-8">
+            <p className="text-[11px] font-mono-tech text-[#c3c3cc] tracking-[0.25em] uppercase mb-8">
               {socialData.role}
             </p>
 
             {/* Slim Minimal Progress Bar */}
-            <div className="w-full h-1 bg-[#ECE8DD] rounded-full overflow-hidden mb-3 border border-[#5E5E5A]/15 relative">
+            <div className="w-full h-1 bg-[#272735] rounded-full overflow-hidden mb-3 border border-[#70707d]/20 relative">
               <motion.div
-                className="h-full bg-[#5E5E5A]"
+                className="h-full bg-[#5266eb]"
                 style={{ width: `${progress}%` }}
                 transition={{ ease: 'easeOut', duration: 0.1 }}
               />
             </div>
 
             {/* Status & Numeric Readout */}
-            <div className="flex items-center justify-between w-full text-[11px] font-mono-tech text-[#5E5E5A]">
-              <span className="text-[#8A8983]">{statusText}</span>
-              <span className="text-[#3F3F3C] font-bold">{progress}%</span>
+            <div className="flex items-center justify-between w-full text-[11px] font-mono-tech text-[#c3c3cc]">
+              <span className="text-[#c3c3cc]">{statusText}</span>
+              <span className="text-[#ededf3] font-[480]">{progress}%</span>
             </div>
           </div>
         </motion.div>

@@ -15,27 +15,27 @@ export function Badge({
   dot = false
 }: BadgeProps) {
   const variantStyles = {
-    default: 'bg-[#ECE8DD] text-[#3F3F3C] border-[#5E5E5A]/25',
-    accent: 'bg-[#5E5E5A] text-[#F4F1E8] border-[#5E5E5A]',
-    muted: 'bg-[#ECE8DD]/50 text-[#8A8983] border-[#5E5E5A]/15',
-    outline: 'bg-transparent text-[#5E5E5A] border-[#5E5E5A]/30',
-    status: 'bg-[#ECE8DD] text-[#3F3F3C] border-[#5E5E5A]/30 font-semibold',
-    cyan: 'bg-[#ECE8DD] text-[#3F3F3C] border-[#5E5E5A]/25',
-    emerald: 'bg-[#ECE8DD] text-[#3F3F3C] border-[#5E5E5A]/25',
-    purple: 'bg-[#ECE8DD] text-[#3F3F3C] border-[#5E5E5A]/25',
-    amber: 'bg-[#ECE8DD] text-[#3F3F3C] border-[#5E5E5A]/25',
+    default: 'bg-[#272735] text-[#ededf3] border-[#70707d]/20',
+    accent: 'bg-[#5266eb] text-[#ffffff] border-[#5266eb]',
+    muted: 'bg-[#272735]/60 text-[#c3c3cc] border-[#70707d]/15',
+    outline: 'bg-transparent text-[#ededf3] border-[#70707d]/30',
+    status: 'bg-[#272735] text-[#ededf3] border-[#70707d]/25 font-[480]',
+    cyan: 'bg-[#272735] text-[#ededf3] border-[#70707d]/20',
+    emerald: 'bg-[#272735] text-[#ededf3] border-[#70707d]/20',
+    purple: 'bg-[#272735] text-[#ededf3] border-[#70707d]/20',
+    amber: 'bg-[#272735] text-[#ededf3] border-[#70707d]/20',
   };
 
   const dotColors = {
-    default: 'bg-[#5E5E5A]',
-    accent: 'bg-[#F4F1E8]',
-    muted: 'bg-[#8A8983]',
-    outline: 'bg-[#8A8983]',
-    status: 'bg-[#5E5E5A]',
-    cyan: 'bg-[#5E5E5A]',
-    emerald: 'bg-[#5E5E5A]',
-    purple: 'bg-[#5E5E5A]',
-    amber: 'bg-[#5E5E5A]',
+    default: 'bg-[#c3c3cc]',
+    accent: 'bg-[#ffffff]',
+    muted: 'bg-[#70707d]',
+    outline: 'bg-[#70707d]',
+    status: 'bg-[#5266eb]',
+    cyan: 'bg-[#5266eb]',
+    emerald: 'bg-[#5266eb]',
+    purple: 'bg-[#5266eb]',
+    amber: 'bg-[#5266eb]',
   };
 
   return (

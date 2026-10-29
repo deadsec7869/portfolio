@@ -1,43 +1,56 @@
 :root {
-  /* Light Translucent Computational Studio Palette */
-  --color-bg: #F4F1E8;
-  --color-fg: #3F3F3C;
-  --color-grey: #74736E;
-  --color-grey-dark: #3F3F3C;
-  --color-grey-light: #A5A39C;
-  --color-border: #D1CEC5;
-  --color-cyan: #19C9E8;
-  --color-orange: #F27A22;
+  /* Mercury — Alpine Banking at Blue Hour */
+  /* Palette Tokens */
+  --color-onyx-canvas: #171721;
+  --color-graphite-card: #1e1e2a;
+  --color-obsidian-button: #272735;
+  --color-slate-border: #70707d;
+  --color-mist-border: #e2e3ed;
+  --color-ash-text: #c3c3cc;
+  --color-ivory-text: #ededf3;
+  --color-cobalt: #5266eb;
+  --color-cobalt-hover: #4355db;
+  --color-pure-white: #ffffff;
+
+  /* Legacy Semantic Theme Mappings -> Mercury Alpine Dark */
+  --color-bg: #171721;
+  --color-fg: #ededf3;
+  --color-grey: #c3c3cc;
+  --color-grey-dark: #ededf3;
+  --color-grey-light: #70707d;
+  --color-border: rgba(112, 112, 125, 0.24);
+  --color-cyan: #5266eb;
+  --color-orange: #5266eb;
 
   /* Semantic Aliases */
-  --background: #F4F1E8;
-  --foreground: #3F3F3C;
-  --foreground-secondary: #74736E;
-  --foreground-muted: #A5A39C;
+  --background: #171721;
+  --foreground: #ededf3;
+  --foreground-secondary: #c3c3cc;
+  --foreground-muted: #70707d;
 
-  /* Surfaces & Translucent Layers */
-  --surface: #F4F1E8;
-  --surface-translucent: rgba(255, 255, 255, 0.28);
-  --surface-card: rgba(255, 255, 255, 0.42);
-  --surface-elevated: #ECE8DD;
-  --surface-hover: rgba(255, 255, 255, 0.6);
+  /* Surfaces & Flat Value Contrast Hierarchy */
+  --surface: #171721;
+  --surface-translucent: rgba(30, 30, 42, 0.75);
+  --surface-card: #1e1e2a;
+  --surface-elevated: #272735;
+  --surface-hover: rgba(45, 45, 60, 0.7);
 
   /* Hairline Borders */
-  --border: rgba(63, 63, 60, 0.18);
-  --border-subtle: rgba(63, 63, 60, 0.08);
-  --border-strong: rgba(63, 63, 60, 0.35);
+  --border: rgba(112, 112, 125, 0.22);
+  --border-subtle: rgba(112, 112, 125, 0.12);
+  --border-strong: rgba(226, 227, 237, 0.3);
 
-  /* Accents (92% Monochrome, 6% Cyan, 2% Orange) */
-  --accent: #19C9E8;
-  --accent-secondary: #F27A22;
+  /* Single Chromatic Accent (Mercury Cobalt) */
+  --accent: #5266eb;
+  --accent-secondary: #5266eb;
 
-  /* 3D Materials Studio Palette */
-  --three-sphere: #E7E4DC;
-  --three-wireframe: #8C8A84;
-  --three-ring-primary: #696863;
-  --three-ring-secondary: #B5B2AA;
-  --three-node: #5E5D58;
-  --three-node-light: #F8F6F0;
-  --three-cyan: #19C9E8;
-  --three-orange: #F27A22;
+  /* 3D Materials Studio Palette (Dark Blue-Hour Observatory) */
+  --three-sphere: #1e1e2a;
+  --three-wireframe: #70707d;
+  --three-ring-primary: #70707d;
+  --three-ring-secondary: #272735;
+  --three-node: #272735;
+  --three-node-light: #ededf3;
+  --three-cyan: #5266eb;
+  --three-orange: #5266eb;
 }

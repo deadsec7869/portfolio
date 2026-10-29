@@ -11,12 +11,12 @@ function createGlobeTexture(): THREE.CanvasTexture {
   const ctx = canvas.getContext('2d');
   if (!ctx) return new THREE.CanvasTexture(canvas);
 
-  // Ocean background: Structural charcoal grey
-  ctx.fillStyle = '#3F3F3C';
+  // Ocean background: Deep Onyx Canvas
+  ctx.fillStyle = '#171721';
   ctx.fillRect(0, 0, 1024, 512);
 
   // Latitude & Longitude thin technical coordinate lines
-  ctx.strokeStyle = 'rgba(244, 241, 232, 0.15)';
+  ctx.strokeStyle = 'rgba(237, 237, 243, 0.12)';
   ctx.lineWidth = 1;
 
   // Latitudes
@@ -35,8 +35,8 @@ function createGlobeTexture(): THREE.CanvasTexture {
     ctx.stroke();
   }
 
-  // Continental land shapes (Off-white / grey tones)
-  ctx.fillStyle = '#5E5E5A';
+  // Continental land shapes (Obsidian & Graphite)
+  ctx.fillStyle = '#272735';
 
   // North America
   ctx.beginPath();

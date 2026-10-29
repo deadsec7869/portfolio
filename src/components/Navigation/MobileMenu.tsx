@@ -29,11 +29,11 @@ export function MobileMenu({
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: '100%' }}
           transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-          className="fixed inset-0 z-[100] bg-[#F4F1E8]/98 backdrop-blur-2xl flex flex-col justify-between p-8 md:hidden"
+          className="fixed inset-0 z-[100] bg-[#171721]/98 backdrop-blur-2xl flex flex-col justify-between p-8 md:hidden"
         >
           {/* Top Bar */}
           <div className="flex items-center justify-between">
-            <span className="font-mono-tech text-xs text-[#5E5E5A] uppercase tracking-widest">
+            <span className="font-mono-tech text-xs text-[#c3c3cc] uppercase tracking-widest">
               NAVIGATION // {socialData.name}
             </span>
             <button
@@ -41,7 +41,7 @@ export function MobileMenu({
                 spatialAudio.playClick();
                 onClose();
               }}
-              className="p-2 rounded-lg bg-[#ECE8DD] border border-[#5E5E5A]/25 text-[#3F3F3C] hover:text-[#5E5E5A] cursor-pointer"
+              className="p-2 rounded-full bg-[#272735] border border-[#70707d]/30 text-[#ededf3] hover:text-white cursor-pointer"
               aria-label="Close navigation"
             >
               <X className="w-6 h-6" />
@@ -59,12 +59,12 @@ export function MobileMenu({
                     spatialAudio.playClick();
                     onSelectSection(item.id);
                   }}
-                  className="flex items-center justify-between text-left py-2.5 border-b border-[#5E5E5A]/15 group cursor-pointer"
+                  className="flex items-center justify-between text-left py-2.5 border-b border-[#70707d]/15 group cursor-pointer"
                 >
                   <div className="flex items-center gap-3">
                     <span
-                      className={`font-display text-xl font-bold tracking-tight uppercase ${
-                        isActive ? 'text-[#3F3F3C] font-black' : 'text-[#5E5E5A] group-hover:text-[#3F3F3C]'
+                      className={`font-display text-xl tracking-tight uppercase ${
+                        isActive ? 'text-[#ffffff] font-[480]' : 'text-[#c3c3cc] group-hover:text-[#ededf3] font-[400]'
                       }`}
                     >
                       {item.label}
@@ -72,7 +72,7 @@ export function MobileMenu({
                   </div>
                   <ArrowRight
                     className={`w-5 h-5 transition-transform duration-200 ${
-                      isActive ? 'text-[#3F3F3C] translate-x-1' : 'text-[#8A8983] group-hover:translate-x-1'
+                      isActive ? 'text-[#5266eb] translate-x-1' : 'text-[#70707d] group-hover:translate-x-1'
                     }`}
                   />
                 </button>
@@ -81,19 +81,19 @@ export function MobileMenu({
           </nav>
 
           {/* Footer Info */}
-          <div className="flex flex-col gap-3 pt-6 border-t border-[#5E5E5A]/20 text-xs font-mono-tech text-[#5E5E5A]">
+          <div className="flex flex-col gap-3 pt-6 border-t border-[#70707d]/20 text-xs font-mono-tech text-[#c3c3cc]">
             {socialData.availableForProjects && (
-              <div className="flex items-center gap-2 text-[#3F3F3C]">
-                <span className="w-2 h-2 rounded-full bg-[#5E5E5A] animate-pulse" />
+              <div className="flex items-center gap-2 text-[#ededf3]">
+                <span className="w-2 h-2 rounded-full bg-[#5266eb] animate-pulse" />
                 <span>{socialData.availabilityStatus}</span>
               </div>
             )}
-            <div className="flex items-center gap-4 text-[#3F3F3C]">
+            <div className="flex items-center gap-4 text-[#ededf3]">
               <a
                 href={socialData.github}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="hover:text-[#5E5E5A] transition-colors uppercase"
+                className="hover:text-[#5266eb] transition-colors uppercase"
               >
                 GitHub
               </a>
@@ -102,7 +102,7 @@ export function MobileMenu({
                   href={socialData.linkedin}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="hover:text-[#5E5E5A] transition-colors uppercase"
+                  className="hover:text-[#5266eb] transition-colors uppercase"
                 >
                   LinkedIn
                 </a>
@@ -110,7 +110,7 @@ export function MobileMenu({
               {hasEmail && (
                 <a
                   href={`mailto:${socialData.email}`}
-                  className="hover:text-[#5E5E5A] transition-colors uppercase"
+                  className="hover:text-[#5266eb] transition-colors uppercase"
                 >
                   Email
                 </a>

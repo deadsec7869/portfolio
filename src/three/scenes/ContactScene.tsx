@@ -21,7 +21,7 @@ export function ContactScene({
         className="w-full h-full"
         pointerEvents="none"
       >
-        <fog attach="fog" args={[STUDIO_COLORS.offWhite, 4, 15]} />
+        <fog attach="fog" args={[STUDIO_COLORS.bgMain, 4, 15]} />
 
         <StudioLights
           ambientIntensity={1.2}
