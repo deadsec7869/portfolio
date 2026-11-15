@@ -1,0 +1,25 @@
+{
+  "planning": "compact",
+  "context_depth": "dependency",
+  "verification_depth": "impact",
+  "delegation": "none",
+  "reason_codes": [
+    "multiple-files",
+    "interactive-3d"
+  ],
+  "allowed_write_scope": [
+    "src",
+    "public",
+    "index.html",
+    "vite.config.ts",
+    "README.md",
+    ".planning",
+    "scripts",
+    "PORTFOLIO_SOURCE.md"
+  ],
+  "decision": "Replace the mounted portfolio with the supplied exact profile; retain unrelated source files.",
+  "validators": [
+    "npm run build",
+    "browser interaction and responsive inspection"
+  ]
+}

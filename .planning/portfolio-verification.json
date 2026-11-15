@@ -1,0 +1,14 @@
+{
+  "build": "PASS: npm run build; TypeScript and Vite production bundling",
+  "metadata": "PASS: node scripts/verify-production.mjs; 1200x630 PNG, absolute OG/Twitter URLs, canonical and og:url",
+  "browser": {
+    "core": "Rendered WebGL core observed at desktop and mobile sizes",
+    "dialogs": "All five project dialogs opened successfully",
+    "keyboard": "Escape dismisses VIBEGUARD and restores focus to its opener",
+    "filter": "Robotics filter returns exactly AI-Powered Plastic Sorter",
+    "responsive": "1440px desktop, 390px mobile, 320px narrow mobile inspected; no text overflow detected in checked elements at 320px",
+    "console": "No error messages observed; THREE.Clock dependency deprecation warning"
+  },
+  "limits": ["Cross-device 60fps not benchmarked", "Vite warns about lazy 899kB 3D chunk", "Hosted social card crawler not tested"],
+  "verdict": "PASS for executed checks"
+}
