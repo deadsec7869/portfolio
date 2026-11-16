@@ -7,42 +7,24 @@ import type { MotionValue } from "framer-motion";
 import * as THREE from "three";
 import { Monogram } from "./Monogram";
 
-const leftPoints = [
-  [30, 104],
-  [82, 76],
-  [82, 20],
-  [116, 2],
-  [116, 112],
-  [64, 140],
-  [64, 184],
-  [97, 166],
-  [97, 206],
-  [64, 224],
-  [30, 204],
-];
-const rightPoints = [
-  [132, 110],
-  [166, 92],
-  [210, 118],
-  [210, 226],
-  [156, 256],
-  [156, 300],
-  [122, 318],
-  [122, 166],
-  [156, 148],
-  [156, 212],
-  [176, 201],
-  [176, 150],
-  [156, 139],
-  [132, 152],
-];
-function makeShape(points: number[][]) {
+import glyphs from "../data/monogram.json";
+
+function makeShape(glyph: (typeof glyphs)[number]) {
+  const trace = (path: THREE.Path, vertices: number[][]) => {
+    vertices.forEach(([x,y], i) => {
+      const px = (x-120)/48, py = (172-y)/48;
+      if (i === 0) path.moveTo(px,py);
+      else path.lineTo(px,py);
+    });
+    path.closePath();
+  };
   const shape = new THREE.Shape();
-  points.forEach(([x, y], i) => {
-    if (i === 0) shape.moveTo((x - 120) / 55, (160 - y) / 55);
-    else shape.lineTo((x - 120) / 55, (160 - y) / 55);
-  });
-  shape.closePath();
+  trace(shape, glyph.outline);
+  for (const counter of glyph.holes) {
+    const hole = new THREE.Path();
+    trace(hole, counter);
+    shape.holes.push(hole);
+  }
   return new THREE.ExtrudeGeometry(shape, {
     depth: 0.18,
     bevelEnabled: true,
@@ -68,7 +50,7 @@ function MarkScene({
   const current = useRef(0);
   const { size } = useThree();
   const shapes = useMemo(
-    () => [makeShape(leftPoints), makeShape(rightPoints)],
+    () => glyphs.map(makeShape),
     [],
   );
   useEffect(
@@ -237,7 +219,7 @@ export default function Scene3D({
       className="scene-canvas"
       ref={container}
       role="img"
-      aria-label="Sculptural angular Tamim monogram, turning from a solid form into a wireframe tunnel as you scroll"
+      aria-label="Sculptural TB monogram for Tamim Baig, turning from a solid form into a wireframe tunnel as you scroll"
     >
       <SceneBoundary>
         <Canvas

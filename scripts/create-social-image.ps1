@@ -19,9 +19,15 @@ try {
   $graphics.ScaleTransform(1.32,1.32)
   $logoSvg = [xml](Get-Content -Raw (Join-Path $PSScriptRoot '../public/favicon.svg'))
   foreach ($path in $logoSvg.svg.path) {
-    $coords = [regex]::Matches($path.d,'-?\d+') | ForEach-Object { [int]$_.Value }
-    $points = for ($i=0; $i -lt $coords.Count; $i+=2) { [Drawing.Point]::new($coords[$i],$coords[$i+1]) }
-    $graphics.FillPolygon($bone,[Drawing.Point[]]$points)
+    $shape = [Drawing.Drawing2D.GraphicsPath]::new([Drawing.Drawing2D.FillMode]::Alternate)
+    try {
+      foreach ($loop in [regex]::Matches($path.d,'M([^Z]+)Z')) {
+        $coords = [regex]::Matches($loop.Groups[1].Value,'-?\d+') | ForEach-Object { [int]$_.Value }
+        $points = for ($i=0; $i -lt $coords.Count; $i+=2) { [Drawing.Point]::new($coords[$i],$coords[$i+1]) }
+        $shape.AddPolygon([Drawing.Point[]]$points)
+      }
+      $graphics.FillPath($bone,$shape)
+    } finally { $shape.Dispose() }
   }
   $graphics.ResetTransform()
   $graphics.DrawString('Muhammed Tamim Baig', $bodyFont, $bone, 38, 526)
