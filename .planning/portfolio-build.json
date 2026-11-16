@@ -3,23 +3,9 @@
   "context_depth": "dependency",
   "verification_depth": "impact",
   "delegation": "none",
-  "reason_codes": [
-    "multiple-files",
-    "interactive-3d"
-  ],
-  "allowed_write_scope": [
-    "src",
-    "public",
-    "index.html",
-    "vite.config.ts",
-    "README.md",
-    ".planning",
-    "scripts",
-    "PORTFOLIO_SOURCE.md"
-  ],
-  "decision": "Replace the mounted portfolio with the supplied exact profile; retain unrelated source files.",
-  "validators": [
-    "npm run build",
-    "browser interaction and responsive inspection"
-  ]
+  "reason_codes": ["reference-reconstruction", "responsive-scroll-scene"],
+  "allowed_write_scope": ["src", "public", "index.html", "README.md", ".planning", "scripts", "PORTFOLIO_SOURCE.md"],
+  "decision": "Rebuild the portfolio around the observed dennypratama.com home-page composition: ink/bone palette, Archivo type, orange counters, sticky 3D monogram narrative, large project rows, construction scene, blueprint comparison, skills and oversized contact. Use Tamim's exact profile and original project data.",
+  "observed_reference": {"ink":"#0c0c0b","bone":"#eceae4","accent":"#ff4f2b","font":"Archivo","desktop_padding":"40px","hero":"sticky full viewport scroll narrative","work":"cream full-width typographic list","mobile":"stacked hero with menu dialog"},
+  "validators": ["npm run build","node scripts/verify-production.mjs","desktop/mobile browser verification"]
 }

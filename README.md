@@ -23,11 +23,11 @@ npm run preview
 ## Implementation
 
 - Exact profile, five projects, and skills are centralized in src/data/portfolio.ts.
-- Scene3D uses procedural rings, 180 instanced telemetry nodes, and 96 instanced ring markers.
+- Scene3D renders an extruded monogram and wireframe tunnel. Four scroll chapters control camera angle and geometry.
 - Pointer parallax and scroll-dependent camera/rotation use delta-time damping without React updates per frame.
 - DPR is capped at 2. Reduced motion, manual pause, visibility pausing, lazy loading, and a static WebGL fallback are included.
 - ProjectModal uses native dialog focus containment, Escape dismissal, scroll locking, backdrop dismissal, and focus restoration.
-- Project filters, same-page navigation, GitHub links, and email links work without a backend.
+- Project rows offer illustrated previews on hover and focus. The blueprint comparison accepts touch and keyboard input. Mobile navigation uses a native dialog.
 - Architecture diagrams summarize only the supplied capabilities and stacks; they are not repository audits.
 - Existing unmounted source components are retained to avoid deleting prior work.
 
@@ -41,8 +41,9 @@ No invented deployment URL is embedded. No server secrets are required. Fonts lo
 
 ## Verification
 
-Production build and TypeScript compilation pass. Browser checks cover desktop 1440px, mobile 390px and 320px, five project dialogs, Escape/focus restoration, and filtering. No text overflow was found in the checked elements at 320px. Continuous 60fps across all hardware is not guaranteed or benchmarked. The lazy 3D bundle triggers Vite's 500 kB chunk-size advisory. The installed Three/Fiber combination emits a non-blocking THREE.Clock deprecation warning.
+Browser checks cover all five project dialogs, keyboard dismissal, mobile navigation, the blueprint slider, and page widths from 320px to 1440px. The lazy 3D bundle exceeds the default Vite chunk-size advisory. Cross-device frame rates and hosted previews have not been benchmarked.
 
 ## Complete source
 
 PORTFOLIO_SOURCE.md contains the complete requested files plus their supporting files in copy-pasteable code blocks. public/og-image.png is the accompanying social preview asset.
+

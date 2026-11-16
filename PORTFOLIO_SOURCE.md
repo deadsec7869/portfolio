@@ -16,7 +16,7 @@ npm run dev
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#09090b" />
+    <meta name="theme-color" content="#0c0c0b" />
     <title>Muhammed Tamim Baig — Robotics, AI & Full-Stack Engineering</title>
     <meta
       name="description"
@@ -29,7 +29,7 @@ npm run dev
     <meta property="og:site_name" content="Tamim — Engineering & Building" />
     <meta
       property="og:title"
-      content="Muhammed Tamim Baig — Engineering the intelligent. Building the real."
+      content="Muhammed Tamim Baig — I design it. I build it."
     />
     <meta
       property="og:description"
@@ -41,7 +41,7 @@ npm run dev
     <meta property="og:image:type" content="image/png" />
     <meta
       property="og:image:alt"
-      content="Tamim — Robotics, Intelligence, and the Web. Engineering the intelligent. Building the real."
+      content="Tamim — Robotics, Intelligence, and the Web. I design it. I build it."
     />
     <meta name="twitter:card" content="summary_large_image" />
     <meta
@@ -53,15 +53,12 @@ npm run dev
       content="Robotics & AI Engineering Student · Full-Stack & 3D Systems Builder in Karnataka, India."
     />
     <meta name="twitter:image" content="/og-image.png" />
-    <meta
-      name="twitter:image:alt"
-      content="Tamim — Engineering the intelligent. Building the real."
-    />
+    <meta name="twitter:image:alt" content="Tamim — I design it. I build it." />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;550;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Archivo:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap"
       rel="stylesheet"
     />
   </head>
@@ -304,223 +301,204 @@ export const skills = [
 ## src/components/Scene3D.tsx
 
 ```tsx
-import { Component, useEffect, useLayoutEffect, useRef, useState } from "react";
+import { Component, useEffect, useMemo, useRef, useState } from "react";
 import type { ReactNode } from "react";
-import { Canvas, useFrame } from "@react-three/fiber";
-import { Float } from "@react-three/drei";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
+import { Edges } from "@react-three/drei";
 import { useReducedMotion } from "framer-motion";
+import type { MotionValue } from "framer-motion";
 import * as THREE from "three";
+import { Monogram } from "./Monogram";
 
-function TelemetryNodes() {
-  const mesh = useRef<THREE.InstancedMesh>(null);
-  useLayoutEffect(() => {
-    if (!mesh.current) return;
-    const dummy = new THREE.Object3D();
-    const color = new THREE.Color();
-    for (let i = 0; i < 180; i++) {
-      const phi = Math.acos(1 - (2 * (i + 0.5)) / 180);
-      const theta = Math.PI * (1 + Math.sqrt(5)) * i;
-      const radius = i % 4 === 0 ? 2.65 : 2.25;
-      dummy.position.set(
-        radius * Math.sin(phi) * Math.cos(theta),
-        radius * Math.cos(phi),
-        radius * Math.sin(phi) * Math.sin(theta),
-      );
-      dummy.scale.setScalar(i % 9 === 0 ? 0.032 : 0.012);
-      dummy.updateMatrix();
-      mesh.current.setMatrixAt(i, dummy.matrix);
-      mesh.current.setColorAt(
-        i,
-        color.set(i % 5 === 0 ? "#34d399" : "#22d3ee"),
-      );
-    }
-    mesh.current.instanceMatrix.needsUpdate = true;
-    if (mesh.current.instanceColor)
-      mesh.current.instanceColor.needsUpdate = true;
-  }, []);
-  return (
-    <instancedMesh ref={mesh} args={[undefined, undefined, 180]}>
-      <sphereGeometry args={[1, 6, 6]} />
-      <meshBasicMaterial toneMapped={false} />
-    </instancedMesh>
-  );
+const leftPoints = [
+  [30, 104],
+  [82, 76],
+  [82, 20],
+  [116, 2],
+  [116, 112],
+  [64, 140],
+  [64, 184],
+  [97, 166],
+  [97, 206],
+  [64, 224],
+  [30, 204],
+];
+const rightPoints = [
+  [132, 110],
+  [166, 92],
+  [210, 118],
+  [210, 226],
+  [156, 256],
+  [156, 300],
+  [122, 318],
+  [122, 166],
+  [156, 148],
+  [156, 212],
+  [176, 201],
+  [176, 150],
+  [156, 139],
+  [132, 152],
+];
+function makeShape(points: number[][]) {
+  const shape = new THREE.Shape();
+  points.forEach(([x, y], i) => {
+    if (i === 0) shape.moveTo((x - 120) / 55, (160 - y) / 55);
+    else shape.lineTo((x - 120) / 55, (160 - y) / 55);
+  });
+  shape.closePath();
+  return new THREE.ExtrudeGeometry(shape, {
+    depth: 0.18,
+    bevelEnabled: true,
+    bevelThickness: 0.016,
+    bevelSize: 0.012,
+    bevelSegments: 1,
+    steps: 1,
+  });
 }
 
-function TickRing() {
-  const ticks = useRef<THREE.InstancedMesh>(null);
-  useLayoutEffect(() => {
-    if (!ticks.current) return;
-    const object = new THREE.Object3D();
-    for (let i = 0; i < 96; i++) {
-      const angle = (i / 96) * Math.PI * 2;
-      object.position.set(Math.cos(angle) * 1.85, Math.sin(angle) * 1.85, 0);
-      object.rotation.z = angle;
-      object.scale.set(i % 8 === 0 ? 0.13 : 0.055, 0.017, 0.025);
-      object.updateMatrix();
-      ticks.current.setMatrixAt(i, object.matrix);
-    }
-    ticks.current.instanceMatrix.needsUpdate = true;
-  }, []);
-  return (
-    <instancedMesh ref={ticks} args={[undefined, undefined, 96]}>
-      <boxGeometry />
-      <meshStandardMaterial
-        color="#86dce7"
-        emissive="#0891b2"
-        emissiveIntensity={0.6}
-        metalness={0.5}
-        roughness={0.3}
-      />
-    </instancedMesh>
-  );
-}
-
-function Core({ still }: { still: boolean }) {
-  const root = useRef<THREE.Group>(null);
-  const rotor = useRef<THREE.Group>(null);
-  const progress = useRef(0);
+function MarkScene({
+  progress,
+  still,
+}: {
+  progress: MotionValue<number>;
+  still: boolean;
+}) {
+  const group = useRef<THREE.Group>(null);
+  const tunnel = useRef<THREE.Group>(null);
+  const solid = useRef<THREE.MeshStandardMaterial>(null);
+  const rightSolid = useRef<THREE.MeshStandardMaterial>(null);
   const pointer = useRef({ x: 0, y: 0 });
+  const current = useRef(0);
+  const { size } = useThree();
+  const shapes = useMemo(
+    () => [makeShape(leftPoints), makeShape(rightPoints)],
+    [],
+  );
+  useEffect(
+    () => () => shapes.forEach((geometry) => geometry.dispose()),
+    [shapes],
+  );
   useEffect(() => {
-    const scroll = () => {
-      progress.current =
-        window.scrollY /
-        Math.max(document.documentElement.scrollHeight - window.innerHeight, 1);
-    };
     const move = (event: PointerEvent) => {
-      pointer.current.x = event.clientX / window.innerWidth - 0.5;
-      pointer.current.y = event.clientY / window.innerHeight - 0.5;
+      pointer.current = {
+        x: event.clientX / window.innerWidth - 0.5,
+        y: event.clientY / window.innerHeight - 0.5,
+      };
     };
-    scroll();
-    window.addEventListener("scroll", scroll, { passive: true });
     window.addEventListener("pointermove", move, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", scroll);
-      window.removeEventListener("pointermove", move);
-    };
+    return () => window.removeEventListener("pointermove", move);
   }, []);
-  useFrame(({ camera }, delta) => {
-    if (still || !root.current || !rotor.current) return;
+  useFrame(({ camera, clock }, delta) => {
+    if (!group.current || !tunnel.current || !solid.current) return;
     const dt = Math.min(delta, 0.05);
-    root.current.rotation.y = THREE.MathUtils.damp(
-      root.current.rotation.y,
-      pointer.current.x * 0.38 + progress.current * 1.4,
-      3,
-      dt,
-    );
-    root.current.rotation.x = THREE.MathUtils.damp(
-      root.current.rotation.x,
-      pointer.current.y * 0.18,
-      3,
-      dt,
-    );
-    rotor.current.rotation.z += dt * (0.09 + progress.current * 0.35);
-    camera.position.x = THREE.MathUtils.damp(
-      camera.position.x,
-      progress.current * 1.7,
-      3,
-      dt,
-    );
-    camera.position.y = THREE.MathUtils.damp(
-      camera.position.y,
-      0.3 + progress.current * 1.4,
-      3,
-      dt,
-    );
-    camera.lookAt(0, 0, 0);
+    const target = still ? current.current : progress.get();
+    current.current = THREE.MathUtils.damp(current.current, target, 5, dt);
+    const p = current.current;
+    if (!still) {
+      group.current.rotation.y = THREE.MathUtils.damp(
+        group.current.rotation.y,
+        -0.38 + p * Math.PI * 1.5 + pointer.current.x * 0.12,
+        3,
+        dt,
+      );
+      group.current.rotation.z = THREE.MathUtils.damp(
+        group.current.rotation.z,
+        p * Math.PI * 0.38,
+        3,
+        dt,
+      );
+      group.current.rotation.x = THREE.MathUtils.damp(
+        group.current.rotation.x,
+        pointer.current.y * 0.06,
+        3,
+        dt,
+      );
+      tunnel.current.rotation.z = p * 0.8;
+      tunnel.current.position.z = p * 15;
+      camera.position.z = THREE.MathUtils.damp(
+        camera.position.z,
+        (size.width < 700 ? 16 : 14.5) - Math.sin(p * Math.PI) * 7,
+        4,
+        dt,
+      );
+      camera.position.x = THREE.MathUtils.damp(
+        camera.position.x,
+        Math.sin(p * Math.PI) * 1.3,
+        4,
+        dt,
+      );
+      camera.lookAt(0, 0, 0);
+      solid.current.opacity = 1 - Math.sin(p * Math.PI) * 0.95;
+      if (rightSolid.current)
+        rightSolid.current.opacity = solid.current.opacity;
+      group.current.position.y = Math.sin(clock.elapsedTime * 0.35) * 0.025;
+    }
   });
   return (
-    <group ref={root} rotation={[0, 0, -0.2]}>
-      <Float
-        speed={still ? 0 : 1.3}
-        rotationIntensity={still ? 0 : 0.12}
-        floatIntensity={still ? 0 : 0.2}
+    <>
+      <ambientLight intensity={1.5} />
+      <directionalLight position={[-4, 6, 8]} intensity={3.5} color="#fffdf6" />
+      <directionalLight position={[4, -1, -4]} intensity={2} color="#b9b9b9" />
+      <pointLight position={[1, 0, -4]} intensity={18} color="#eceae4" />
+      <group
+        ref={group}
+        rotation={[0, -0.38, 0]}
+        scale={size.width < 700 ? [0.9, 0.82, 1] : [1.2, 1.13, 1]}
       >
-        <group ref={rotor}>
-          <group rotation={[0.8, 0.45, 0.1]}>
-            <mesh>
-              <torusGeometry args={[1.85, 0.065, 12, 128]} />
-              <meshStandardMaterial
-                color="#47707b"
-                metalness={0.85}
-                roughness={0.27}
-              />
-            </mesh>
-            <mesh>
-              <torusGeometry args={[1.72, 0.014, 8, 128]} />
-              <meshBasicMaterial color="#22d3ee" toneMapped={false} />
-            </mesh>
-            <TickRing />
+        <mesh geometry={shapes[0]}>
+          <meshStandardMaterial
+            ref={solid}
+            color="#eceae4"
+            roughness={0.65}
+            metalness={0.08}
+            transparent
+          />
+          <Edges color="#f5f3ed" threshold={20} />
+        </mesh>
+        <mesh geometry={shapes[1]}>
+          <meshStandardMaterial
+            ref={rightSolid}
+            color="#eceae4"
+            roughness={0.65}
+            metalness={0.08}
+            transparent
+          />
+          <Edges color="#f5f3ed" threshold={20} />
+        </mesh>
+      </group>
+      <group ref={tunnel}>
+        {Array.from({ length: 9 }, (_, i) => (
+          <group
+            key={i}
+            position={[0, 0, -6 - i * 5]}
+            rotation={[0, 0, -0.1 + i * 0.085]}
+            scale={1.15 + i * 0.2}
+          >
+            {shapes.map((geometry, j) => (
+              <mesh geometry={geometry} key={j}>
+                <meshBasicMaterial transparent opacity={0} depthWrite={false} />
+                <Edges
+                  color="#b5b3ae"
+                  transparent
+                  opacity={0.24 - i * 0.018}
+                  threshold={20}
+                />
+              </mesh>
+            ))}
           </group>
-          <group rotation={[-0.65, 1.05, 0.2]}>
-            <mesh>
-              <torusGeometry args={[1.53, 0.095, 12, 128]} />
-              <meshStandardMaterial
-                color="#527481"
-                metalness={0.85}
-                roughness={0.22}
-              />
-            </mesh>
-            <mesh>
-              <torusGeometry args={[1.55, 0.018, 8, 128]} />
-              <meshBasicMaterial color="#67e8f9" />
-            </mesh>
-            <mesh rotation={[0, 0, 0.3]}>
-              <torusGeometry args={[1.65, 0.014, 8, 100, 4.7]} />
-              <meshBasicMaterial color="#34d399" />
-            </mesh>
-          </group>
-          <group rotation={[1.2, -0.6, 0.7]}>
-            <mesh>
-              <torusGeometry args={[1.2, 0.045, 10, 100]} />
-              <meshStandardMaterial
-                color="#68a8ae"
-                metalness={0.8}
-                roughness={0.2}
-              />
-            </mesh>
-            <mesh>
-              <torusGeometry args={[1.27, 0.012, 8, 100]} />
-              <meshBasicMaterial color="#22d3ee" />
-            </mesh>
-          </group>
-          <mesh>
-            <icosahedronGeometry args={[0.84, 1]} />
-            <meshStandardMaterial
-              color="#0b242d"
-              metalness={0.65}
-              roughness={0.25}
-              flatShading
-            />
-          </mesh>
-          <mesh>
-            <icosahedronGeometry args={[0.847, 1]} />
-            <meshBasicMaterial
-              color="#38c9db"
-              wireframe
-              transparent
-              opacity={0.6}
-            />
-          </mesh>
-          <mesh>
-            <octahedronGeometry args={[0.42]} />
-            <meshBasicMaterial color="#a5f3fc" wireframe />
-          </mesh>
-          <TelemetryNodes />
-        </group>
-      </Float>
-    </group>
+        ))}
+      </group>
+      <fog attach="fog" args={["#0c0c0b", 20, 70]} />
+    </>
   );
 }
-
 function Fallback() {
   return (
-    <div className="core-fallback">
-      <div />
-      <span>KINEMATIC CORE / STATIC VIEW</span>
+    <div className="scene-fallback">
+      <Monogram />
     </div>
   );
 }
-
 class SceneBoundary extends Component<
   { children: ReactNode },
   { failed: boolean }
@@ -533,37 +511,41 @@ class SceneBoundary extends Component<
     return this.state.failed ? <Fallback /> : this.props.children;
   }
 }
-
-export default function Scene3D({ paused = false }: { paused?: boolean }) {
-  const reducedMotion = useReducedMotion();
+export default function Scene3D({
+  progress,
+  paused = false,
+}: {
+  progress: MotionValue<number>;
+  paused?: boolean;
+}) {
+  const reduced = useReducedMotion();
+  const container = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(true);
   const [tabVisible, setTabVisible] = useState(true);
-  const container = useRef<HTMLDivElement>(null);
   useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => setVisible(entry.isIntersecting),
-      { rootMargin: "100px" },
+    const observer = new IntersectionObserver(([entry]) =>
+      setVisible(entry.isIntersecting),
     );
     if (container.current) observer.observe(container.current);
-    const onVisibility = () => setTabVisible(!document.hidden);
-    document.addEventListener("visibilitychange", onVisibility);
+    const update = () => setTabVisible(!document.hidden);
+    document.addEventListener("visibilitychange", update);
     return () => {
       observer.disconnect();
-      document.removeEventListener("visibilitychange", onVisibility);
+      document.removeEventListener("visibilitychange", update);
     };
   }, []);
-  const still = paused || !!reducedMotion || !visible || !tabVisible;
+  const still = paused || !!reduced || !visible || !tabVisible;
   return (
     <div
-      ref={container}
       className="scene-canvas"
+      ref={container}
       role="img"
-      aria-label="Procedural kinematic core: interlocking precision rings surrounding a neural lattice, with cyan and emerald telemetry nodes"
+      aria-label="Sculptural angular Tamim monogram, turning from a solid form into a wireframe tunnel as you scroll"
     >
       <SceneBoundary>
         <Canvas
           dpr={[1, 2]}
-          camera={{ position: [0, 0.3, 7.4], fov: 42 }}
+          camera={{ position: [0, 0, 14.5], fov: 38 }}
           frameloop={still ? "demand" : "always"}
           gl={{
             alpha: true,
@@ -572,15 +554,7 @@ export default function Scene3D({ paused = false }: { paused?: boolean }) {
           }}
           fallback={<Fallback />}
         >
-          <ambientLight intensity={0.6} />
-          <directionalLight
-            position={[3, 4, 4]}
-            intensity={3}
-            color="#b5f3ff"
-          />
-          <pointLight position={[-3, -1, 2]} intensity={30} color="#22d3ee" />
-          <pointLight position={[1, 3, -3]} intensity={35} color="#34d399" />
-          <Core still={still} />
+          <MarkScene progress={progress} still={still} />
         </Canvas>
       </SceneBoundary>
     </div>
@@ -720,443 +694,816 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
 ## src/App.tsx
 
 ```tsx
-import { lazy, Suspense, useState } from "react";
-import { motion, MotionConfig, useReducedMotion } from "framer-motion";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import {
-  ArrowDown,
-  ArrowUpRight,
-  ArrowRight,
-  Mail,
-  MapPin,
-  Cpu,
-  Code2,
-  Workflow,
-  Box,
-  ShieldCheck,
-  AudioLines,
-  Building2,
-  GraduationCap,
-  Bot,
-  Pause,
-  Play,
-} from "lucide-react";
-import { Github } from "./components/GitHubIcon";
+  motion,
+  MotionConfig,
+  useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
+  useTransform,
+} from "framer-motion";
+import { ArrowUpRight, ArrowUp, Plus, X, Pause, Play } from "lucide-react";
 import { profile, projects, skills } from "./data/portfolio";
 import type { Project } from "./data/portfolio";
 import { ProjectModal } from "./components/ProjectModal";
+import { ProjectPreview } from "./components/ProjectPreview";
+import { Monogram } from "./components/Monogram";
 
 const Scene3D = lazy(() => import("./components/Scene3D"));
-const filters = ["All projects", "AI systems", "Web & 3D", "Robotics"] as const;
-const projectIcons = {
-  security: ShieldCheck,
-  music: AudioLines,
-  city: Building2,
-  study: GraduationCap,
-  robot: Bot,
-};
+const chapters = [
+  {
+    label: "01 · the idea",
+    text: "Every system starts with a little curiosity.",
+  },
+  {
+    label: "02 · the connection",
+    text: "Code, intelligence, and the physical world.",
+  },
+  {
+    label: "03 · the process",
+    text: "From the first prototype to the final interaction.",
+  },
+  {
+    label: "04 · the build",
+    text: "I connect the pieces. Then I make them work.",
+  },
+];
 
-function ProjectVisual({ project }: { project: Project }) {
-  const Icon = projectIcons[project.visual];
+function LocalTime() {
+  const [time, setTime] = useState("");
+  useEffect(() => {
+    const update = () =>
+      setTime(
+        new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Kolkata",
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+        }).format(new Date()),
+      );
+    update();
+    const timer = window.setInterval(update, 30000);
+    return () => window.clearInterval(timer);
+  }, []);
+  return (
+    <span className="local-time">
+      India · {time || "IST"} <span>GMT+5:30</span>
+    </span>
+  );
+}
+
+function Navigation() {
+  const [open, setOpen] = useState(false);
+  const dialog = useRef<HTMLDialogElement>(null);
+  const trigger = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    if (!open || !dialog.current) return;
+    const element = dialog.current;
+    const overflow = document.body.style.overflow;
+    element.showModal();
+    document.body.style.overflow = "hidden";
+    return () => {
+      element.close();
+      document.body.style.overflow = overflow;
+      trigger.current?.focus({ preventScroll: true });
+    };
+  }, [open]);
+  const links = [
+    ["Work", "#work"],
+    ["About", "#about"],
+    ["Stack", "#stack"],
+    ["Contact", "#contact"],
+  ];
+  return (
+    <>
+      <header className="site-nav">
+        <a className="logo" href="#top" aria-label="Tamim home">
+          <Monogram />
+        </a>
+        <nav aria-label="Main navigation">
+          {links.map(([name, href]) => (
+            <a key={name} href={href}>
+              <span>{name}</span>
+              <span aria-hidden="true">{name}</span>
+            </a>
+          ))}
+        </nav>
+        <a className="pill nav-cta" href="#contact">
+          Get in touch <ArrowUpRight size={14} />
+        </a>
+        <button
+          ref={trigger}
+          className="pill menu-button"
+          onClick={() => setOpen(true)}
+          aria-expanded={open}
+          aria-controls="mobile-menu"
+        >
+          <span>—</span> Menu
+        </button>
+      </header>
+      <dialog
+        id="mobile-menu"
+        ref={dialog}
+        className="menu-dialog"
+        onCancel={(e) => {
+          e.preventDefault();
+          setOpen(false);
+        }}
+      >
+        <div className="menu-top">
+          <a href="#top" onClick={() => setOpen(false)} aria-label="Tamim home">
+            <Monogram />
+          </a>
+          <button autoFocus className="pill" onClick={() => setOpen(false)}>
+            Close <X size={16} />
+          </button>
+        </div>
+        <p className="menu-caption">
+          Muhammed Tamim Baig
+          <br />
+          Engineer. Builder. Always curious.
+        </p>
+        <nav aria-label="Mobile navigation">
+          {[["Home", "#top"], ...links].map(([name, href], i) => (
+            <a key={name} href={href} onClick={() => setOpen(false)}>
+              {name}
+              <sup>0{i + 1}</sup>
+            </a>
+          ))}
+        </nav>
+        <div className="menu-bottom">
+          <a href={profile.github} target="_blank" rel="noreferrer">
+            GitHub ↗
+          </a>
+          <LocalTime />
+        </div>
+      </dialog>
+    </>
+  );
+}
+
+function Hero() {
+  const section = useRef<HTMLElement>(null);
+  const reduced = useReducedMotion();
+  const [paused, setPaused] = useState(false);
+  const { scrollYProgress } = useScroll({
+    target: section,
+    offset: ["start start", "end end"],
+  });
+  const [angle, setAngle] = useState(0);
+  useMotionValueEvent(scrollYProgress, "change", (value) =>
+    setAngle(Math.round(value * 180)),
+  );
+  const introOpacity = Math.max(0, Math.min(1, (28 - angle) / 18));
+  const narrativeOpacity = Math.max(
+    0,
+    Math.min(1, (angle - 22) / 16, (180 - angle) / 18),
+  );
+  const chapter = Math.min(
+    3,
+    Math.max(0, Math.floor((angle / 180 - 0.14) * 4.8)),
+  );
+  return (
+    <section
+      id="top"
+      ref={section}
+      className="hero-scroll"
+      aria-label="Tamim, engineering ideas into reality"
+    >
+      <div className="hero-stage">
+        <Suspense
+          fallback={
+            <div className="scene-fallback">
+              <Monogram />
+            </div>
+          }
+        >
+          <Scene3D progress={scrollYProgress} paused={paused} />
+        </Suspense>
+        <div className="hero-vignette" />
+        <motion.div
+          className="hero-intro"
+          inert={!reduced && angle > 28}
+          style={{ opacity: reduced ? 1 : introOpacity }}
+        >
+          <div className="hero-eyebrow">
+            <span>Tamim / Robotics & AI</span>
+            <LocalTime />
+          </div>
+          <h1>
+            <span className="hero-line-one">I design it.</span>
+            <span className="hero-line-two">I build it.</span>
+            <span className="sr-only">
+              Muhammed Tamim Baig — {profile.role}
+            </span>
+          </h1>
+          <div className="hero-summary">
+            <p>
+              Code, intelligence, and the physical world. I bring them together
+              to build systems that work beyond the screen.
+            </p>
+            <span>Robotics & AI student · VIAT / VTU · 2024–2028</span>
+          </div>
+          <a className="pill pill-filled hero-cta" href="#contact">
+            Get in touch <ArrowUpRight size={17} />
+          </a>
+        </motion.div>
+        {!reduced && (
+          <motion.div
+            className="hero-narrative"
+            style={{ opacity: narrativeOpacity }}
+            aria-hidden={angle < 24}
+          >
+            <p>{chapters[chapter].label}</p>
+            <motion.h2
+              key={chapter}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
+              {chapters[chapter].text}
+            </motion.h2>
+          </motion.div>
+        )}
+        <div className="hero-dial" aria-hidden="true">
+          <span>{String(reduced ? 0 : angle).padStart(3, "0")}°</span>
+          <p>
+            {angle < 25
+              ? "Scroll to go through the idea"
+              : angle < 100
+                ? "i · imagination"
+                : "b · build"}
+          </p>
+        </div>
+        <button
+          className="motion-toggle"
+          onClick={() => setPaused(!paused)}
+          aria-label={paused ? "Resume 3D motion" : "Pause 3D motion"}
+          aria-pressed={paused}
+        >
+          {paused ? <Play size={12} /> : <Pause size={12} />}
+        </button>
+      </div>
+    </section>
+  );
+}
+
+function SelectedWork({ onSelect }: { onSelect: (project: Project) => void }) {
+  const [hovered, setHovered] = useState<string | null>(null);
+  const active = projects.find((p) => p.id === hovered);
+  return (
+    <section className="work-section light-section" id="work">
+      <div className="section-heading wrap">
+        <h2>Imagined, then built.</h2>
+        <p>
+          Five projects across AI, the web, and robotics. Different problems.
+          The same curiosity.
+          <br />
+          <span className="subtle">Point at a name to explore it.</span>
+        </p>
+      </div>
+      <div className="project-list wrap" onMouseLeave={() => setHovered(null)}>
+        {projects.map((project, index) => (
+          <article
+            className={
+              "project-row " + (hovered === project.id ? "is-active" : "")
+            }
+            key={project.id}
+          >
+            <button
+              className="project-row-button"
+              onMouseEnter={() => setHovered(project.id)}
+              onFocus={() => setHovered(project.id)}
+              onBlur={() => setHovered(null)}
+              onClick={() => onSelect(project)}
+              aria-label={"Explore " + project.name + " architecture"}
+            >
+              <span className="row-number">0{index + 1}</span>
+              <h3>
+                {project.name === "AI-Powered Plastic Sorter" ? (
+                  <>
+                    Plastic
+                    <br className="sorter-break" /> Sorter
+                  </>
+                ) : (
+                  project.name
+                )}
+              </h3>
+              <span className="row-details">
+                <span>{project.category}</span>
+                <span>{project.description}</span>
+                <span className="row-action">
+                  Explore the architecture <ArrowUpRight size={13} />
+                </span>
+              </span>
+            </button>
+          </article>
+        ))}
+        <div className={"hover-preview " + (active ? "shown" : "")}>
+          {active && <ProjectPreview project={active} />}
+        </div>
+      </div>
+      <div className="work-bottom wrap">
+        <span>Built from curiosity. Open to possibility.</span>
+        <a
+          className="pill pill-dark"
+          href={profile.github}
+          target="_blank"
+          rel="noreferrer"
+        >
+          Explore GitHub <ArrowUpRight size={16} />
+        </a>
+      </div>
+    </section>
+  );
+}
+
+function Construction() {
+  const section = useRef<HTMLElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: section,
+    offset: ["start end", "end start"],
+  });
+  const rotate = useTransform(scrollYProgress, [0, 1], [-23.6, 23.6]);
+  return (
+    <section id="about" ref={section} className="construction-section">
+      <div className="construction-top wrap">
+        <span>02 · The person, behind the systems</span>
+        <span>Muhammed Tamim Baig</span>
+      </div>
+      <div className="construction-grid wrap">
+        <div className="construction-note">
+          <span className="tiny-label">01 / CURIOSITY</span>
+          <h3>
+            One idea.
+            <br />
+            Every dimension.
+          </h3>
+          <p>
+            I’m Tamim, a Robotics & AI engineering student exploring how
+            software, intelligence, and physical systems come together.
+          </p>
+        </div>
+        <motion.div
+          className="construction-drawing"
+          style={{ rotate }}
+          aria-hidden="true"
+        >
+          <div className="drawing-grid" />
+          <div className="drawing-circle" />
+          <Monogram wire />
+          <div className="drawing-axis axis-x" />
+          <div className="drawing-axis axis-y" />
+          <span className="drawing-angle">23.6°</span>
+          <span className="drawing-point">P / 01</span>
+          <i className="pivot" />
+        </motion.div>
+        <div className="construction-note note-right">
+          <span className="tiny-label">02 / PRACTICE</span>
+          <h3>
+            Imagined,
+            <br />
+            then engineered.
+          </h3>
+          <p>
+            From LLM agents and immersive web experiences to computer vision and
+            custom hardware. I like connecting the whole system.
+          </p>
+        </div>
+      </div>
+      <div className="construction-bottom wrap">
+        <span>Curiosity → Prototype → System</span>
+        <span>
+          Idea <i /> Form | 02
+        </span>
+      </div>
+    </section>
+  );
+}
+
+function MiniSite({ blueprint = false }: { blueprint?: boolean }) {
   return (
     <div
-      className={"project-visual visual-" + project.visual}
+      className={"mini-site " + (blueprint ? "mini-blueprint" : "")}
       aria-hidden="true"
     >
-      <div className="visual-grid" />
-      <span className="visual-label">
-        {project.visual === "music"
-          ? "AUDIO / SPATIAL ENGINE"
-          : project.visual === "security"
-            ? "SECURITY / AGENT NETWORK"
-            : "SYSTEM / ARCHITECTURE"}
-      </span>
-      <div className="visual-orbit orbit-one" />
-      <div className="visual-orbit orbit-two" />
-      <div className="visual-emblem">
-        <Icon size={38} strokeWidth={1.2} />
+      <div className="mini-nav">
+        <Monogram />
+        <span>Work　 About　 Stack　 Contact</span>
+        <span>Get in touch ↗</span>
       </div>
-      <div className="visual-bars">
-        {Array.from({ length: 28 }, (_, i) => (
-          <i key={i} style={{ height: 12 + ((i * 17 + 23) % 57) + "%" }} />
-        ))}
+      <div className="mini-role">
+        <span>Tamim / Robotics & AI</span>
+        <span>India · GMT+5:30</span>
       </div>
-      <span className="visual-caption">
-        {project.visual === "music"
-          ? "SOUND, IN ANOTHER DIMENSION."
-          : project.visual === "security"
-            ? "PLAN → EXECUTE → PATCH → VERIFY"
-            : project.stack.slice(0, 3).join(" / ")}
-      </span>
-      <span className="visual-corner">↗</span>
+      <div className="mini-first">I design it.</div>
+      <Monogram className="mini-monogram" wire={blueprint} />
+      <div className="mini-second">I build it.</div>
+      <div className="mini-summary">
+        Code, intelligence, and
+        <br />
+        the physical world.
+      </div>
+      <span className="mini-degree">023°</span>
+      {blueprint && (
+        <>
+          <span className="measure-label">Display · form / function</span>
+          <div className="measure-line" />
+        </>
+      )}
     </div>
   );
 }
 
-export function App() {
-  const [filter, setFilter] =
-    useState<(typeof filters)[number]>("All projects");
-  const [selected, setSelected] = useState<Project | null>(null);
-  const [paused, setPaused] = useState(false);
-  const reducedMotion = useReducedMotion();
-  const visibleProjects = projects.filter(
-    (project) => filter === "All projects" || project.category === filter,
-  );
-
+function Blueprint() {
+  const [split, setSplit] = useState(50);
   return (
-    <MotionConfig reducedMotion="user">
-      <a className="skip-link" href="#main">
-        Skip to content
-      </a>
-      <header className="site-header">
-        <a href="#home" className="wordmark" aria-label="Tamim home">
-          <span className="brand-mark">
-            t<span>.</span>
+    <section className="blueprint-section" id="stack">
+      <div className="section-heading wrap">
+        <h2>
+          One idea.
+          <br />
+          Both sides of the screen.
+        </h2>
+        <p>
+          From the first sketch to a working system. Move the line to explore
+          the blueprint and the finished experience.
+        </p>
+      </div>
+      <div className="comparison wrap">
+        <div className="comparison-frame">
+          <MiniSite />
+          <div
+            className="blueprint-layer"
+            style={{
+              clipPath:
+                "polygon(0 0," +
+                Math.min(split + 12, 100) +
+                "% 0," +
+                Math.max(split - 12, 0) +
+                "% 100%,0 100%)",
+            }}
+          >
+            <MiniSite blueprint />
+          </div>
+          <div className="comparison-divider" style={{ left: split + "%" }}>
+            <span>
+              <ArrowUpRight size={18} />
+            </span>
+          </div>
+          <input
+            className="comparison-input"
+            type="range"
+            min="12"
+            max="88"
+            value={split}
+            onChange={(e) => setSplit(Number(e.target.value))}
+            aria-label="Blueprint and finished design comparison"
+            aria-valuetext={split + " percent blueprint"}
+          />
+        </div>
+        <div className="comparison-caption">
+          <span>
+            i · imagination <span>Blueprint / the system</span>
           </span>
           <span>
-            TAMIM<span className="wordmark-slash"> / </span>
-            <span className="wordmark-sub">ENGINEER & BUILDER</span>
+            <span>Live / the experience</span> b · build
           </span>
+        </div>
+      </div>
+      <div className="capabilities wrap">
+        <div className="capability-column">
+          <div className="capability-heading">
+            <h3>Intelligence</h3>
+            <span>Before the build · 03</span>
+          </div>
+          {[...skills[0].items, ...skills[2].items].map((skill, i) => (
+            <div className="capability-item" key={skill}>
+              <span>i.{i + 1}</span>
+              <span>{skill}</span>
+              <Plus size={15} />
+            </div>
+          ))}
+        </div>
+        <div className="capability-column">
+          <div className="capability-heading">
+            <span>04 · Beyond the screen</span>
+            <h3>Production</h3>
+          </div>
+          {[...skills[1].items, ...skills[3].items].map((skill, i) => (
+            <div className="capability-item" key={skill}>
+              <span>b.{i + 1}</span>
+              <span>{skill}</span>
+              <Plus size={15} />
+            </div>
+          ))}
+        </div>
+      </div>
+      <div className="stack-foot wrap">
+        <span>Software. Intelligence. Hardware.</span>
+        <a
+          href={profile.github}
+          target="_blank"
+          rel="noreferrer"
+          className="pill"
+        >
+          See what I’m building <ArrowUpRight size={15} />
         </a>
-        <nav aria-label="Main navigation">
+      </div>
+    </section>
+  );
+}
+
+function Education() {
+  return (
+    <section className="education-section light-section">
+      <div className="education-top wrap">
+        <span>05 / Always a student</span>
+        <span>2024 — 2028</span>
+      </div>
+      <div className="education-main wrap">
+        <span className="quote-symbol">“</span>
+        <h2>
+          Curiosity is my
+          <br />
+          operating system.
+        </h2>
+        <div className="education-credit">
+          <span className="avatar-mark">T</span>
+          <div>
+            <span>{profile.name}</span>
+            <p>{profile.role}</p>
+          </div>
+        </div>
+      </div>
+      <div className="education-facts wrap">
+        <div>
+          <span className="fact-label">The degree</span>
+          <h3>{profile.education}</h3>
+        </div>
+        <div>
+          <span className="fact-label">The place</span>
+          <h3>{profile.institution}</h3>
+          <p>{profile.campus}</p>
+        </div>
+        <div>
+          <span className="fact-label">The journey</span>
+          <span className="education-year">
+            2024<span>—28</span>
+          </span>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function Contact() {
+  return (
+    <footer id="contact" className="contact-section">
+      <div className="contact-top wrap">
+        <span>
+          <i className="availability-dot" /> Let’s make something meaningful.
+        </span>
+        <LocalTime />
+      </div>
+      <div className="wrap">
+        <h2>
+          Something
+          <br />
+          worth building?
+        </h2>
+        <a className="email-link" href={"mailto:" + profile.email}>
+          <span>{profile.email}</span>
+          <ArrowUpRight />
+        </a>
+      </div>
+      <div className="footer-grid wrap">
+        <div className="footer-signature">
+          <Monogram />
+          <span>tamim baig</span>
+        </div>
+        <div>
+          <h3>Explore</h3>
+          <a href="#top">Home</a>
           <a href="#work">Work</a>
           <a href="#about">About</a>
           <a href="#stack">Stack</a>
-          <a href="#contact" className="nav-contact">
-            Let’s talk <ArrowUpRight size={14} />
+        </div>
+        <div>
+          <h3>Connect</h3>
+          <a href={profile.github} target="_blank" rel="noreferrer">
+            GitHub ↗
           </a>
-        </nav>
-      </header>
-      <main id="main">
-        <section id="home" className="hero section-shell">
-          <div className="hero-topline">
-            <span className="eyebrow">
-              <i className="status-dot" /> ROBOTICS · INTELLIGENCE · THE WEB
-            </span>
-            <span className="hero-coordinate">
-              KARNATAKA <span>·</span> INDIA
-            </span>
-          </div>
-          <div className="hero-layout">
-            <motion.div
-              className="hero-copy"
-              initial={reducedMotion ? false : { opacity: 0, y: 18 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.7 }}
-            >
-              <p className="intro-line">Hello, I’m Tamim.</p>
-              <h1>
-                Engineering
-                <br />
-                the <span>intelligent.</span>
-                <br />
-                Building the real<span className="cyan">.</span>
-              </h1>
-              <p className="hero-description">
-                I connect code, intelligence, and the physical world.
-                <br className="desktop-break" /> From autonomous systems to
-                immersive web experiences.
-              </p>
-              <p className="hero-role">{profile.role}</p>
-              <div className="hero-actions">
-                <a className="button button-primary" href="#work">
-                  Explore my work <ArrowDown size={16} />
-                </a>
-                <a
-                  className="button button-secondary"
-                  href={profile.github}
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  <Github size={17} /> GitHub <ArrowUpRight size={14} />
-                </a>
-              </div>
-              <div className="hero-location">
-                <MapPin size={13} />
-                <span>{profile.location}</span>
-              </div>
-            </motion.div>
-            <div className="core-stage">
-              <div className="core-cross cross-tl">+</div>
-              <div className="core-cross cross-br">+</div>
-              <div className="core-top">
-                <span>
-                  <i className="status-dot" /> KINEMATIC CORE
-                </span>
-                <span>FIG. 001</span>
-              </div>
-              <Suspense
-                fallback={
-                  <div
-                    className="core-fallback"
-                    aria-label="Loading interactive kinematic core"
-                  >
-                    <div />
-                    <span>INITIALIZING GEOMETRY</span>
-                  </div>
-                }
-              >
-                <Scene3D paused={paused} />
-              </Suspense>
-              <div className="core-annotation annotation-left">
-                <span>01 / NEURAL LATTICE</span>
-                <i />
-              </div>
-              <div className="core-annotation annotation-right">
-                <i />
-                <span>02 / ORBITAL ARRAY</span>
-              </div>
-              <div className="core-bottom">
-                <span>
-                  PROCEDURAL SYSTEM
-                  <br />
-                  <b>CODE MEETS PHYSICAL.</b>
-                </span>
-                <button
-                  onClick={() => setPaused(!paused)}
-                  aria-label={
-                    paused ? "Resume 3D animation" : "Pause 3D animation"
-                  }
-                  aria-pressed={paused}
-                >
-                  {paused ? <Play size={13} /> : <Pause size={13} />}
-                  <span>{paused ? "RESUME" : "PAUSE"}</span>
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="hero-footer">
-            <span className="mono">
-              SCROLL TO EXPLORE <ArrowDown size={13} />
-            </span>
-            <div>
-              <span>SOFTWARE</span>
-              <i />
-              <span>INTELLIGENCE</span>
-              <i />
-              <span>HARDWARE</span>
-            </div>
-            <span className="mono hero-index">
-              PORTFOLIO / {new Date().getFullYear()}
-            </span>
-          </div>
-        </section>
-
-        <section id="work" className="section-shell work-section">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow section-index">01 / SELECTED WORK</p>
-              <h2>Ideas, engineered.</h2>
-            </div>
-            <p>
-              A collection of systems at the intersection
-              <br />
-              of intelligence, interaction, and impact.
-            </p>
-          </div>
-          <div className="project-toolbar">
-            <div className="filters" aria-label="Filter projects">
-              {filters.map((item) => (
-                <button
-                  key={item}
-                  aria-pressed={filter === item}
-                  className={filter === item ? "active" : ""}
-                  onClick={() => setFilter(item)}
-                >
-                  {item}
-                  {item === "All projects" && <span>05</span>}
-                </button>
-              ))}
-            </div>
-            <span className="mono project-count" aria-live="polite">
-              {String(visibleProjects.length).padStart(2, "0")} PROJECTS
-            </span>
-          </div>
-          <div className="project-grid">
-            {visibleProjects.map((project) => (
-              <motion.article
-                layout={!reducedMotion}
-                key={project.id}
-                className="project-card"
-              >
-                <button
-                  className="visual-button"
-                  onClick={() => setSelected(project)}
-                  aria-label={"Explore " + project.name + " architecture"}
-                >
-                  <ProjectVisual project={project} />
-                </button>
-                <div className="project-content">
-                  <div className="project-meta">
-                    <span>{project.category}</span>
-                    <span>0{projects.indexOf(project) + 1}</span>
-                  </div>
-                  <h3>{project.name}</h3>
-                  <p>{project.description}</p>
-                  <div className="tags">
-                    {project.stack.slice(0, 4).map((tech) => (
-                      <span key={tech}>{tech}</span>
-                    ))}
-                    {project.stack.length > 4 && (
-                      <span>+{project.stack.length - 4}</span>
-                    )}
-                  </div>
-                  <div className="project-links">
-                    <button onClick={() => setSelected(project)}>
-                      Explore architecture <ArrowRight size={15} />
-                    </button>
-                    {project.github && (
-                      <a
-                        href={project.github}
-                        target="_blank"
-                        rel="noreferrer"
-                        aria-label={project.name + " on GitHub"}
-                      >
-                        <Github size={17} />
-                        <ArrowUpRight size={13} />
-                      </a>
-                    )}
-                  </div>
-                </div>
-              </motion.article>
-            ))}
-          </div>
-        </section>
-
-        <section id="about" className="section-shell about-section">
-          <div>
-            <p className="eyebrow section-index">
-              02 / THE PERSON BEHIND THE SYSTEMS
-            </p>
-            <h2>
-              Curiosity is
-              <br />
-              my operating system<span className="cyan">.</span>
-            </h2>
-            <p className="about-copy">
-              I’m {profile.name}, a Robotics & AI engineering student building
-              across the digital and physical worlds. My work spans full-stack
-              applications, intelligent automation, immersive 3D experiences,
-              and hands-on robotics.
-            </p>
-            <p className="about-copy">
-              I’m interested in the entire system: how it thinks, how it feels
-              to use, and how it works in the real world.
-            </p>
-            <a
-              className="text-link"
-              href={profile.github}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Follow what I’m building <ArrowUpRight size={16} />
-            </a>
-          </div>
-          <div className="education-panel">
-            <div className="panel-title">
-              <GraduationCap size={20} />
-              <span className="mono">CURRENTLY LEARNING & BUILDING</span>
-              <i className="status-dot" />
-            </div>
-            <span className="education-years">{profile.years}</span>
-            <h3>{profile.education}</h3>
-            <p>{profile.institution}</p>
-            <p className="muted">{profile.campus}</p>
-            <div className="education-bottom">
-              <MapPin size={15} />
-              <span>Karnataka, India</span>
-              <span className="cyan">UNDERGRADUATE</span>
-            </div>
-          </div>
-        </section>
-
-        <section id="stack" className="section-shell stack-section">
-          <div className="section-heading">
-            <div>
-              <p className="eyebrow section-index">03 / TOOLKIT</p>
-              <h2>The building blocks.</h2>
-            </div>
-            <p>
-              From a line of code to a physical prototype.
-              <br />
-              The tools I use to connect the dots.
-            </p>
-          </div>
-          <div className="skills-grid">
-            {skills.map((group, index) => {
-              const Icon = [Code2, Box, Workflow, Cpu][index];
-              return (
-                <div className="skill-group" key={group.label}>
-                  <div className="skill-heading">
-                    <Icon size={22} strokeWidth={1.4} />
-                    <span className="mono">{group.code}</span>
-                  </div>
-                  <h3>{group.label}</h3>
-                  <div className="skill-items">
-                    {group.items.map((item) => (
-                      <span key={item}>{item}</span>
-                    ))}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </section>
-
-        <section id="contact" className="section-shell contact-section">
-          <p className="eyebrow section-index">
-            <i className="status-dot" /> 04 / MAKE A CONNECTION
-          </p>
-          <div className="contact-layout">
-            <div>
-              <h2>
-                Have something
-                <br />
-                in mind<span className="cyan">?</span>
-              </h2>
-              <p>
-                Let’s talk ideas, interesting problems, and what we could build.
-              </p>
-              <a href={"mailto:" + profile.email} className="contact-email">
-                {profile.email}
-                <ArrowUpRight size={26} />
-              </a>
-            </div>
-            <a
-              className="contact-orb"
-              href={"mailto:" + profile.email}
-              aria-label="Send Tamim an email"
-            >
-              <ArrowUpRight size={64} strokeWidth={1} />
-            </a>
-          </div>
-          <div className="contact-links">
-            <a href={profile.github} target="_blank" rel="noreferrer">
-              <Github size={16} /> GitHub <ArrowUpRight size={14} />
-            </a>
-            <a href={"mailto:" + profile.email}>
-              <Mail size={16} /> Email <ArrowUpRight size={14} />
-            </a>
-            <span>
-              <MapPin size={14} /> {profile.location}
-            </span>
-          </div>
-        </section>
-      </main>
-      <footer className="site-footer">
-        <a href="#home" className="footer-name">
-          TAMIM<span className="cyan">.</span>
-        </a>
+          <a href={"mailto:" + profile.email}>Email ↗</a>
+        </div>
+        <div>
+          <h3>Contact</h3>
+          <a href={"mailto:" + profile.email}>{profile.email}</a>
+          <p>{profile.location}</p>
+          <span>GMT+5:30</span>
+        </div>
+      </div>
+      <div className="footer-bottom wrap">
         <span>
-          © {new Date().getFullYear()} {profile.name}
+          © {new Date().getFullYear()} {profile.name} · From idea to reality.
         </span>
-        <a href="#home">BACK TO TOP ↑</a>
-      </footer>
+        <a href="#top">
+          Back to top <ArrowUp size={14} />
+        </a>
+      </div>
+    </footer>
+  );
+}
+
+export function App() {
+  const [selected, setSelected] = useState<Project | null>(null);
+  return (
+    <MotionConfig reducedMotion="user">
+      <a className="skip-link" href="#work">
+        Skip to projects
+      </a>
+      <Navigation />
+      <main>
+        <Hero />
+        <SelectedWork onSelect={setSelected} />
+        <Construction />
+        <Blueprint />
+        <Education />
+      </main>
+      <Contact />
       <ProjectModal project={selected} onClose={() => setSelected(null)} />
     </MotionConfig>
   );
 }
-
 export default App;
+```
+
+## src/components/ProjectPreview.tsx
+
+```tsx
+import type { Project } from "../data/portfolio";
+import {
+  ArrowUpRight,
+  Play,
+  ShieldCheck,
+  ScanLine,
+  Wind,
+  BookOpen,
+} from "lucide-react";
+
+export function ProjectPreview({ project }: { project: Project }) {
+  return (
+    <div
+      className={"project-preview preview-" + project.visual}
+      aria-hidden="true"
+    >
+      <div className="preview-top">
+        <span>{project.name}</span>
+        <span>↗</span>
+      </div>
+      {project.visual === "security" && (
+        <>
+          <div className="preview-title">
+            <ShieldCheck size={28} />
+            <span>
+              Security.
+              <br />
+              Built into the loop.
+            </span>
+          </div>
+          <div className="security-flow">
+            <span>PLAN</span>
+            <i />
+            <span>EXECUTE</span>
+            <i />
+            <span>VERIFY</span>
+          </div>
+          <div className="preview-console">
+            <p>
+              <b>›</b> Initialize testing workflow
+            </p>
+            <p>
+              <b>›</b> Browser execution · Playwright
+            </p>
+            <p>
+              <b>›</b> Safe patching & verification
+            </p>
+          </div>
+        </>
+      )}
+      {project.visual === "music" && (
+        <>
+          <div className="record">
+            <div />
+            <span>A</span>
+          </div>
+          <div className="music-caption">
+            <span>
+              A different
+              <br />
+              kind of listening.
+            </span>
+            <Play size={22} fill="currentColor" />
+          </div>
+          <div className="waveform">
+            {Array.from({ length: 32 }, (_, i) => (
+              <i key={i} style={{ height: 10 + ((i * 19) % 45) }} />
+            ))}
+          </div>
+        </>
+      )}
+      {project.visual === "city" && (
+        <>
+          <div className="preview-title">
+            <Wind size={30} />
+            <span>
+              Better air.
+              <br />
+              Resilient cities.
+            </span>
+          </div>
+          <div className="city-chart">
+            {[35, 52, 40, 65, 48, 73, 60, 82, 62, 91, 80, 100].map((n, i) => (
+              <i key={i} style={{ height: n + "%" }} />
+            ))}
+          </div>
+          <span className="preview-foot">
+            CLEAN AIR / CLIMATE / CIVIC WORKFLOWS
+          </span>
+        </>
+      )}
+      {project.visual === "study" && (
+        <>
+          <div className="preview-title">
+            <BookOpen size={30} />
+            <span>
+              A little curiosity.
+              <br />A lot of possibility.
+            </span>
+          </div>
+          <div className="study-question">
+            What will you learn today?
+            <ArrowUpRight size={18} />
+          </div>
+          <div className="study-chips">
+            <span>Explore</span>
+            <span>Understand</span>
+            <span>Build</span>
+          </div>
+        </>
+      )}
+      {project.visual === "robot" && (
+        <>
+          <div className="preview-title">
+            <ScanLine size={30} />
+            <span>
+              See it.
+              <br />
+              Sort it.
+            </span>
+          </div>
+          <div className="sorter-diagram">
+            <span>VISION</span>
+            <i />
+            <span>CONTROL</span>
+            <i />
+            <span>SORT</span>
+          </div>
+          <span className="preview-foot">
+            RASPBERRY PI × ARDUINO / PALS INNOVA
+          </span>
+        </>
+      )}
+    </div>
+  );
+}
+```
+
+## src/components/Monogram.tsx
+
+```tsx
+export function Monogram({
+  className = "",
+  wire = false,
+}: {
+  className?: string;
+  wire?: boolean;
+}) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 240 320"
+      fill={wire ? "none" : "currentColor"}
+      stroke={wire ? "currentColor" : "none"}
+      strokeWidth="1"
+      aria-hidden="true"
+    >
+      <path d="M30 104 82 76 82 20 116 2 116 112 64 140 64 184 97 166 97 206 64 224 30 204Z" />
+      <path d="M132 110 166 92 210 118 210 226 156 256 156 300 122 318 122 166 156 148 156 212 176 201 176 150 156 139 132 152Z" />
+    </svg>
+  );
+}
 ```
 
 ## src/components/GitHubIcon.tsx
@@ -1184,55 +1531,53 @@ export function Github({ size = 20 }: { size?: number }) {
 ## src/index.css
 
 ```css
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+@source "./App.tsx";
+@source "./components/ProjectModal.tsx";
+@source "./components/ProjectPreview.tsx";
 
 :root {
-  font-family: Inter, Arial, sans-serif;
-  color: #f4f4f5;
-  background: #09090b;
+  font-family: "Archivo", "Helvetica Neue", Arial, sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
-  --cyan: #22d3ee;
-  --emerald: #34d399;
-  --muted: #a1a1aa;
-  --border: #27272a;
+  color: #eceae4;
+  background: #0c0c0b;
+  --ink: #0c0c0b;
+  --bone: #eceae4;
+  --muted: #8c8a84;
+  --accent: #ff4f2b;
+  --line: #eceae424;
+  --pad: 40px;
 }
 * {
   box-sizing: border-box;
 }
-html {
-  scroll-behavior: smooth;
-  scroll-padding-top: 95px;
-}
 body {
   margin: 0;
 }
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
 button,
-a {
+a,
+input {
   -webkit-tap-highlight-color: transparent;
 }
-button {
+button,
+input {
   font: inherit;
-  color: inherit;
+}
+button {
   cursor: pointer;
+  color: inherit;
+  background: none;
+  border: 0;
 }
 a {
   color: inherit;
   text-decoration: none;
-}
-button {
-  border: 0;
-  background: none;
-}
-button:focus-visible,
-a:focus-visible {
-  outline: 2px solid var(--cyan);
-  outline-offset: 5px;
-}
-::selection {
-  background: #155e75;
-  color: white;
 }
 h1,
 h2,
@@ -1241,1268 +1586,1856 @@ h4,
 p {
   margin: 0;
 }
+a,
+button {
+  touch-action: manipulation;
+}
 svg {
   flex-shrink: 0;
 }
-button,
-a {
-  touch-action: manipulation;
+::selection {
+  background: #ff4f2b;
+  color: #0c0c0b;
 }
-.mono,
-.eyebrow,
-.hero-coordinate,
-.core-top,
-.core-bottom,
-.core-annotation,
-.hero-footer,
-.project-meta,
-.tags,
-.visual-label,
-.visual-caption,
-.skill-items,
-.education-years,
-.site-footer {
-  font-family: "JetBrains Mono", monospace;
+button:focus-visible,
+a:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 6px;
 }
-.cyan {
-  color: var(--cyan);
+.wrap {
+  width: min(100%, 1680px);
+  padding-inline: var(--pad);
+  margin-inline: auto;
 }
-.muted {
-  color: var(--muted);
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 .skip-link {
   position: fixed;
-  top: -80px;
-  left: 20px;
   z-index: 100;
-  background: var(--cyan);
-  color: #09090b;
+  top: -60px;
+  left: 20px;
+  background: var(--bone);
+  color: var(--ink);
   padding: 12px;
 }
 .skip-link:focus {
-  top: 12px;
+  top: 10px;
 }
-.section-shell {
-  max-width: 1440px;
-  margin: auto;
-  padding-left: 6%;
-  padding-right: 6%;
-}
-.site-header {
-  height: 86px;
-  padding: 0 6%;
+.site-nav {
+  position: fixed;
+  inset: 0 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-bottom: 1px solid var(--border);
-  background: #09090bf2;
-  position: sticky;
-  top: 0;
-  z-index: 30;
-  backdrop-filter: blur(16px);
+  height: 80px;
+  padding: 0 var(--pad);
+  z-index: 40;
+  mix-blend-mode: difference;
+  color: #eceae4;
+  pointer-events: none;
 }
-.wordmark {
+.site-nav > * {
+  pointer-events: auto;
+}
+.logo {
+  display: block;
+  width: 25px;
+  height: 36px;
+}
+.logo svg {
+  width: 100%;
+  height: 100%;
+}
+.site-nav nav {
   display: flex;
-  align-items: center;
-  gap: 13px;
-  font-size: 12px;
-  font-weight: 600;
-  letter-spacing: 1.3px;
+  gap: 40px;
+  margin-left: 100px;
 }
-.brand-mark {
-  font-size: 37px;
-  line-height: 1;
-  letter-spacing: -4px;
-  font-weight: 700;
-}
-.brand-mark span {
-  color: var(--cyan);
-}
-.wordmark-slash {
-  color: #52525b;
-  padding: 0 7px;
-}
-.wordmark-sub {
-  font-size: 9px;
-  color: var(--muted);
-  letter-spacing: 1.2px;
-}
-nav {
-  display: flex;
-  align-items: center;
-  gap: 32px;
-  font-size: 12px;
-  color: #a1a1aa;
-}
-nav a:hover {
-  color: white;
-}
-.nav-contact {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  border: 1px solid #3f3f46;
-  border-radius: 5px;
-  padding: 11px 15px;
-  color: #e4e4e7;
-}
-.eyebrow {
-  font-size: 10px;
-  letter-spacing: 1.6px;
-  color: #a1a1aa;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.status-dot {
-  display: inline-block;
-  width: 6px;
-  height: 6px;
-  background: var(--emerald);
-  border-radius: 50%;
-  box-shadow: 0 0 10px #34d39950;
-  flex-shrink: 0;
-}
-.hero {
+.site-nav nav a {
+  font-size: 14px;
   position: relative;
-  background: radial-gradient(ellipse at 77% 43%, #0a262b52, transparent 46%);
+  height: 20px;
+  overflow: hidden;
+  display: block;
 }
-.hero-topline {
-  display: flex;
-  justify-content: space-between;
-  padding-top: 32px;
+.site-nav nav a span {
+  display: block;
+  transition: transform 0.35s;
 }
-.hero-coordinate {
-  font-size: 9px;
-  color: #71717a;
-  letter-spacing: 0.9px;
+.site-nav nav a:hover span {
+  transform: translateY(-100%);
 }
-.hero-coordinate span {
-  padding: 0 10px;
-  color: var(--cyan);
-}
-.hero-layout {
-  display: grid;
-  grid-template-columns: 1.08fr 1fr;
-  align-items: center;
-  min-height: 610px;
-  gap: 12px;
-}
-.hero-copy {
-  padding: 38px 0 40px;
-  position: relative;
-  z-index: 2;
-}
-.intro-line {
-  font-size: 15px;
-  color: #d4d4d8;
-  margin-bottom: 22px;
-}
-h1 {
-  font-size: clamp(40px, 4.5vw, 67px);
-  font-weight: 550;
-  line-height: 1.12;
-  letter-spacing: -3.4px;
-}
-h1 > span:not(.cyan) {
-  color: var(--cyan);
-}
-.hero-description {
-  font-size: 13px;
-  line-height: 1.9;
-  color: #a1a1aa;
-  margin-top: 25px;
-}
-.hero-role {
-  font-size: 10px;
-  line-height: 1.8;
-  color: #8b8b95;
-  max-width: 440px;
-  margin-top: 12px;
-}
-.hero-actions {
-  display: flex;
-  gap: 11px;
-  margin-top: 29px;
-}
-.button {
+.pill {
   display: inline-flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   gap: 18px;
-  padding: 14px 19px;
-  border-radius: 5px;
-  font-size: 11px;
-  font-weight: 600;
+  font-size: 14px;
+  border: 1px solid currentColor;
+  border-radius: 100px;
+  padding: 13px 18px;
+  line-height: 1.2;
   transition:
     background 0.2s,
-    transform 0.2s;
+    color 0.2s;
 }
-.button:hover {
-  transform: translateY(-2px);
+.pill:hover {
+  background: var(--bone);
+  color: var(--ink);
 }
-.button-primary {
-  background: var(--cyan);
-  color: #08232b;
-  border: 1px solid var(--cyan);
+.pill-filled {
+  background: var(--bone);
+  color: var(--ink);
+  border-color: var(--bone);
+  padding: 18px 25px;
 }
-.button-primary:hover {
-  background: #67e8f9;
+.pill-filled:hover {
+  background: var(--accent);
+  border-color: var(--accent);
 }
-.button-secondary {
-  background: #18181b80;
-  border: 1px solid #3f3f46;
-  color: #d4d4d8;
+.pill-dark {
+  color: var(--ink);
 }
-.hero-location {
+.pill-dark:hover {
+  background: var(--ink);
+  color: var(--bone);
+}
+.menu-button {
+  display: none;
+}
+.menu-dialog {
+  inset: 0;
+  width: 100%;
+  max-width: 100%;
+  height: 100dvh;
+  max-height: 100dvh;
+  margin: 0;
+  border: 0;
+  padding: 20px;
+  background: var(--ink);
+  color: var(--bone);
+}
+.menu-dialog::backdrop {
+  background: var(--ink);
+}
+.menu-top {
   display: flex;
-  gap: 8px;
-  color: #81818b;
-  font-size: 9px;
-  margin-top: 23px;
-  line-height: 1.6;
+  justify-content: space-between;
+  align-items: center;
 }
-.core-stage {
-  height: 500px;
+.menu-top svg {
+  width: 24px;
+  height: 35px;
+}
+.menu-top .pill svg {
+  width: 16px;
+  height: 16px;
+}
+.menu-caption {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.7;
+  margin-top: 42px;
+}
+.menu-dialog nav {
+  display: flex;
+  flex-direction: column;
+  margin-top: 30px;
+}
+.menu-dialog nav a {
+  font-size: clamp(38px, 8vh, 70px);
+  font-weight: 300;
+  letter-spacing: -0.05em;
+  border-bottom: 1px solid var(--line);
+  padding: 7px 0;
+}
+.menu-dialog nav sup {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0;
+  vertical-align: top;
+  display: inline-block;
+  margin: 9px 0 0 15px;
+}
+.menu-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  flex-wrap: wrap;
+  font-size: 13px;
+  margin-top: 32px;
+}
+.hero-scroll {
+  height: 520svh;
   position: relative;
-  min-width: 0;
+}
+.hero-stage {
+  position: sticky;
+  top: 0;
+  height: 100svh;
+  min-height: 640px;
+  isolation: isolate;
+  overflow: hidden;
+  background: #0c0c0b;
 }
 .scene-canvas {
   position: absolute;
   inset: 0;
+  z-index: -2;
 }
-.core-top,
-.core-bottom {
-  position: absolute;
-  left: 20px;
-  right: 12px;
-  display: flex;
-  justify-content: space-between;
-  z-index: 2;
-  font-size: 8px;
-  letter-spacing: 1px;
-  pointer-events: none;
-  color: #71717a;
-}
-.core-top {
-  top: 12px;
-}
-.core-top > span:first-child {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  color: #b0b5bd;
-}
-.core-top .status-dot {
-  width: 4px;
-  height: 4px;
-}
-.core-bottom {
-  bottom: 10px;
-  align-items: end;
-  line-height: 1.8;
-}
-.core-bottom b {
-  font-weight: 400;
-  color: #a1a1aa;
-}
-.core-bottom button {
-  pointer-events: auto;
-  display: flex;
-  align-items: center;
-  gap: 7px;
-  padding: 8px;
-  border: 1px solid var(--border);
-  border-radius: 3px;
-}
-.core-cross {
-  position: absolute;
-  color: #3f3f46;
-  font-family: monospace;
-  font-size: 19px;
-}
-.cross-tl {
-  left: 0;
-  top: 0;
-}
-.cross-br {
-  bottom: 0;
-  right: -4px;
-}
-.core-annotation {
-  position: absolute;
-  z-index: 2;
-  color: #829298;
-  font-size: 7px;
-  letter-spacing: 1px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  pointer-events: none;
-}
-.annotation-left {
-  left: 0;
-  top: 65%;
-}
-.annotation-right {
-  right: 0;
-  top: 28%;
-}
-.core-annotation i {
-  display: block;
-  width: 30px;
-  height: 1px;
-  background: #387079;
-}
-.hero-footer {
-  border-top: 1px solid var(--border);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 24px 0;
-  font-size: 8px;
-  letter-spacing: 1.3px;
-  color: #71717a;
-}
-.hero-footer > span {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-.hero-footer > div {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-}
-.hero-footer i {
-  height: 3px;
-  width: 3px;
-  border-radius: 50%;
-  background: var(--cyan);
-}
-.work-section {
-  padding-top: 82px;
-  padding-bottom: 85px;
-  border-top: 1px solid var(--border);
-}
-.section-heading {
-  display: flex;
-  justify-content: space-between;
-  align-items: end;
-  gap: 20px;
-}
-.section-index {
-  color: var(--cyan);
-  font-size: 9px;
-  margin-bottom: 18px;
-}
-h2 {
-  font-weight: 500;
-  font-size: clamp(32px, 3.3vw, 46px);
-  letter-spacing: -1.8px;
-  line-height: 1.18;
-}
-.section-heading > p {
-  font-size: 12px;
-  line-height: 1.8;
-  color: #8c8c96;
-}
-.project-toolbar {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin: 32px 0 22px;
-  gap: 14px;
-}
-.filters {
-  display: flex;
-  gap: 7px;
-  flex-wrap: wrap;
-}
-.filters button {
-  font-size: 10px;
-  padding: 9px 13px;
-  border: 1px solid transparent;
-  border-radius: 4px;
-  color: #92929b;
-}
-.filters button.active {
-  background: #18181b;
-  border-color: #3f3f46;
-  color: #f4f4f5;
-}
-.filters button:hover {
-  color: #22d3ee;
-}
-.filters button span {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 8px;
-  margin-left: 10px;
-  color: #8f8f99;
-}
-.project-count {
-  font-size: 8px;
-  color: #71717a;
-  letter-spacing: 1px;
-  white-space: nowrap;
-}
-.project-grid {
-  display: grid;
-  grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 22px;
-}
-.project-card {
-  grid-column: span 2;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  overflow: hidden;
-  background: #18181b70;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  transition: border-color 0.2s;
-}
-.project-card:nth-child(-n + 2) {
-  grid-column: span 3;
-}
-.project-card:hover {
-  border-color: #3f7179;
-}
-.visual-button {
-  width: 100%;
-  padding: 0;
-  display: block;
-  text-align: left;
-}
-.project-visual {
-  height: 185px;
-  position: relative;
-  overflow: hidden;
-  background:
-    radial-gradient(ellipse at center, #12343580, transparent 75%), #0d1214;
-  color: #54d1bd;
-}
-.project-card:nth-child(-n + 2) .project-visual {
-  height: 230px;
-}
-.visual-grid {
+.hero-vignette {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(#8ba5ba08 1px, transparent 1px),
-    linear-gradient(90deg, #8ba5ba08 1px, transparent 1px);
-  background-size: 25px 25px;
-  mask-image: linear-gradient(transparent, black);
-}
-.visual-label {
-  position: absolute;
-  top: 18px;
-  left: 20px;
-  font-size: 7px;
-  letter-spacing: 1px;
-  color: #8b9ba2;
-}
-.visual-caption {
-  position: absolute;
-  bottom: 18px;
-  left: 20px;
-  right: 30px;
-  font-size: 7px;
-  letter-spacing: 1px;
-  color: #82979b;
-}
-.visual-emblem {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: 78px;
-  height: 78px;
-  display: grid;
-  place-items: center;
-  background: #0c1c20;
-  border: 1px solid #2f686e;
-  border-radius: 17px;
-  box-shadow: 0 0 40px #22d3ee0c;
-  z-index: 2;
-}
-.visual-orbit {
-  position: absolute;
-  width: 170px;
-  height: 170px;
-  border: 1px solid #29849240;
-  border-radius: 50%;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-.orbit-two {
-  width: 260px;
-  height: 260px;
-  border-style: dashed;
-  border-color: #39a3a320;
-}
-.visual-corner {
-  position: absolute;
-  right: 17px;
-  bottom: 12px;
-  color: #607d84;
-}
-.visual-bars {
-  position: absolute;
-  inset: 30px 25px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 6px;
-  opacity: 0.3;
-}
-.visual-bars i {
-  width: 3px;
-  background: currentColor;
-}
-.visual-security .visual-bars {
-  opacity: 0.1;
-}
-.visual-music {
+  z-index: -1;
+  pointer-events: none;
   background:
-    radial-gradient(ellipse at center, #213754a0, transparent 75%), #0e1018;
-  color: #73b8ed;
+    radial-gradient(ellipse at 51% 43%, transparent 20%, #0c0c0b50 75%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 160 160' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Cpath fill='%23fff' opacity='.07' filter='url(%23n)' d='M0 0h160v160H0z'/%3E%3C/svg%3E");
 }
-.visual-music .visual-emblem {
-  border-radius: 50%;
-  background: repeating-radial-gradient(#121a27 0 4px, #253548 5px 6px);
-  border-color: #47738d;
+.hero-intro {
+  height: 100%;
+  pointer-events: none;
 }
-.visual-music .visual-orbit {
-  border-color: #6273a72c;
-  width: 210px;
-  height: 210px;
+.hero-intro a {
+  pointer-events: auto;
 }
-.visual-music .orbit-two {
-  width: 140px;
-  height: 140px;
-}
-.visual-music .visual-bars {
-  opacity: 0.55;
-  gap: 9px;
-}
-.visual-city {
-  color: #6dd1b2;
-}
-.visual-study {
-  background: radial-gradient(ellipse, #2b28466b, transparent), #101016;
-  color: #aba0e6;
-}
-.visual-robot {
-  color: #e4b27c;
-  background: radial-gradient(ellipse, #3c2d216b, transparent), #15120f;
-}
-.project-content {
-  padding: 23px;
-  display: flex;
-  flex-direction: column;
-  flex: 1;
-}
-.project-meta {
+.hero-eyebrow {
+  position: absolute;
+  inset: 105px var(--pad) auto;
   display: flex;
   justify-content: space-between;
-  font-size: 8px;
-  letter-spacing: 1px;
-  color: #85858e;
-  text-transform: uppercase;
-  margin-bottom: 12px;
+  font-size: 14px;
+  line-height: 20px;
 }
-.project-meta > span:first-child {
-  color: #7ca6aa;
+.local-time {
+  white-space: nowrap;
 }
-.project-content h3 {
-  font-size: 21px;
-  font-weight: 550;
-  letter-spacing: -0.6px;
+.hero-line-one,
+.hero-line-two {
+  position: absolute;
+  font-size: clamp(48px, 5.5vw, 88px);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.06em;
 }
-.project-content > p {
-  font-size: 11px;
-  line-height: 1.85;
-  color: #a1a1aa;
-  margin: 12px 0 18px;
+.hero-line-one {
+  top: 28%;
+  left: var(--pad);
 }
-.tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
+.hero-line-two {
+  top: 56%;
+  right: var(--pad);
 }
-.tags span {
-  font-size: 8px;
-  border: 1px solid #303035;
-  background: #18181b80;
-  color: #b1b1b9;
-  padding: 5px 7px;
-  border-radius: 3px;
+.hero-summary {
+  position: absolute;
+  left: var(--pad);
+  bottom: 38px;
+  width: 35%;
+  max-width: 410px;
 }
-.project-links {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding-top: 19px;
-  margin-top: auto;
-}
-.project-links button {
-  font-size: 10px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 8px 0;
-  color: #d4d4d8;
-}
-.project-links a {
-  display: flex;
-  gap: 8px;
-  color: #8d8d99;
-  padding: 8px;
-}
-.project-links button:hover,
-.project-links a:hover {
-  color: var(--cyan);
-}
-.about-section {
-  padding-top: 80px;
-  padding-bottom: 80px;
-  border-top: 1px solid var(--border);
-  display: grid;
-  grid-template-columns: 1.1fr 1fr;
-  gap: 85px;
-  align-items: center;
-}
-.about-copy {
-  font-size: 12px;
-  line-height: 1.9;
-  color: #a1a1aa;
-  margin-top: 20px;
-  max-width: 520px;
-}
-.text-link {
-  display: inline-flex;
-  align-items: center;
-  gap: 13px;
-  font-size: 11px;
-  color: var(--cyan);
-  margin-top: 24px;
-}
-.education-panel {
-  background: #18181b80;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 28px;
-}
-.panel-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  color: var(--cyan);
-  padding-bottom: 22px;
-  border-bottom: 1px solid var(--border);
-}
-.panel-title .mono {
-  font-size: 8px;
-  color: #a1a1aa;
-  letter-spacing: 0.8px;
-}
-.panel-title .status-dot {
-  margin-left: auto;
-}
-.education-years {
-  display: block;
-  margin-top: 25px;
-  font-size: 11px;
-  color: var(--cyan);
-}
-.education-panel h3 {
-  font-size: 23px;
+.hero-summary p {
+  font-size: 20px;
   line-height: 1.4;
-  font-weight: 500;
-  margin: 12px 0 15px;
-  letter-spacing: -0.5px;
+  letter-spacing: -0.025em;
 }
-.education-panel p {
+.hero-summary > span {
+  display: block;
   font-size: 12px;
-  line-height: 1.8;
-  color: #b5b5bd;
+  color: #9d9b95;
+  margin-top: 15px;
+  line-height: 1.5;
 }
-.education-panel p.muted {
-  color: #80808a;
+.hero-cta {
+  position: absolute;
+  right: var(--pad);
+  bottom: 32px;
+}
+.hero-dial {
+  position: absolute;
+  bottom: 27px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+}
+.hero-dial > span {
+  font-size: 56px;
+  color: var(--accent);
+  font-weight: 300;
+  letter-spacing: -0.075em;
+  font-variant-numeric: tabular-nums;
+}
+.hero-dial p {
+  font-size: 12px;
   margin-top: 5px;
 }
-.education-bottom {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  font-size: 9px;
-  color: #8d8d99;
-  border-top: 1px solid var(--border);
-  padding-top: 20px;
-  margin-top: 28px;
+.hero-narrative {
+  position: absolute;
+  left: var(--pad);
+  top: 36%;
+  max-width: 520px;
+  pointer-events: none;
 }
-.education-bottom > span:last-child {
-  margin-left: auto;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 7px;
-}
-.stack-section {
-  border-top: 1px solid var(--border);
-  padding-top: 80px;
-  padding-bottom: 90px;
-}
-.skills-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  margin-top: 35px;
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  overflow: hidden;
-  background: #18181b50;
-}
-.skill-group {
-  padding: 25px;
-  border-right: 1px solid var(--border);
-}
-.skill-group:last-child {
-  border: 0;
-}
-.skill-heading {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: var(--cyan);
-}
-.skill-heading span {
-  color: #71717a;
-  font-size: 9px;
-}
-.skill-group h3 {
+.hero-narrative > p {
   font-size: 14px;
-  font-weight: 500;
-  margin: 22px 0 19px;
+  margin-bottom: 22px;
 }
-.skill-items {
+.hero-narrative h2 {
+  font-size: clamp(40px, 4.6vw, 68px);
+  font-weight: 300;
+  line-height: 1.02;
+  letter-spacing: -0.055em;
+}
+.motion-toggle {
+  position: absolute;
+  bottom: 28px;
+  left: calc(50% + 130px);
+  color: var(--muted);
+  padding: 10px;
+}
+.scene-fallback {
+  position: absolute;
+  inset: 0;
   display: flex;
-  gap: 10px 12px;
-  flex-wrap: wrap;
-  font-size: 9px;
-  line-height: 1.8;
-  color: #a1a1aa;
+  align-items: center;
+  justify-content: center;
 }
-.skill-items span::before {
-  content: "·";
-  margin-right: 6px;
-  color: #3f7179;
+.scene-fallback svg {
+  height: 61%;
+  width: auto;
+  transform: rotate(-7deg);
+  color: var(--bone);
 }
-.contact-section {
-  padding-top: 70px;
-  padding-bottom: 35px;
-  border-top: 1px solid var(--border);
-  background: radial-gradient(ellipse at 85% 80%, #0b33372b, transparent 50%);
+.light-section {
+  background: var(--bone);
+  color: var(--ink);
 }
-.contact-layout {
+.work-section {
+  position: relative;
+  padding-block: 140px 100px;
+  z-index: 2;
+}
+.section-heading {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 65px;
+  align-items: start;
+}
+.section-heading h2 {
+  font-size: clamp(48px, 6.3vw, 96px);
+  line-height: 0.94;
+  font-weight: 300;
+  letter-spacing: -0.055em;
+  max-width: 950px;
+}
+.section-heading > p {
+  font-size: 20px;
+  line-height: 1.4;
+  letter-spacing: -0.025em;
+  max-width: 420px;
+  padding-top: 5px;
+}
+.section-heading .subtle {
+  display: inline-block;
+  font-size: 14px;
+  color: #77766f;
+  margin-top: 16px;
+}
+.project-list {
+  position: relative;
+  margin-top: 80px;
+}
+.project-row {
+  border-top: 1px solid #0c0c0b24;
+}
+.project-row:last-of-type {
+  border-bottom: 1px solid #0c0c0b24;
+}
+.project-row-button {
+  display: grid;
+  grid-template-columns: 65px 1fr 300px;
+  gap: 32px;
+  align-items: center;
+  min-height: 168px;
+  padding: 22px 0;
+  width: 100%;
+  text-align: left;
+}
+.row-number {
+  font-size: 14px;
+  align-self: start;
+  padding-top: 12px;
+}
+.project-row h3 {
+  font-size: clamp(54px, 7.3vw, 112px);
+  font-weight: 300;
+  line-height: 1;
+  letter-spacing: -0.065em;
+  color: #b5b3ac;
+  transition:
+    color 0.3s,
+    transform 0.4s;
+}
+.project-row.is-active h3 {
+  color: var(--ink);
+  transform: translateX(12px);
+}
+.row-details {
+  display: flex;
+  flex-direction: column;
+  text-align: right;
+  gap: 7px;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.row-details > span:nth-child(2) {
+  font-size: 14px;
+  color: #5f5d57;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.row-action {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 3px;
+}
+.sorter-break {
+  display: none;
+}
+.hover-preview {
+  position: absolute;
+  pointer-events: none;
+  left: 48%;
+  top: 15%;
+  width: 36%;
+  max-width: 490px;
+  opacity: 0;
+  transform: translateY(20px) rotate(-3deg);
+  transition:
+    opacity 0.3s,
+    transform 0.4s;
+  z-index: 3;
+}
+.hover-preview.shown {
+  opacity: 1;
+  transform: translateY(0) rotate(-3deg);
+}
+.work-bottom {
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 20px;
+  margin-top: 48px;
+  font-size: 14px;
 }
-.contact-layout h2 {
-  font-size: clamp(44px, 5.5vw, 74px);
-  letter-spacing: -3px;
+.project-preview {
+  aspect-ratio: 1.48;
+  border-radius: 8px;
+  background: #15191b;
+  color: #eceae4;
+  padding: 25px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 20px 50px #0002;
+  font-family: "Archivo", sans-serif;
 }
-.contact-layout p {
-  font-size: 12px;
-  color: #a1a1aa;
-  margin-top: 20px;
-}
-.contact-email {
-  display: inline-flex;
-  align-items: center;
-  gap: 24px;
-  font-size: clamp(17px, 2.4vw, 28px);
-  margin-top: 28px;
-  border-bottom: 1px solid #3f7179;
-  padding-bottom: 10px;
-}
-.contact-email:hover {
-  color: var(--cyan);
-}
-.contact-orb {
-  width: 130px;
-  height: 130px;
-  border: 1px solid #285058;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: var(--cyan);
-  margin-right: 8%;
-  transition: background 0.2s;
-}
-.contact-orb:hover {
-  background: #0c3039;
-}
-.contact-links {
+.preview-top {
   display: flex;
-  gap: 28px;
-  align-items: center;
-  margin-top: 60px;
-  font-size: 10px;
-  color: #b1b1b9;
+  justify-content: space-between;
+  font-size: 9px;
+  letter-spacing: 1px;
 }
-.contact-links a,
-.contact-links > span {
+.preview-title {
+  display: flex;
+  gap: 20px;
+  align-items: start;
+  font-size: 27px;
+  letter-spacing: -1px;
+  line-height: 1.05;
+  margin-top: 25px;
+}
+.preview-title > svg {
+  color: #95bd99;
+}
+.security-flow {
   display: flex;
   align-items: center;
   gap: 9px;
+  font-size: 7px;
+  color: #acc4ad;
+  margin-top: 24px;
 }
-.contact-links > span {
-  margin-left: auto;
-  color: #85858e;
+.security-flow span {
+  border: 1px solid #b0c8b044;
+  padding: 8px;
+}
+.security-flow i {
+  height: 1px;
+  flex: 1;
+  background: #b0c8b044;
+}
+.preview-console {
+  font: 8px/1.9 monospace;
+  color: #8d9e91;
+  margin-top: 15px;
+}
+.preview-console b {
+  color: #a6df96;
+}
+.preview-music {
+  background: #371c1a;
+  color: #f2c8b2;
+}
+.record {
+  position: absolute;
+  right: 25px;
+  top: 42px;
+  width: 155px;
+  height: 155px;
+  border-radius: 50%;
+  background: repeating-radial-gradient(#1b1212 0 3px, #49302c 4px 5px);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 10px 40px #0005;
+}
+.record div {
+  position: absolute;
+  width: 45px;
+  height: 45px;
+  background: #c77151;
+  border-radius: 50%;
+}
+.record span {
+  position: relative;
+  font-size: 20px;
+}
+.music-caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  font-size: 26px;
+  line-height: 1.05;
+  position: absolute;
+  left: 25px;
+  right: 25px;
+  bottom: 65px;
+}
+.waveform {
+  position: absolute;
+  left: 25px;
+  right: 25px;
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  height: 30px;
+  opacity: 0.5;
+}
+.waveform i {
+  width: 3px;
+  background: #dc9175;
+  max-height: 30px;
+}
+.preview-city {
+  background: #dddcc9;
+  color: #273b2d;
+}
+.preview-city .preview-title > svg {
+  color: #4f7657;
+}
+.city-chart {
+  display: flex;
+  gap: 10px;
+  align-items: end;
+  height: 75px;
+  margin: 25px 0 15px;
+}
+.city-chart i {
+  flex: 1;
+  background: #59785b;
+}
+.preview-foot {
+  font-size: 7px;
+  letter-spacing: 0.8px;
+  position: absolute;
+  bottom: 18px;
+}
+.preview-study {
+  background: #c4bcde;
+  color: #292237;
+}
+.preview-study .preview-title > svg {
+  color: #675282;
+}
+.study-question {
+  border: 1px solid #3d255738;
+  border-radius: 5px;
+  padding: 13px;
+  margin-top: 23px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+}
+.study-chips {
+  display: flex;
+  gap: 9px;
   font-size: 9px;
+  margin-top: 12px;
 }
-.site-footer {
+.study-chips span {
+  padding: 5px 10px;
+  border-radius: 30px;
+  background: #fff4;
+}
+.preview-robot {
+  background: #d8c8b2;
+  color: #3d342a;
+}
+.preview-robot .preview-title > svg {
+  color: #7c6549;
+}
+.sorter-diagram {
+  display: flex;
+  align-items: center;
+  margin-top: 34px;
+  font: 8px monospace;
+  gap: 8px;
+}
+.sorter-diagram span {
+  padding: 14px 8px;
+  border: 1px solid #76614d;
+}
+.sorter-diagram i {
+  height: 1px;
+  background: #76614d;
+  flex: 1;
+}
+.construction-section {
+  padding-block: 40px 35px;
+  min-height: 850px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  overflow: hidden;
+}
+.construction-top,
+.construction-bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 13px;
+  color: #aaa79f;
+}
+.construction-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.8fr 1fr;
+  align-items: center;
+  gap: 35px;
+  padding-block: 80px;
+}
+.construction-note h3 {
+  font-size: 34px;
+  line-height: 1.05;
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  margin: 25px 0 18px;
+}
+.construction-note p {
+  color: #8c8a84;
+  font-size: 16px;
+  line-height: 1.5;
+  max-width: 275px;
+}
+.tiny-label {
+  font:
+    10px "JetBrains Mono",
+    monospace;
+  color: #8c8a84;
+  letter-spacing: 1px;
+}
+.note-right {
+  align-self: end;
+  margin-bottom: 40px;
+}
+.construction-drawing {
+  height: 430px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  isolation: isolate;
+}
+.construction-drawing > svg {
+  height: 90%;
+  width: auto;
+  stroke-width: 0.7;
+  position: relative;
+}
+.drawing-grid {
+  position: absolute;
+  inset: -40px;
+  background-image:
+    linear-gradient(#eceae408 1px, transparent 1px),
+    linear-gradient(90deg, #eceae408 1px, transparent 1px);
+  background-size: 35px 35px;
+  mask-image: radial-gradient(black, transparent 75%);
+}
+.drawing-circle {
+  position: absolute;
+  border: 1px solid #eceae41a;
+  width: 350px;
+  height: 350px;
+  border-radius: 50%;
+}
+.drawing-axis {
+  position: absolute;
+  background: #eceae43b;
+}
+.axis-x {
+  height: 1px;
+  width: 130%;
+  top: 50%;
+  left: -15%;
+}
+.axis-y {
+  width: 1px;
+  height: 125%;
+  left: 50%;
+  top: -12.5%;
+}
+.drawing-angle {
+  position: absolute;
+  left: 57%;
+  top: 49%;
+  color: var(--accent);
+  font: 12px monospace;
+}
+.drawing-point {
+  position: absolute;
+  left: 20%;
+  top: 7%;
+  font: 9px monospace;
+  color: var(--muted);
+}
+.pivot {
+  position: absolute;
+  width: 9px;
+  height: 9px;
+  top: calc(50% - 4px);
+  left: calc(50% - 4px);
+  background: var(--accent);
+}
+.construction-bottom > span:last-child {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.construction-bottom i {
+  display: block;
+  width: 1px;
+  height: 20px;
+  background: var(--line);
+  transform: rotate(24deg);
+}
+.blueprint-section {
+  padding-top: 130px;
+  border-top: 1px solid var(--line);
+  overflow: hidden;
+}
+.blueprint-section .section-heading > p {
+  color: #aaa79f;
+}
+.comparison {
+  max-width: 1200px;
+  margin-top: 100px;
+}
+.comparison-frame {
+  position: relative;
+  aspect-ratio: 1.75;
+  border: 1px solid #eceae433;
+  border-radius: 7px;
+  overflow: hidden;
+}
+.mini-site {
+  position: absolute;
+  inset: 0;
+  background: #111110;
+  padding: 22px;
+  color: var(--bone);
+  overflow: hidden;
+  font-weight: 300;
+}
+.mini-nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  border-top: 1px solid var(--border);
-  margin: 0 6%;
-  padding: 25px 0;
-  color: #71717a;
-  font-size: 8px;
-  letter-spacing: 0.3px;
+  font-size: 9px;
 }
-.footer-name {
-  font-family: Inter, Arial, sans-serif;
-  font-weight: 600;
-  color: #d4d4d8;
-  letter-spacing: 1px;
+.mini-nav > svg {
+  width: 15px;
+  height: 20px;
+}
+.mini-nav > span:last-child {
+  border: 1px solid #eceae460;
+  border-radius: 30px;
+  padding: 6px 10px;
+}
+.mini-role {
+  position: absolute;
+  top: 18%;
+  left: 22px;
+  right: 22px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+}
+.mini-first,
+.mini-second {
+  position: absolute;
+  font-size: clamp(20px, 4.4vw, 57px);
+  letter-spacing: -0.05em;
+}
+.mini-first {
+  top: 30%;
+  left: 22px;
+}
+.mini-second {
+  top: 58%;
+  right: 22px;
+}
+.mini-monogram {
+  position: absolute;
+  left: 35%;
+  top: 20%;
+  width: 30%;
+  height: 66%;
+  transform: rotate(-8deg);
+}
+.mini-summary {
+  position: absolute;
+  bottom: 25px;
+  left: 22px;
+  font-size: 12px;
+  line-height: 1.3;
+}
+.mini-degree {
+  position: absolute;
+  bottom: 20px;
+  left: 47%;
+  font-size: 32px;
+  color: var(--accent);
+}
+.mini-blueprint {
+  background-color: #121316;
+  background-image:
+    linear-gradient(#eceae408 1px, transparent 1px),
+    linear-gradient(90deg, #eceae408 1px, transparent 1px);
+  background-size: 20px 20px;
+  color: #b7b4ad;
+}
+.mini-blueprint .mini-first,
+.mini-blueprint .mini-second {
+  color: transparent;
+  -webkit-text-stroke: 0.5px #aaa;
+}
+.blueprint-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.measure-label {
+  position: absolute;
+  top: 27%;
+  left: 22px;
+  background: var(--accent);
+  font: 8px monospace;
+  color: var(--ink);
+  padding: 5px;
+}
+.measure-line {
+  position: absolute;
+  left: 22px;
+  right: 22px;
+  top: 49%;
+  height: 1px;
+  background: #ff4f2b77;
+}
+.comparison-divider {
+  position: absolute;
+  top: -30%;
+  height: 160%;
+  width: 1px;
+  background: var(--accent);
+  transform: rotate(23.6deg);
+  transform-origin: center;
+  pointer-events: none;
+}
+.comparison-divider span {
+  position: absolute;
+  top: 47%;
+  left: -17px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: var(--ink);
+  border-radius: 50%;
+}
+.comparison-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: ew-resize;
+  margin: 0;
+}
+.comparison-frame:focus-within {
+  outline: 2px solid var(--accent);
+  outline-offset: 5px;
+}
+.comparison-caption {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
   font-size: 14px;
+  margin-top: 20px;
+}
+.comparison-caption > span > span {
+  font-size: 11px;
+  color: #8c8a84;
+  margin: 0 12px;
+}
+.capabilities {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 100px;
+  margin-top: 110px;
+}
+.capability-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 24px;
+}
+.capability-heading h3 {
+  font-weight: 300;
+  font-size: 40px;
+  letter-spacing: -0.04em;
+}
+.capability-heading > span {
+  font-size: 11px;
+  color: var(--muted);
+}
+.capability-item {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  border-bottom: 1px solid var(--line);
+  padding: 17px 0;
+  font-size: 20px;
+  font-weight: 300;
+}
+.capability-item > span:first-child {
+  font: 10px monospace;
+  color: #8c8a84;
+  width: 25px;
+}
+.capability-item > svg {
+  margin-left: auto;
+  color: #6f6d66;
+}
+.stack-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 25px;
+  margin-block: 60px 100px;
+  font-size: 14px;
+  color: #aaa79f;
+}
+.education-section {
+  padding-block: 60px 70px;
+}
+.education-top {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+}
+.education-main {
+  padding-block: 90px;
+}
+.quote-symbol {
+  font-size: 140px;
+  line-height: 0.6;
+  font-weight: 300;
+  color: var(--accent);
+  display: block;
+}
+.education-main h2 {
+  font-size: clamp(48px, 7.7vw, 112px);
+  font-weight: 300;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+  margin-top: 15px;
+}
+.education-credit {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-top: 45px;
+  font-size: 14px;
+}
+.avatar-mark {
+  height: 44px;
+  width: 44px;
+  border: 1px solid #0c0c0b33;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.education-credit p {
+  font-size: 12px;
+  color: #5f5d57;
+  margin-top: 6px;
+}
+.education-facts {
+  display: grid;
+  grid-template-columns: 1fr 1.25fr 0.85fr;
+  gap: 45px;
+}
+.education-facts > div {
+  border-top: 1px solid #0c0c0b26;
+  padding-top: 22px;
+}
+.fact-label {
+  font-size: 12px;
+  color: #5f5d57;
+}
+.education-facts h3 {
+  font-weight: 300;
+  font-size: 25px;
+  letter-spacing: -0.025em;
+  line-height: 1.2;
+  margin-top: 20px;
+}
+.education-facts p {
+  font-size: 14px;
+  color: #5f5d57;
+  margin-top: 13px;
+}
+.education-year {
+  font-weight: 300;
+  display: block;
+  font-size: 75px;
+  letter-spacing: -0.065em;
+  margin-top: 8px;
+  white-space: nowrap;
+}
+.education-year > span {
+  color: #aaa79f;
+}
+.contact-section {
+  padding-top: 65px;
+}
+.contact-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  font-size: 13px;
+}
+.contact-top > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.availability-dot {
+  width: 5px;
+  height: 5px;
+  display: inline-block;
+  background: var(--accent);
+  border-radius: 50%;
+}
+.contact-section h2 {
+  font-size: clamp(64px, 10.5vw, 160px);
+  font-weight: 300;
+  line-height: 0.88;
+  letter-spacing: -0.065em;
+  margin-top: 95px;
+}
+.email-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+  font-size: clamp(25px, 5.8vw, 88px);
+  font-weight: 300;
+  letter-spacing: -0.045em;
+  margin-top: 60px;
+  padding-bottom: 30px;
+  border-bottom: 1px solid var(--line);
+}
+.email-link > svg {
+  width: 55px;
+  height: 55px;
+  stroke-width: 1;
+}
+.email-link:hover {
+  color: var(--accent);
+}
+.footer-grid {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr 1.5fr;
+  gap: 40px;
+  margin-top: 65px;
+  padding-bottom: 70px;
+}
+.footer-grid h3 {
+  font-size: 12px;
+  color: #8c8a84;
+  font-weight: 400;
+  margin-bottom: 22px;
+}
+.footer-grid > div > a {
+  display: block;
+  font-size: 14px;
+  margin-bottom: 12px;
+}
+.footer-grid > div > a:hover {
+  color: var(--accent);
+}
+.footer-grid p,
+.footer-grid > div > span {
+  font-size: 13px;
+  line-height: 1.6;
+  color: #aaa79f;
+  max-width: 280px;
+}
+.footer-signature {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+.footer-signature svg {
+  width: 35px;
+  height: 48px;
+}
+.footer-signature > span {
+  font-size: 23px !important;
+  letter-spacing: -1px;
+  color: var(--bone) !important;
+}
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  font-size: 12px;
+  color: #8c8a84;
+  border-top: 1px solid var(--line);
+  padding-block: 25px;
+}
+.footer-bottom a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
 }
 .project-dialog {
   position: fixed;
   inset: 0;
   margin: auto;
-  width: min(680px, calc(100% - 32px));
-  max-height: 85dvh;
+  width: min(720px, calc(100% - 32px));
+  max-height: 88dvh;
   padding: 0;
-  border: 1px solid #3f3f46;
+  border: 1px solid #eceae433;
   border-radius: 12px;
-  background: #101013;
-  color: #f4f4f5;
-  box-shadow: 0 25px 100px #0008;
+  background: #151514;
+  color: var(--bone);
   overscroll-behavior: contain;
 }
 .project-dialog::backdrop {
   background: #000b;
-  backdrop-filter: blur(8px);
+  backdrop-filter: blur(10px);
 }
 .dialog-inner {
-  padding: 32px;
+  padding: 35px;
 }
 .dialog-top {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 15px;
-  margin-bottom: 20px;
+  gap: 20px;
+  margin-bottom: 30px;
 }
-.dialog-top .eyebrow {
-  font-size: 8px;
+.eyebrow {
+  font-size: 10px;
+  color: #aaa79f;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
 }
 .icon-button {
   padding: 8px;
-  border: 1px solid var(--border);
-  border-radius: 5px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+.dialog-inner > h2 {
+  font-size: 48px;
+  font-weight: 300;
+  letter-spacing: -0.045em;
+  line-height: 1.05;
 }
 .dialog-description {
-  color: #a1a1aa;
-  font-size: 13px;
-  line-height: 1.8;
-  margin-top: 18px;
+  font-size: 15px;
+  line-height: 1.6;
+  color: #b7b4ad;
+  margin-top: 20px;
+}
+.tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
 }
 .dialog-tags {
-  margin-top: 20px;
+  margin-top: 22px;
+}
+.tags > span {
+  padding: 6px 10px;
+  border: 1px solid var(--line);
+  border-radius: 30px;
+  font-size: 11px;
 }
 .architecture-title {
   display: flex;
   align-items: center;
   gap: 12px;
-  color: var(--cyan);
-  margin: 30px 0 10px;
+  color: var(--accent);
+  margin: 32px 0 10px;
 }
 .architecture-title h3 {
-  font-size: 14px;
-  font-weight: 500;
-  color: #e4e4e7;
+  font-weight: 400;
+  font-size: 16px;
+  color: var(--bone);
 }
 .architecture-note {
-  font-size: 10px;
-  line-height: 1.7;
-  color: #92929c;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--muted);
 }
 .architecture-flow {
   list-style: none;
+  margin: 25px 0;
   padding: 0;
-  margin: 22px 0;
 }
 .architecture-step {
   display: flex;
-  gap: 17px;
-  background: #18181bb3;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  padding: 17px;
+  gap: 20px;
+  border: 1px solid var(--line);
+  padding: 20px;
+  border-radius: 4px;
 }
 .step-number {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 10px;
-  color: var(--cyan);
-  padding-top: 3px;
+  color: var(--accent);
+  font-size: 12px;
 }
 .architecture-step h4 {
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 17px;
+  font-weight: 400;
 }
 .architecture-step p {
-  font-size: 11px;
-  color: #a1a1aa;
-  line-height: 1.8;
-  margin-top: 5px;
+  font-size: 13px;
+  line-height: 1.6;
+  color: #aaa79f;
+  margin-top: 6px;
 }
 .flow-arrow {
-  color: #39727b;
-  margin: 7px auto;
   display: block;
+  margin: 8px auto;
+  color: #8c8a84;
 }
 .dialog-footer {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
-  border-top: 1px solid var(--border);
-  padding-top: 20px;
+  gap: 20px;
+  border-top: 1px solid var(--line);
+  padding-top: 25px;
 }
-.dialog-footer .text-link {
-  margin: 0;
-}
-.dialog-footer > .mono {
-  font-size: 9px;
-}
-.core-fallback {
-  height: 100%;
-  display: flex;
+.button {
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 25px;
-  color: #67e8f9;
-  font-family: "JetBrains Mono", monospace;
-  font-size: 8px;
+  gap: 12px;
+  padding: 13px 18px;
+  border-radius: 100px;
+  font-size: 12px;
 }
-.core-fallback > div {
-  width: 190px;
-  height: 190px;
-  border: 1px solid #22d3ee;
-  border-radius: 50%;
-  box-shadow:
-    0 0 0 24px #22d3ee10,
-    0 0 0 49px #22d3ee08;
-  transform: rotate(-30deg) scaleY(0.7);
+.button-primary {
+  background: var(--bone);
+  color: var(--ink);
 }
-@media (min-width: 1550px) {
-  .site-header {
-    padding-left: max(6%, calc((100% - 1268px) / 2));
-    padding-right: max(6%, calc((100% - 1268px) / 2));
+.text-link {
+  font-size: 12px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.muted {
+  color: var(--muted);
+}
+.mono {
+  font-size: 10px;
+}
+@media (min-width: 1500px) {
+  :root {
+    --pad: 48px;
   }
-  .hero-layout {
-    min-height: 680px;
+  .hero-summary {
+    bottom: 50px;
   }
-  .core-stage {
-    height: 560px;
+  .hero-cta {
+    bottom: 48px;
+  }
+  .hero-dial {
+    bottom: 40px;
   }
 }
 @media (max-width: 1050px) {
-  .wordmark-sub,
-  .wordmark-slash {
-    display: none;
+  :root {
+    --pad: 32px;
   }
-  .hero-layout {
-    min-height: 570px;
+  .hero-summary p {
+    font-size: 16px;
   }
-  h1 {
-    font-size: 48px;
-    letter-spacing: -2.6px;
+  .hero-summary {
+    width: 34%;
+    bottom: 35px;
   }
-  .core-stage {
-    height: 430px;
+  .hero-line-one,
+  .hero-line-two {
+    font-size: 58px;
   }
-  .hero-coordinate {
-    display: none;
+  .site-nav nav {
+    margin-left: 50px;
+    gap: 25px;
   }
-  .about-section {
+  .section-heading {
     gap: 35px;
   }
-  .skill-group {
-    padding: 20px;
+  .section-heading > p {
+    font-size: 17px;
   }
-  .skills-grid {
-    grid-template-columns: repeat(2, 1fr);
+  .project-row-button {
+    grid-template-columns: 35px 1fr 230px;
+    gap: 20px;
   }
-  .skill-group:nth-child(2) {
-    border-right: 0;
+  .project-row h3 {
+    font-size: 70px;
   }
-  .skill-group:nth-child(-n + 2) {
-    border-bottom: 1px solid var(--border);
+  .row-details {
+    font-size: 12px;
   }
-  .project-card {
-    grid-column: span 3;
+  .row-details > span:nth-child(2) {
+    font-size: 12px;
   }
-  .project-card:last-child {
-    grid-column: span 6;
+  .construction-grid {
+    grid-template-columns: 1fr 1.4fr 1fr;
+    gap: 20px;
   }
-  .project-card:last-child .project-visual {
-    height: 210px;
+  .construction-drawing {
+    height: 350px;
   }
-  .project-card:last-child .project-content > p {
-    max-width: 650px;
+  .construction-note h3 {
+    font-size: 28px;
+  }
+  .construction-note p {
+    font-size: 14px;
+  }
+  .capabilities {
+    gap: 55px;
+  }
+  .education-year {
+    font-size: 55px;
+  }
+  .footer-grid {
+    gap: 25px;
+    grid-template-columns: 1fr 0.8fr 0.8fr 1.5fr;
   }
 }
 @media (max-width: 700px) {
+  :root {
+    --pad: 20px;
+  }
   html {
-    scroll-padding-top: 80px;
+    scroll-padding-top: 64px;
   }
-  .site-header {
-    height: 70px;
-    padding: 0 5%;
+  .site-nav {
+    height: 64px;
+    mix-blend-mode: difference;
   }
-  .wordmark {
-    gap: 8px;
+  .site-nav nav,
+  .nav-cta {
+    display: none;
+  }
+  .menu-button {
+    display: inline-flex;
+    padding: 11px 15px;
+  }
+  .logo {
+    width: 23px;
+    height: 32px;
+  }
+  .hero-scroll {
+    height: 380svh;
+  }
+  .hero-stage {
+    min-height: 650px;
+    height: 100svh;
+  }
+  .hero-eyebrow {
+    top: 80px;
+    font-size: 11px;
+    gap: 12px;
+  }
+  .hero-line-one,
+  .hero-line-two {
+    font-size: 44px;
+  }
+  .hero-line-one {
+    top: 16%;
+    left: 20px;
+  }
+  .hero-line-two {
+    top: 72%;
+    right: 20px;
+  }
+  .hero-summary {
+    display: none;
+  }
+  .hero-cta {
+    left: 20px;
+    right: 20px;
+    bottom: 28px;
+    justify-content: space-between;
+  }
+  .hero-dial {
+    bottom: 106px;
+  }
+  .hero-dial > span {
+    font-size: 35px;
+  }
+  .hero-dial p {
     font-size: 10px;
+    display: none;
   }
-  .brand-mark {
-    font-size: 30px;
+  .motion-toggle {
+    left: auto;
+    right: 18px;
+    bottom: 100px;
   }
-  nav {
-    gap: 16px;
-    font-size: 10px;
+  .hero-narrative {
+    top: 29%;
+    left: 20px;
+    right: 20px;
+    max-width: 330px;
   }
-  .nav-contact {
-    padding: 8px;
-    gap: 6px;
+  .hero-narrative h2 {
+    font-size: 40px;
   }
-  .section-shell {
-    padding-left: 6%;
-    padding-right: 6%;
-  }
-  .hero-topline {
-    padding-top: 25px;
-  }
-  .eyebrow {
-    font-size: 8px;
-    letter-spacing: 1px;
-  }
-  .hero-layout {
-    grid-template-columns: 1fr;
-    gap: 0;
-  }
-  .hero-copy {
-    padding: 36px 0 10px;
-  }
-  h1 {
-    font-size: clamp(40px, 8.6vw, 58px);
-    letter-spacing: -2.5px;
-  }
-  .intro-line {
-    font-size: 13px;
-    margin-bottom: 18px;
-  }
-  .hero-description {
+  .hero-narrative > p {
     font-size: 12px;
-    margin-top: 20px;
   }
-  .hero-role {
-    font-size: 9px;
-  }
-  .hero-actions {
-    margin-top: 22px;
-  }
-  .hero-location {
-    font-size: 8px;
-  }
-  .core-stage {
-    height: 380px;
-    margin-top: 15px;
-  }
-  .core-top,
-  .core-bottom {
-    font-size: 7px;
-  }
-  .hero-footer {
-    padding: 19px 0;
-  }
-  .hero-footer > div {
-    gap: 10px;
-    font-size: 6px;
-  }
-  .hero-index {
-    display: none !important;
-  }
-  .hero-footer > span {
-    font-size: 7px;
-    gap: 7px;
-  }
-  .work-section,
-  .about-section,
-  .stack-section {
-    padding-top: 55px;
-    padding-bottom: 55px;
+  .work-section {
+    padding-block: 85px 60px;
   }
   .section-heading {
-    display: block;
+    grid-template-columns: 1fr;
+    gap: 28px;
+  }
+  .section-heading h2 {
+    font-size: 48px;
+    line-height: 0.96;
   }
   .section-heading > p {
-    margin-top: 16px;
+    font-size: 17px;
+    line-height: 1.45;
+    max-width: 390px;
+  }
+  .section-heading .subtle {
+    font-size: 12px;
+    margin-top: 12px;
+  }
+  .project-list {
+    margin-top: 40px;
+  }
+  .project-row-button {
+    grid-template-columns: 25px 1fr;
+    gap: 13px;
+    min-height: 0;
+    padding: 24px 0;
+  }
+  .row-number {
     font-size: 11px;
+    padding-top: 8px;
   }
-  .section-heading > p br {
-    display: none;
+  .project-row h3 {
+    font-size: clamp(39px, 10.7vw, 68px);
+    color: #68665f;
+    letter-spacing: -0.055em;
   }
-  .project-toolbar {
-    align-items: start;
-    margin-top: 25px;
-  }
-  .project-count {
-    display: none;
-  }
-  .filters {
-    gap: 1px;
-  }
-  .filters button {
-    padding: 8px 10px;
-    font-size: 9px;
-  }
-  .project-grid {
-    grid-template-columns: 1fr;
-    gap: 18px;
-  }
-  .project-card,
-  .project-card:nth-child(-n + 2),
-  .project-card:last-child {
-    grid-column: auto;
-  }
-  .project-card .project-visual,
-  .project-card:nth-child(-n + 2) .project-visual {
-    height: 210px;
-  }
-  .project-content {
-    padding: 21px;
-  }
-  .project-content > p {
+  .row-details {
+    grid-column: 2;
+    text-align: left;
+    gap: 6px;
+    margin-top: 3px;
     font-size: 12px;
   }
-  .about-section {
+  .row-details > span:nth-child(2) {
+    font-size: 12px;
+    max-width: 330px;
+  }
+  .row-action {
+    justify-content: flex-start;
+    font-size: 11px;
+    margin-top: 5px;
+  }
+  .sorter-break {
+    display: none;
+  }
+  .project-row.is-active h3 {
+    transform: none;
+  }
+  .hover-preview {
+    display: none;
+  }
+  .work-bottom {
+    margin-top: 35px;
+    align-items: flex-start;
+    flex-direction: column;
+    font-size: 12px;
+  }
+  .construction-section {
+    min-height: 0;
+    padding-top: 30px;
+    padding-bottom: 30px;
+  }
+  .construction-top,
+  .construction-bottom {
+    font-size: 10px;
+    gap: 18px;
+    line-height: 1.6;
+  }
+  .construction-top > span:last-child {
+    text-align: right;
+    max-width: 100px;
+  }
+  .construction-grid {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding-block: 60px;
+  }
+  .construction-note {
+    max-width: 330px;
+  }
+  .construction-note h3 {
+    font-size: 36px;
+    margin-top: 15px;
+  }
+  .construction-note p {
+    font-size: 16px;
+    max-width: 330px;
+  }
+  .construction-drawing {
+    height: 340px;
+    margin-block: 25px;
+    max-width: 320px;
+    width: 100%;
+    justify-self: center;
+  }
+  .drawing-circle {
+    width: 300px;
+    height: 300px;
+  }
+  .note-right {
+    justify-self: end;
+    margin: 0;
+  }
+  .tiny-label {
+    font-size: 9px;
+  }
+  .blueprint-section {
+    padding-top: 80px;
+  }
+  .comparison {
+    margin-top: 45px;
+  }
+  .comparison-frame {
+    aspect-ratio: 1.3;
+  }
+  .mini-site {
+    padding: 10px;
+  }
+  .mini-nav {
+    font-size: 4px;
+    gap: 8px;
+  }
+  .mini-nav > svg {
+    width: 8px;
+    height: 12px;
+  }
+  .mini-nav > span:last-child {
+    padding: 3px 4px;
+    white-space: nowrap;
+  }
+  .mini-role {
+    font-size: 5px;
+    left: 10px;
+    right: 10px;
+    top: 19%;
+  }
+  .mini-first,
+  .mini-second {
+    font-size: 26px;
+  }
+  .mini-first {
+    left: 10px;
+  }
+  .mini-second {
+    right: 10px;
+    top: 62%;
+  }
+  .mini-summary {
+    font-size: 6px;
+    bottom: 15px;
+    left: 10px;
+  }
+  .mini-degree {
+    font-size: 20px;
+    bottom: 10px;
+  }
+  .measure-label {
+    font-size: 4px;
+    left: 10px;
+    padding: 3px;
+    top: 27%;
+  }
+  .measure-line {
+    left: 10px;
+    right: 10px;
+  }
+  .comparison-caption {
+    font-size: 11px;
+    gap: 15px;
+    margin-top: 12px;
+  }
+  .comparison-caption > span > span {
+    display: none;
+  }
+  .comparison-divider span {
+    width: 24px;
+    height: 24px;
+    left: -12px;
+  }
+  .comparison-divider span svg {
+    width: 13px;
+    height: 13px;
+  }
+  .capabilities {
+    margin-top: 60px;
+    grid-template-columns: 1fr;
+    gap: 55px;
+  }
+  .capability-heading h3 {
+    font-size: 36px;
+  }
+  .capability-heading > span {
+    font-size: 10px;
+  }
+  .capability-item {
+    font-size: 20px;
+    padding-block: 15px;
+  }
+  .stack-foot {
+    margin-block: 45px 65px;
+    flex-direction: column;
+    align-items: flex-start;
+    font-size: 12px;
+  }
+  .education-section {
+    padding-block: 35px 50px;
+  }
+  .education-top {
+    font-size: 11px;
+  }
+  .education-main {
+    padding-block: 70px 50px;
+  }
+  .quote-symbol {
+    font-size: 95px;
+  }
+  .education-main h2 {
+    font-size: 49px;
+  }
+  .education-credit {
+    margin-top: 30px;
+    font-size: 12px;
+    align-items: flex-start;
+  }
+  .education-credit p {
+    font-size: 10px;
+    line-height: 1.5;
+    max-width: 250px;
+  }
+  .avatar-mark {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+  }
+  .education-facts {
     grid-template-columns: 1fr;
     gap: 30px;
   }
-  .about-section h2 {
-    font-size: 34px;
+  .education-facts h3 {
+    font-size: 27px;
+    max-width: 370px;
+    margin-top: 15px;
   }
-  .education-panel {
-    padding: 23px;
-  }
-  .skills-grid {
-    grid-template-columns: 1fr 1fr;
-  }
-  .skill-group {
-    padding: 20px 16px;
-  }
-  .skill-group h3 {
-    font-size: 12px;
-    line-height: 1.5;
-  }
-  .skill-items {
-    font-size: 8px;
+  .education-year {
+    font-size: 80px;
   }
   .contact-section {
-    padding-top: 50px;
+    padding-top: 35px;
   }
-  .contact-layout h2 {
-    font-size: 50px;
+  .contact-top {
+    font-size: 10px;
+    gap: 20px;
+    align-items: flex-start;
   }
-  .contact-layout p {
-    line-height: 1.8;
-    max-width: 300px;
+  .contact-top .local-time {
+    font-size: 9px;
   }
-  .contact-orb {
-    display: none;
+  .contact-top > span:first-child {
+    gap: 7px;
+    max-width: 180px;
   }
-  .contact-email {
-    font-size: 20px;
+  .contact-section h2 {
+    font-size: 65px;
+    margin-top: 70px;
+    letter-spacing: -0.06em;
+  }
+  .email-link {
+    font-size: clamp(20px, 5.6vw, 37px);
     gap: 12px;
-  }
-  .contact-links {
-    flex-wrap: wrap;
-    gap: 22px;
     margin-top: 40px;
+    padding-bottom: 20px;
   }
-  .contact-links > span {
-    margin-left: 0;
-    width: 100%;
-    line-height: 1.7;
+  .email-link > svg {
+    width: 25px;
+    height: 25px;
   }
-  .site-footer {
-    gap: 15px;
-    flex-wrap: wrap;
-    font-size: 7px;
+  .footer-grid {
+    grid-template-columns: 1fr 1fr;
+    gap: 35px;
+    margin-top: 45px;
+    padding-bottom: 40px;
   }
-  .site-footer > span {
-    order: 3;
-    width: 100%;
+  .footer-signature {
+    grid-column: 1/-1;
+    align-items: center;
+  }
+  .footer-signature svg {
+    width: 25px;
+    height: 36px;
+  }
+  .footer-grid > div:last-child {
+    grid-column: 1/-1;
+  }
+  .footer-grid h3 {
+    margin-bottom: 16px;
+  }
+  .footer-grid > div > a {
+    font-size: 13px;
+  }
+  .footer-grid p {
+    max-width: 100%;
+    font-size: 12px;
+  }
+  .footer-bottom {
+    align-items: flex-start;
+    font-size: 10px;
+    line-height: 1.6;
+  }
+  .footer-bottom > span {
+    max-width: 240px;
+  }
+  .footer-bottom a {
+    gap: 5px;
+    white-space: nowrap;
   }
   .dialog-inner {
-    padding: 22px;
+    padding: 23px;
   }
-  .dialog-footer {
-    flex-wrap: wrap;
+  .dialog-inner > h2 {
+    font-size: 38px;
   }
-  .dialog-footer .button {
-    font-size: 10px;
+  .dialog-top {
+    gap: 10px;
   }
-  .dialog-top .eyebrow {
-    font-size: 7px;
+  .eyebrow {
+    font-size: 8px;
   }
-  h2 {
-    font-size: 35px;
+  .dialog-description {
+    font-size: 13px;
+  }
+  .architecture-step {
+    padding: 15px;
+    gap: 14px;
+  }
+  .architecture-step p {
+    font-size: 12px;
   }
 }
 @media (max-width: 370px) {
-  nav {
-    gap: 11px;
+  .hero-eyebrow {
+    font-size: 10px;
   }
-  .wordmark > span:last-child {
+  .hero-line-one,
+  .hero-line-two {
+    font-size: 40px;
+  }
+  .hero-eyebrow .local-time > span {
     display: none;
   }
-  .hero-actions {
-    gap: 8px;
+  .contact-section h2 {
+    font-size: 56px;
   }
-  .button {
-    padding: 12px;
-    gap: 12px;
+  .contact-top {
+    flex-direction: column;
+    gap: 15px;
   }
-  .hero-footer > div {
-    gap: 7px;
+  .row-details > span:nth-child(2) {
+    font-size: 11px;
   }
-  .skills-grid {
-    grid-template-columns: 1fr;
+  .project-row h3 {
+    font-size: 37px;
   }
-  .skill-group {
-    border-right: 0;
-    border-bottom: 1px solid var(--border);
+  .capability-heading h3 {
+    font-size: 32px;
   }
-  .hero-description br {
-    display: none;
+  .section-heading h2 {
+    font-size: 42px;
   }
 }
 @media (prefers-reduced-motion: reduce) {
@@ -2515,7 +3448,50 @@ h2 {
     animation: none !important;
     transition: none !important;
   }
+  .hero-scroll {
+    height: 100svh;
+    min-height: 650px;
+  }
+  .hero-stage {
+    position: relative;
+  }
+  .hero-narrative {
+    display: none;
+  }
+  .construction-drawing {
+    transform: none !important;
+  }
 }
+
+#work,
+#about,
+#stack,
+#contact {
+  scroll-margin-top: -80px;
+}
+@media (max-width: 700px) {
+  #work,
+  #about,
+  #stack,
+  #contact {
+    scroll-margin-top: -64px;
+  }
+}
+
+@media (min-width: 701px) {
+  .hover-preview {
+    position: fixed;
+    left: 52%;
+    top: 24%;
+    width: 37vw;
+  }
+}
+
+@media (min-width:701px) and (max-width:900px){
+  .project-row-button{grid-template-columns:30px minmax(0,1fr) minmax(160px,28%);gap:16px}
+  .project-row h3{font-size:clamp(44px,6.3vw,56px)}
+}
+@media(max-width:370px){.education-facts{grid-template-columns:minmax(0,1fr)}.education-year{font-size:clamp(48px,18vw,65px)}}
 ```
 
 ## src/main.tsx
@@ -2694,12 +3670,12 @@ export default defineConfig(({ mode }) => {
 
 ## public/favicon.svg
 
-```xml
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
-  <rect width="100" height="100" rx="20" fill="#060709"/>
-  <rect x="2" y="2" width="96" height="96" rx="18" fill="none" stroke="#1F2937" stroke-width="2"/>
-  <path d="M 25 30 L 75 30 M 50 30 L 50 75 M 35 75 L 65 75" stroke="#00F0FF" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="50" cy="50" r="3" fill="#FFFFFF"/>
+```svg
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-40 -10 320 340">
+  <rect x="-40" y="-10" width="320" height="340" rx="42" fill="#0c0c0b"/>
+  <path fill="#eceae4" d="M30 104 82 76 82 20 116 2 116 112 64 140 64 184 97 166 97 206 64 224 30 204Z"/>
+  <path fill="#eceae4" d="M132 110 166 92 210 118 210 226 156 256 156 300 122 318 122 166 156 148 156 212 176 201 176 150 156 139 132 152Z"/>
 </svg>
 ```
+
 
