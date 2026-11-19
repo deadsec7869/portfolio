@@ -1,49 +1,48 @@
-# Tamim — developer portfolio
+# Tamim — interactive portfolio
 
-React 19, TypeScript, Vite, Tailwind CSS 4, Framer Motion, Three.js, React Three Fiber 9, and Drei 10.
+A redesign of the existing React/TypeScript portfolio, inspired by therishithakor.com. Your profile, five projects, skills, contact details, project illustrations and custom TB monogram are retained.
 
 ## Run
 
-Use Node 22.12+ (or Node 24 LTS). For this existing checkout:
+Requires Node 22.12+.
 
+```sh
 npm ci
 npm run dev
-
-Exact runtime dependency command for the verified versions:
-
-npm install react@19.2.8 react-dom@19.2.8 three@0.186.0 @react-three/fiber@9.7.0 @react-three/drei@10.7.8 framer-motion@13.2.0 lucide-react@1.43.0 tailwindcss@4.3.3 @tailwindcss/vite@4.3.3
-
-Development dependencies for a fresh project:
-
-npm install -D typescript@6.0.2 vite@8.2.2 @vitejs/plugin-react@6.1.0 @types/react@19.2.18 @types/react-dom@19.2.4 @types/three@0.185.4 @types/node@24.13.3
-
 npm run build
 npm run preview
+```
 
-## Implementation
+## Design and interaction
 
-- Exact profile, five projects, and skills are centralized in src/data/portfolio.ts.
-- Scene3D renders an extruded monogram and wireframe tunnel. Four scroll chapters control camera angle and geometry.
-- Pointer parallax and scroll-dependent camera/rotation use delta-time damping without React updates per frame.
-- DPR is capped at 2. Reduced motion, manual pause, visibility pausing, lazy loading, and a static WebGL fallback are included.
-- ProjectModal uses native dialog focus containment, Escape dismissal, scroll locking, backdrop dismissal, and focus restoration.
-- Project rows offer illustrated previews on hover and focus. The blueprint comparison accepts touch and keyboard input. Mobile navigation uses a native dialog.
-- Architecture diagrams summarize only the supplied capabilities and stacks; they are not repository audits.
-- Existing unmounted source components are retained to avoid deleting prior work.
+- Onest typography, warm neutral surfaces and generous hero layout.
+- Animated spiral notebook cycles through four roles; pause control and reduced-motion support.
+- Existing TB monogram is presented as a floating dimensional sculpture. No personal portrait was supplied.
+- Pull or click the hanging cord to toggle light/dark mode. Theme choice persists locally.
+- Four arched, ribbed doors open galleries for Web Development, AI & Automation, Robotics and Interactive 3D. Mobile doors use horizontal swipe and position controls.
+- All five original project detail dialogs and supplied GitHub links are retained.
+- Tilting, flippable ability card uses real skills, without invented ratings.
+- Education/story section and expandable skill lists.
+- Five-step contact questionnaire prepares an email addressed to the existing profile email. It does not send messages or require a server.
+- Native dialogs provide modal focus containment, Escape dismissal, backdrop dismissal, scroll locking and focus return.
+- Full-screen mobile navigation and live India clock.
 
-## Vercel and social previews
-
-Select Vite, build with npm run build, and publish dist. The supplied 1200 × 630 public/og-image.png is a real PNG.
-
-vite.config.ts embeds the absolute social image URL, og:url, and canonical URL in the built HTML. It uses VITE_SITE_URL first, then VERCEL_PROJECT_PRODUCTION_URL, then VERCEL_URL. Enable Vercel system environment variables. For a custom domain or another host, set VITE_SITE_URL to the actual HTTPS origin before building. Without a domain, local development uses relative preview-image paths.
-
-No invented deployment URL is embedded. No server secrets are required. Fonts load from Google Fonts with system fallbacks.
+Profile/project content: src/data/portfolio.ts.
+Page and interaction: src/App.tsx.
+Responsive styles and theme: src/App.css.
+Older unused components are retained. PORTFOLIO_SOURCE.md and .planning files describe the previous design, not this revision.
 
 ## Verification
 
-Browser checks cover all five project dialogs, keyboard dismissal, mobile navigation, the blueprint slider, and page widths from 320px to 1440px. The lazy 3D bundle exceeds the default Vite chunk-size advisory. Cross-device frame rates and hosted previews have not been benchmarked.
+Production TypeScript/Vite build passed. Browser checked at widths 320, 390, 768 and 1440 pixels: no horizontal page overflow. Exercised all four rooms, all five project detail dialogs, nested dialog Escape dismissal, mobile menu, carousel controls, ability card flip, theme change, animation pause, and contact steps/back navigation. Browser error log was empty.
 
-## Complete source
+The contact flow was checked through the final fields; no real email was sent. Mobile checks use browser viewport emulation, not physical devices. Reduced-motion behavior is implemented in CSS and the animation hook; OS-setting emulation was not exercised.
 
-PORTFOLIO_SOURCE.md contains the complete requested files plus their supporting files in copy-pasteable code blocks. public/og-image.png is the accompanying social preview asset.
+Vite and source-map-js received compatible lockfile updates; npm audit reported zero vulnerabilities after the update.
+
+## Deployment
+
+Vite builds into dist. Existing Vercel metadata configuration is retained: VITE_SITE_URL or Vercel environment values set the canonical origin. Fonts load from Google Fonts with local system fallbacks. The .openai/hosting.json file identifies the private Sites preview.
+
+The redesign intentionally adapts content categories and uses Tamim's monogram in place of the reference author's portrait. It recreates the main visual language and interactions, rather than copying personal photography, career claims, or the reference's full 3D rendering engine.
 
