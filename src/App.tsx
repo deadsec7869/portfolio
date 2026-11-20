@@ -1,3 +1,4 @@
+import { ThemeCord } from "./components/ThemeCord";
 import { useEffect, useRef, useState } from "react";
 import type { CSSProperties, ReactNode } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
@@ -406,8 +407,6 @@ export function App() {
   const [role, setRole] = useState(0);
   const [paused, setPaused] = useState(false);
   const doors = useRef<HTMLDivElement>(null);
-  const cordStart = useRef(0);
-  const [pull, setPull] = useState(0);
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? "dark" : "light";
     try {
@@ -463,33 +462,7 @@ export function App() {
         </button>
         <Clock />
       </header>
-      <button
-        className="theme-cord"
-        role="switch"
-        aria-checked={dark}
-        aria-label="Dark mode — pull the cord"
-        style={{ "--pull": pull + "px" } as CSSProperties}
-        onPointerDown={(e) => {
-          cordStart.current = e.clientY;
-          e.currentTarget.setPointerCapture(e.pointerId);
-        }}
-        onPointerMove={(e) => {
-          if (e.currentTarget.hasPointerCapture(e.pointerId))
-            setPull(Math.min(65, Math.max(0, e.clientY - cordStart.current)));
-        }}
-        onPointerUp={(e) => {
-          e.currentTarget.releasePointerCapture(e.pointerId);
-          setPull(0);
-        }}
-        onPointerCancel={() => setPull(0)}
-        onClick={() => setDark(!dark)}
-      >
-        <span className="cord-string" />
-        <span className="cord-handle" />
-        <span className="cord-tooltip">
-          {dark ? "Lights on" : "Lights off"}
-        </span>
-      </button>
+      <ThemeCord dark={dark} toggle={() => setDark((previous) => !previous)} />
       <main id="main">
         <section className="hero" id="home">
           <div className="hero-inner">
