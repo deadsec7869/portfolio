@@ -100,7 +100,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
             ))}
           </ol>
           <div className="dialog-footer">
-            {project.github ? (
+            {project.github && (
               <a
                 className="button button-primary"
                 href={project.github}
@@ -110,8 +110,7 @@ export function ProjectModal({ project, onClose }: ProjectModalProps) {
                 <Github size={17} /> View source on GitHub{" "}
                 <ArrowUpRight size={16} />
               </a>
-            ) : (
-              <span className="mono muted">SOURCE LINK NOT PROVIDED</span>
+
             )}
             <button className="text-link" onClick={onClose}>
               Back to projects

@@ -1142,7 +1142,7 @@ footer h2 {
 .ability-modal {
   width: 520px;
   background: var(--bg);
-  overflow: hidden;
+  overflow-y: auto;
 }
 .ability-card {
   display: block;

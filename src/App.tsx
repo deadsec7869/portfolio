@@ -160,7 +160,12 @@ function Modal({
 function ContactForm({ onClose }: { onClose: () => void }) {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState(["", "", "", ""]);
-  const [sent, setSent] = useState(false);
+  const [draftUrl, setDraftUrl] = useState("");
+  const [contactDetails, setContactDetails] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
   const questions = [
     {
       title: "What do you have in mind?",
@@ -201,7 +206,7 @@ function ContactForm({ onClose }: { onClose: () => void }) {
       onClose={onClose}
       className="contact-modal"
     >
-      {sent ? (
+      {draftUrl ? (
         <div className="contact-success">
           <Check size={40} />
           <h2>Your draft is ready.</h2>
@@ -209,7 +214,7 @@ function ContactForm({ onClose }: { onClose: () => void }) {
             Your email app was requested with your message filled in. Send it
             there to get in touch.
           </p>
-          <a className="pill primary" href={"mailto:" + profile.email}>
+          <a className="pill primary" href={draftUrl}>
             Email {profile.shortName}
           </a>
           <p className="muted">You can also write to {profile.email}.</p>
@@ -266,7 +271,7 @@ function ContactForm({ onClose }: { onClose: () => void }) {
                   data.get("name") +
                   "\nEmail: " +
                   data.get("email");
-                window.location.href =
+                const url =
                   "mailto:" +
                   profile.email +
                   "?subject=" +
@@ -275,7 +280,8 @@ function ContactForm({ onClose }: { onClose: () => void }) {
                   ) +
                   "&body=" +
                   encodeURIComponent(message);
-                setSent(true);
+                setDraftUrl(url);
+                window.location.href = url;
               }}
             >
               <h3>How can I reach you?</h3>
@@ -284,6 +290,13 @@ function ContactForm({ onClose }: { onClose: () => void }) {
                   Your name
                   <input
                     name="name"
+                    value={contactDetails.name}
+                    onChange={(e) =>
+                      setContactDetails({
+                        ...contactDetails,
+                        name: e.currentTarget.value,
+                      })
+                    }
                     autoComplete="name"
                     required
                     maxLength={100}
@@ -293,6 +306,13 @@ function ContactForm({ onClose }: { onClose: () => void }) {
                   Your email
                   <input
                     name="email"
+                    value={contactDetails.email}
+                    onChange={(e) =>
+                      setContactDetails({
+                        ...contactDetails,
+                        email: e.currentTarget.value,
+                      })
+                    }
                     type="email"
                     autoComplete="email"
                     required
@@ -302,7 +322,19 @@ function ContactForm({ onClose }: { onClose: () => void }) {
               </div>
               <label>
                 Tell me about your idea
-                <textarea name="message" rows={4} required maxLength={3000} />
+                <textarea
+                  name="message"
+                  value={contactDetails.message}
+                  onChange={(e) =>
+                    setContactDetails({
+                      ...contactDetails,
+                      message: e.currentTarget.value,
+                    })
+                  }
+                  rows={4}
+                  required
+                  maxLength={3000}
+                />
               </label>
               <button type="submit" className="pill primary">
                 Write the email
@@ -405,10 +437,18 @@ export function App() {
   const [activeRoom, setActiveRoom] = useState(0);
   const [selected, setSelected] = useState<Project | null>(null);
   const [role, setRole] = useState(0);
+  const introduction = roles[role].startsWith("AI") ? "I am an" : "I am a";
   const [paused, setPaused] = useState(false);
   const doors = useRef<HTMLDivElement>(null);
   useEffect(() => {
     document.documentElement.dataset.theme = dark ? "dark" : "light";
+    const toolbar = document.querySelector<HTMLMetaElement>(
+      'meta[name="theme-color"]',
+    );
+    if (toolbar)
+      toolbar.content = getComputedStyle(document.documentElement)
+        .getPropertyValue("--bg")
+        .trim();
     try {
       localStorage.setItem("tamim-theme", dark ? "dark" : "light");
     } catch {
@@ -472,9 +512,12 @@ export function App() {
               </p>
               <h1>
                 Hi, I’m {profile.shortName}.<br />
-                <span>I am a</span>
+                <span>{introduction}</span>
               </h1>
-              <div className="notebook" aria-label={"I am a " + roles[role]}>
+              <div
+                className="notebook"
+                aria-label={introduction + " " + roles[role]}
+              >
                 <div className="notebook-rings" aria-hidden="true">
                   {Array.from({ length: 12 }, (_, i) => (
                     <i key={i} />
